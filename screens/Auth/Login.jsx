@@ -2,12 +2,15 @@ import { StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, Scro
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import ButtonLogin from '../../components/Auth/ButtonLogin';
+import BlockSocial from '../../components/Auth/BlockSocial';
 import React, {useState} from 'react'
 
 const Login = () => {
 
     const {width} = useWindowDimensions()
     const [passwordSecured, setPasswordSecured] = useState(true)
+    const [loading, setLoading] = useState(false);
+
 
     function MyCheckbox() {
         const [checked, setChecked] = useState(false);
@@ -23,14 +26,14 @@ const Login = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-slate-100 py-10 px-4 justify-center" style={{width: width}}>
-            <ScrollView className="flex-1 " automaticallyAdjustKeyboardInsets={true}>
+            <ScrollView contentContainerStyle={{justifyContent: 'center', flex: 1}}  automaticallyAdjustKeyboardInsets={true}>
                 <View className="mb-5">
-                    <Text className="text-primary text-5xl mb-3" style={{fontFamily: 'KeepCalm'}}>Welcome</Text>
-                    <Text className="text-xl text-gray-400" style={{fontFamily: 'PoppinsRegular'}}>Connectez vous pour accéder à toute les fonctionnalités</Text>
+                    <Text className="text-primary text-5xl mb-3" style={{fontFamily: 'KeepCalm'}}>Bienvenu</Text>
+                    <Text className="text-lg text-gray-400" style={{fontFamily: 'PoppinsRegular'}}>Connectez vous pour accéder à toute nos fonctionnalités</Text>
                 </View>
 
                 <View className="mb-10">
-                    <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-3">
+                    <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-5">
                         <Ionicons name="mail" size={24} color="black" />
                         <TextInput
                             autoCapitalize='none'
@@ -42,7 +45,7 @@ const Login = () => {
                         />
                     </View>
 
-                    <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-3">
+                    <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-5">
                         <Ionicons name="lock-closed-outline" size={24} color="black" />
                         <TextInput
                             type="password"
@@ -73,13 +76,17 @@ const Login = () => {
                     </View>
 
                     <View className="mb-5">
-                        <ButtonLogin name="Se connecter" />
+                        <ButtonLogin name="Se connecter" load={loading} />
                     </View>
 
-                    <View className="flex flex-row justify-between items-center">
+                    <View className="flex flex-row justify-between items-center mb-5">
                         <View className="border-b w-2/5 border-gray-200"></View>
                         <Text>OU</Text>
                         <View className="border-b w-2/5 border-gray-200"></View>
+                    </View>
+
+                    <View className="w-100 justify-center px-2">
+                        <BlockSocial name="Se connecter avec Google" />
                     </View>
                     
                 </View>
