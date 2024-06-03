@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { Welcom, Login, Register, Forgot, NewPassword, Home } from './screens/root'; 
+import { Welcom, Login, Register, Forgot, NewPassword, Home, Notification, Search } from './screens/root'; 
 import { useFonts } from 'expo-font';
 
 export default function App() {
@@ -22,7 +22,9 @@ export default function App() {
 			barStyle="white-content"
 			translucent
 		/>
-      	<Home />
+      {/* <Home /> */}
+      <Notification/>
+      {/* <Search/> */}
     </View>
   );
 }
@@ -30,8 +32,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    // backgroundColor: '#fff',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
 });
