@@ -6,5 +6,8 @@ import NewPassword from "./Auth/NewPassword";
 import Home from "./Visitor/Home";
 import Notification from "./Visitor/Notification";
 import Search from "./Visitor/Search";
+import Profile from "./Visitor/Profile";
+import Infos from "./Visitor/Infos";
+import EditInfos from "./Visitor/EditInfos";
 
-export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search};
+export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos};
