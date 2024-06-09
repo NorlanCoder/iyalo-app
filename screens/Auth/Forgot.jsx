@@ -15,16 +15,16 @@ const Forgot = () => {
             <View style={{height: Dimensions.get('window').height*0.32, width:  Dimensions.get('window').width, justifyContent: 'center', alignItems: 'center', alignContent: 'center',}}>
 
                 <Animated.View entering={FadeInUp.delay(200).duration(600).springify()} 
-                    className='absolute flex flex-row gap-x-3 items-center'
-                    style={{top: 40, left: 20, alignSelf: 'flex-start'}}
+                    className='absolute flex flex-row items-center'
+                    style={{top: 40, left: 10, alignSelf: 'flex-start'}}
                 >
-                    <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                    <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40}}>
                         <Feather name="chevron-left" size={22} color="#555"/>
                     </TouchableOpacity>
-                    <Text className="text-lg text-gray-600 font-bold" style={{fontFamily: 'PoppinsRegular'}}>Mot de passe oublié</Text>
+                    <Text className="text-lg text-gray-700 font-bold ml-3" style={{fontFamily: 'PoppinsRegular'}}>Mot de passe oublié</Text>
                 </Animated.View>
             
-                {/* <View className="absolute top-20">
+                <View className="absolute top-20">
                     <ScrollView contentContainerStyle={{justifyContent: 'center', flex: 1}} className="bg-slate-100 py-10 px-4" automaticallyAdjustKeyboardInsets={true}>
                         <View className=" mt-10">
                             <Text className="text-primary text-5xl mb-3 mt-8" style={{fontFamily: 'KeepCalm'}}>Mot de passe oublié ? </Text>
@@ -49,9 +49,9 @@ const Forgot = () => {
                             </View>
                         </View>
                     </ScrollView>
-                </View> */}
+                </View>
 
-                <View className="absolute top-20">
+                {/* <View className="absolute top-20">
                     <ScrollView contentContainerStyle={{justifyContent: 'center', flex: 1}} className="bg-slate-100 py-10 px-4" automaticallyAdjustKeyboardInsets={true}>
                         <View className=" my-5">
                             <Text className="text-primary text-5xl mb-3 mt-8" style={{fontFamily: 'KeepCalm'}}>Vérification OTP</Text>
@@ -70,7 +70,7 @@ const Forgot = () => {
                             <ButtonLogin name="Vérifier" load={loading} />
                         </View>
                     </ScrollView>
-                </View>
+                </View> */}
         </View>
         </SafeAreaView>
     )

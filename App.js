@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { Welcom, Login, Register, Forgot, NewPassword, Home } from './screens/root'; 
+import { Welcome, Login, Register, Forgot, NewPassword, Home, PropertyListCat } from './screens/root'; 
 import { useFonts } from 'expo-font';
 
 export default function App() {

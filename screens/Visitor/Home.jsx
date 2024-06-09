@@ -16,17 +16,17 @@ const Home = () => {
     );
 
     const renderproperty = ({ item }) => (
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity key={item.id} onPress={() => {}}>
             <PropertyHomeComponent name={item.nom} id={item.id_} />
         </TouchableOpacity>
     );
 
     return (
-        <SafeAreaView className="flex-1 bg-slate-100 px-4">
-            
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50}} style={{width: width}}>
+        <SafeAreaView className="flex-1 bg-slate-100">
+
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50, paddingTop: 40}} style={{width: width}}>
                 {/* En tête */}
-                <View className="absolute top-10 flex flex-row justify-between items-center px-4" style={{width: width}}>
+                <View className="flex flex-row justify-between items-center px-3 mb-3" style={{width: width}}>
                     <View className="">
                         <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-primary text-lg">Bénin</Text>
                         <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold">Abomey-Calavi</Text>
@@ -41,10 +41,10 @@ const Home = () => {
                     </View>
                 </View>
 
-                <View className="absolute top-24 px-4 w-screen">
+                <View className=" px-1 w-screen">
                     
                     {/* PUB */}
-                    <View className='p-4 rounded-xl bg-black flex flex-col mb-2'>
+                    <View className='p-4 mx-1 rounded-xl bg-black flex flex-col mb-2'>
                         <View className="flex flex-row gap-x-1 items-center">
                             <Text className="text-white font-bold text-base" style={{fontFamily: 'KeepCalm'}}>Démenagement - Ménage</Text>
                             <MaterialIcons name="cleaning-services" size={15} color="#fff" />
@@ -74,15 +74,14 @@ const Home = () => {
                     </View>
 
                     {/* A la Une */}
-                    <View className="flex flex-row justify-between items-center my-2">
+                    <View className="flex flex-row justify-between items-center my-2 mx-2">
                         <View className="">
                             <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">A la une</Text>
                         </View>
                         <View className="flex flex-row gap-x-1">
-                            <TouchableOpacity onPress={() =>{}} className=" p-1 rounded-full flex flex-row items-center justify-center">
+                            <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
                                 <Text className="text-secondary font-bold">Tout voir</Text>
                                 <Feather name="chevron-right" size={15} color="#555"/>
-
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -100,12 +99,12 @@ const Home = () => {
                     <View className="w-full border-b border-b-slate-200 my-4"></View>
 
                     {/* Category 1 */}
-                    <View className="flex flex-row justify-between items-center my-2">
+                    <View className="flex flex-row justify-between items-center my-2 mx-2">
                         <View className="">
                             <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">Appartement</Text>
                         </View>
                         <View className="flex flex-row gap-x-1">
-                            <TouchableOpacity onPress={() =>{}} className=" p-1 rounded-full flex flex-row items-center justify-center">
+                            <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
                                 <Text className="text-secondary font-bold">Tout voir</Text>
                                 <Feather name="chevron-right" size={15} color="#555"/>
 
@@ -126,12 +125,12 @@ const Home = () => {
                     <View className="w-full border-b border-b-slate-200 my-4"></View>
 
                     {/* Category 2 */}
-                    <View className="flex flex-row justify-between items-center my-2">
+                    <View className="flex flex-row justify-between items-center my-2 mx-2">
                         <View className="">
                             <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">Bureau</Text>
                         </View>
                         <View className="flex flex-row gap-x-1">
-                            <TouchableOpacity onPress={() =>{}} className=" p-1 rounded-full flex flex-row items-center justify-center">
+                            <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
                                 <Text className="text-secondary font-bold">Tout voir</Text>
                                 <Feather name="chevron-right" size={15} color="#555"/>
 
