@@ -28,17 +28,17 @@ export default function App() {
         barStyle="white-content"
         translucent
       />
-      <NavigationContainer>
+      {/* <NavigationContainer>
         <Navigation />
-      </NavigationContainer>
+      </NavigationContainer> */}
       
       {/* <Home /> */}
-      <Notification/>
+      {/* <Notification/> */}
       {/* <Search/> */}
       {/* <Profile/> */}
       {/* <Infos/> */}
       {/* <EditInfos/> */}
-      {/* <HomeAdmin/> */}
+      <HomeAdmin/>
       {/* <Favoris/> */}
     </SafeAreaProvider>
   );
