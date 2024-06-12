@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { Welcom, Login, Register, Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, HomeAdmin} from './screens/root'; 
+import { Welcom, Login, Register, Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, HomeAdmin} from './screens/root'; 
 import { useFonts } from 'expo-font';
 
 const Stack = createNativeStackNavigator();
@@ -67,7 +67,8 @@ export default function App() {
       {/* <Profile/> */}
       {/* <Infos/> */}
       {/* <EditInfos/> */}
-      <HomeAdmin/>
+      {/* <HomeAdmin/> */}
+      <Favoris/>
     </SafeAreaProvider>
   );
 }
