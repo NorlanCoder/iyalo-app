@@ -59,11 +59,11 @@ export default function App() {
       </NavigationContainer> */}
       
       {/* <Home /> */}
-      {/* <Notification/> */}
+      <Notification/>
       {/* <Search/> */}
       {/* <Profile/> */}
       {/* <Infos/> */}
-      <EditInfos/>
+      {/* <EditInfos/> */}
     </View>
   );
 }

@@ -7,7 +7,7 @@ export default function Profile(){
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100 px-4">
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50}}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50, justifyContent: 'center'}}>
                 <View className="w-full h-56 justify-center items-center mt-10" >
                     <View style={{borderWidth: 0.7, borderColor: "#6E6F84"}} className="h-28 w-28 rounded-full justify-center items-center">
                         <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />
@@ -26,13 +26,13 @@ export default function Profile(){
                 <View className="bg-white rounded-md my-2">
                     <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
-                            <View className="h-10 w-10 bg-primary/25 rounded-full items-center justify-center mr-3">
+                            <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <FontAwesome name="user" size={20} color="#000000"/>
                             </View>
                             
                             <View className="gap-1">
                                 <Text className="font-['PoppinsRegular'] font-bold text-[18px]">Infos personnelles</Text>
-                                <Text className="font-['PoppinsRegular'] text-[16px]">Consulter vos informations personnelles</Text>
+                                <Text className="font-['PoppinsRegular'] text-[13px]">Consulter vos informations personnelles</Text>
                             </View>
                             
                         </View>
@@ -40,13 +40,13 @@ export default function Profile(){
 
                     <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
-                            <View className="h-10 w-10 bg-lime-300 rounded-full items-center justify-center mr-3">
+                            <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <Fontisto name="locked" size={20} color="#000000"/>
                             </View>
                             
                             <View className="gap-1">
                                 <Text className="font-['PoppinsRegular'] font-bold text-[18px]">Sécurité</Text>
-                                <Text className="font-['PoppinsRegular'] text-[16px]">Changer votre mot de passe</Text>
+                                <Text className="font-['PoppinsRegular'] text-[13px]">Changer votre mot de passe</Text>
                             </View>
                             
                         </View>
@@ -54,13 +54,13 @@ export default function Profile(){
 
                     <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
-                            <View className="h-10 w-10 bg-pink-400 rounded-full items-center justify-center mr-3">
+                            <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <Fontisto name="bell" size={20} color="#000000"/>
                             </View>
                             
                             <View className="gap-1">
                                 <Text className="font-['PoppinsRegular'] font-bold text-[18px]">Notifications</Text>
-                                <Text className="font-['PoppinsRegular'] text-[16px]">Modifier vos préférences pour la notification</Text>
+                                <Text className="font-['PoppinsRegular'] text-[13px]">Modifier vos préférences pour la notification</Text>
                             </View>
                             
                         </View>
@@ -70,13 +70,13 @@ export default function Profile(){
                 <View className="bg-white rounded-md my-2">
                     <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
-                            <View className="h-10 w-10 bg-teal-400 rounded-full items-center justify-center mr-3">
+                            <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <Foundation name="info" size={20} color="#000000"/>
                             </View>
                             
                             <View className="gap-1">
                                 <Text className="font-['PoppinsRegular'] font-bold text-[18px]">Aide et support</Text>
-                                <Text className="font-['PoppinsRegular'] text-[16px]">Contacter le support technique</Text>
+                                <Text className="font-['PoppinsRegular'] text-[13px]">Contacter le support technique</Text>
                             </View>
                             
                         </View>
@@ -84,13 +84,13 @@ export default function Profile(){
 
                     <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
-                            <View className="h-10 w-10 bg-red-500 rounded-full items-center justify-center mr-3">
+                            <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <MaterialIcons name="logout" size={20} color="#000000"/>
                             </View>
                             
                             <View className="gap-1">
                                 <Text className="font-['PoppinsRegular'] font-bold text-[18px] text-red-500">Deconnexion</Text>
-                                <Text className="font-['PoppinsRegular'] text-[16px]">Déconnecter votre compte</Text>
+                                <Text className="font-['PoppinsRegular'] text-[13px]">Déconnecter votre compte</Text>
                             </View>
                             
                         </View>
