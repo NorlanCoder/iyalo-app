@@ -16,7 +16,7 @@ export default function Header(props){
                 <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">{props.title}</Text>
             </View>
 
-            <View className="bg-gray-900">
+            <View className="">
                 {props.right}
             </View>
         </Animated.View>

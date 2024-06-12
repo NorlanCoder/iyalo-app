@@ -10,6 +10,8 @@ export default function Visites(){
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
             <Header title={"Visites"} />
+
+            
         </SafeAreaView>
     )
 }

@@ -28,9 +28,9 @@ export default function App() {
         barStyle="white-content"
         translucent
       />
-      {/* <NavigationContainer>
+      <NavigationContainer>
         <Navigation />
-      </NavigationContainer> */}
+      </NavigationContainer>
       
       {/* <Home /> */}
       {/* <Notification/> */}
@@ -38,7 +38,7 @@ export default function App() {
       {/* <Profile/> */}
       {/* <Infos/> */}
       {/* <EditInfos/> */}
-      <HomeAdmin/>
+      {/* <HomeAdmin/> */}
       {/* <Favoris/> */}
     </SafeAreaProvider>
   );

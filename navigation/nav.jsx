@@ -93,7 +93,7 @@ const AdminTab = () => (
                 )
             }} 
         /> */}
-        <Tab.Screen
+        {/* <Tab.Screen
             name="Add"
             component={AddProperties} 
             options={{
@@ -101,7 +101,7 @@ const AdminTab = () => (
                     <Feather name='plus-square' size={25} color={color}/>
                 )
             }} 
-        />
+        /> */}
 
         <Tab.Screen
             name="NotificationsAdmin"
@@ -135,6 +135,7 @@ export default function Navigation(){
                 admin ?
                 <Stack.Navigator>
                     <Stack.Screen name='AdminTab' component={AdminTab} options={{headerShown: false}} />
+                    <Stack.Screen name='AddProperties' component={AddProperties} options={{headerShown: false}} />
                     <Stack.Screen name='Properties' component={Properties} options={{headerShown: false}} />
                     <Stack.Screen name='Annonces' component={Annonces} options={{headerShown: false}} />
                     <Stack.Screen name='Visites' component={Visites} options={{headerShown: false}} />
