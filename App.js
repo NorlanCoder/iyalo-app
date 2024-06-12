@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { Welcom, Login, Register, Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, HomeAdmin} from './screens/root'; 
 import { useFonts } from 'expo-font';
+import Navigation from './navigation/nav';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,39 +28,9 @@ export default function App() {
         barStyle="white-content"
         translucent
       />
-      {/* <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{headerShown: false, animation: 'slide_from_right'}}
-          />
-          <Stack.Screen
-            name="Notification"
-            component={Notification}
-            options={{
-              headerShown: false,
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="Search"
-            component={Search}
-            options={{
-              headerShown: false,
-              animation: 'slide_from_right',
-            }}
-          />
-          <Stack.Screen
-            name="Profile"
-            component={Profile}
-            options={{
-              headerShown: false,
-              animation: 'slide_from_right',
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer> */}
+      <NavigationContainer>
+        <Navigation />
+      </NavigationContainer>
       
       {/* <Home /> */}
       {/* <Notification/> */}
@@ -68,7 +39,7 @@ export default function App() {
       {/* <Infos/> */}
       {/* <EditInfos/> */}
       {/* <HomeAdmin/> */}
-      <Favoris/>
+      {/* <Favoris/> */}
     </SafeAreaProvider>
   );
 }
