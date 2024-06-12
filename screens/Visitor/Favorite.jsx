@@ -29,7 +29,7 @@ export default function Favoris(){
                 </View>
             </Animated.View>
 
-            <View className='flex flex-col my-2 mt-4'>
+            {/* <View className='flex flex-col my-2 mt-4'>
                 <FlatList
                     data={CATEGORY}
                     renderItem={rendercategory}
@@ -38,7 +38,7 @@ export default function Favoris(){
                     showsHorizontalScrollIndicator={false}
                     nestedScrollEnabled
                 />
-            </View>
+            </View> */}
 
             <View className="my-2">
                 <View className="bg-white h-32 m-3 rounded-xl flex-row">

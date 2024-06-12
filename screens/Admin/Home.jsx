@@ -3,12 +3,14 @@ import { Feather, MaterialIcons, FontAwesome, FontAwesome5, Entypo, MaterialComm
 import TextInputWithdrawComponent from '../../components/Admin/TextInputWithdrawComponent';
 import { Dialog } from 'react-native-paper';
 import React, {useState, useEffect} from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
 const data = []
 
 const HomeAdmin = () => {
+    const navigation = useNavigation()
 
     const [selected, setSelected] = useState("proprietes")
     const [visible, setVisible] = useState(false);
@@ -37,7 +39,7 @@ const HomeAdmin = () => {
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "700"}} className="text-center text-[18px] p-5">Garantissez une gestion efficace de {"\n"} vos immobilier.</Text>
 
-                        <TouchableOpacity onPress={() => {}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
+                        <TouchableOpacity onPress={() => {navigation.navigate('Properties')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
                                 <FontAwesome name='building' color={"#00ddb3"} size={20}/>
                             </View>
@@ -51,7 +53,7 @@ const HomeAdmin = () => {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => {}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
+                        <TouchableOpacity onPress={() => {navigation.navigate('Annonces')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
                                 <Entypo name='megaphone' color={"#00ddb3"} size={20}/>
                             </View>
@@ -65,7 +67,7 @@ const HomeAdmin = () => {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => {}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
+                        <TouchableOpacity onPress={() => {navigation.navigate('Visites')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
                                 <FontAwesome5 name='building' color={"#00ddb3"} size={20} />
                             </View>
