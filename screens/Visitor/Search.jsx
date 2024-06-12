@@ -4,11 +4,11 @@ import { Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import RangeSlider from 'rn-range-slider';
 import { CATEGORY } from '../../utils/data/categoriedata';
 import { ROOM } from '../../utils/data/roomdata';
 import { BATH } from '../../utils/data/bathdata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
+import RangeSlider from '../../components/RangeSliderComponent';
 
 export default function Search(){
     const navigation = useNavigation();
@@ -44,7 +44,7 @@ export default function Search(){
                 </View>
             </Animated.View>
 
-            <View className="px-3 mt-2">
+            <ScrollView className="px-3 mt-2" showsVerticalScrollIndicator={false}>
                 {/* <View className="bg-white h-12 flex-row rounded-xl my-2">
                     <TouchableOpacity onPress={() => {setSelect('Résidentiel')}} style={{flex: 0.5, backgroundColor: select === "Résidentiel"? "#00ddb3": null}} className="rounded-2xl justify-center items-center">
                         <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Résidentiel</Text>
@@ -97,7 +97,24 @@ export default function Search(){
                 <View className="bg-white rounded-xl my-2 py-2">
                     <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Intervalle de prix</Text>
 
-                    
+                    <RangeSlider from={5000} to={100000} devise={"XOF"}/>
+                </View>
+
+                <View className="bg-white rounded-xl my-2 py-2">
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Quartier</Text>
+
+                    <View className="border-[1px] h-12 border-[#bdbdbe48] rounded-lg justify-center mx-3">
+                        <TextInput
+                            placeholder={"Cotonou"}
+                            placeholderTextColor={'gray'}
+                            autoCapitalize="sentences"
+                            textContentType="name"
+                            keyboardType='default'
+                            // value={data.ingredients}
+                            // onChangeText={(value) => setData({...data, ingredients: value})}
+                            className="bg-[#FDFDFD] h-full rounded-lg px-2 font-['PoppinsRegular']"
+                        />
+                    </View>
                 </View>
 
                 <View className="h-12 flex-row rounded-xl my-2 justify-between">
@@ -109,7 +126,7 @@ export default function Search(){
                         <Text adjustsFontSizeToFit={true} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Voir résultats</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </ScrollView>
 
             
         </SafeAreaView>

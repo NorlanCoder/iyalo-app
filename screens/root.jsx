@@ -9,5 +9,8 @@ import Search from "./Visitor/Search";
 import Profile from "./Visitor/Profile";
 import Infos from "./Visitor/Infos";
 import EditInfos from "./Visitor/EditInfos";
+import Favoris from "./Visitor/Favorite";
 
-export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos};
+import HomeAdmin from "./Admin/Home";
+
+export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, HomeAdmin};

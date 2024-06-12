@@ -7,7 +7,7 @@ import PropertyHomeComponent from '../../components/Visitor/PropertyHomeComponen
 import React from 'react'
 
 const Home = () => {
-    // const navigation = useNavigation();
+    const navigation = useNavigation();
 
 
     const {width} = useWindowDimensions()
@@ -35,10 +35,10 @@ const Home = () => {
                         <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold">Abomey-Calavi</Text>
                     </View>
                     <View className="flex flex-row gap-x-1">
-                        <TouchableOpacity onPress={() =>{ }} className="h-full w-full bg-secondary rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                        <TouchableOpacity onPress={() =>{navigation.navigate('Search')}} className="h-full w-full bg-secondary rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
                             <Feather name="search" size={22} color="#fff"/>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() =>{ }} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                        <TouchableOpacity onPress={() =>{navigation.navigate('Notification')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
                             <Feather name="bell" size={22} color="#000"/>
                         </TouchableOpacity>
                     </View>
