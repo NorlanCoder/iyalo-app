@@ -1,11 +1,14 @@
 import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { CATEGORY } from '../../utils/data/categoriedata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import PropertyHomeComponent from '../../components/Visitor/PropertyHomeComponent';
 import React from 'react'
 
 const Home = () => {
+    // const navigation = useNavigation();
+
 
     const {width} = useWindowDimensions()
 
@@ -32,10 +35,10 @@ const Home = () => {
                         <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold">Abomey-Calavi</Text>
                     </View>
                     <View className="flex flex-row gap-x-1">
-                        <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-secondary rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                        <TouchableOpacity onPress={() =>{ }} className="h-full w-full bg-secondary rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
                             <Feather name="search" size={22} color="#fff"/>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                        <TouchableOpacity onPress={() =>{ }} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
                             <Feather name="bell" size={22} color="#000"/>
                         </TouchableOpacity>
                     </View>
