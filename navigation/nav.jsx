@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
-import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites } from '../screens/root';
+import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites } from '../screens/root';
 import { useState } from 'react';
 
 const Stack = createNativeStackNavigator();
@@ -37,11 +37,11 @@ const Tabs = () => (
             }} 
         />
         <Tab.Screen
-            name="Search"
-            component={Search} 
+            name="Explore"
+            component={Explore} 
             options={{
                 tabBarIcon: ({ color }) => (
-                    <Ionicons name="search" size={25} color={color} />
+                    <FontAwesome5 name="map-marked-alt" size={25} color={color} />
                 )
             }} 
         />
@@ -50,7 +50,7 @@ const Tabs = () => (
             component={Transaction}
             options={{
                 tabBarIcon: ({ color }) => (
-                    <FontAwesome6 name='money-bill-trend-up' color={color} size={25} />
+                    <MaterialCommunityIcons name="home-map-marker" size={24} color={color}/>
                 )
             }} 
         />
@@ -127,7 +127,7 @@ const AdminTab = () => (
 )
 
 export default function Navigation(){
-    const [admin, setAdmin] = useState(true)
+    const [admin, setAdmin] = useState(false)
 
     return(
         <View className="flex-1">
@@ -135,10 +135,10 @@ export default function Navigation(){
                 admin ?
                 <Stack.Navigator>
                     <Stack.Screen name='AdminTab' component={AdminTab} options={{headerShown: false}} />
-                    <Stack.Screen name='AddProperties' component={AddProperties} options={{headerShown: false}} />
-                    <Stack.Screen name='Properties' component={Properties} options={{headerShown: false}} />
-                    <Stack.Screen name='Annonces' component={Annonces} options={{headerShown: false}} />
-                    <Stack.Screen name='Visites' component={Visites} options={{headerShown: false}} />
+                    <Stack.Screen name='AddProperties' component={AddProperties} options={{headerShown: false, animation: 'slide_from_right',}} />
+                    <Stack.Screen name='Properties' component={Properties} options={{headerShown: false, animation: 'slide_from_right',}} />
+                    <Stack.Screen name='Annonces' component={Annonces} options={{headerShown: false, animation: 'slide_from_right',}} />
+                    <Stack.Screen name='Visites' component={Visites} options={{headerShown: false, animation: 'slide_from_right',}} />
                 </Stack.Navigator>
                 :
                 <Stack.Navigator>
@@ -171,6 +171,19 @@ export default function Navigation(){
                         headerShown: false,
                         animation: 'slide_from_right',
                         }}
+                    />
+                    <Stack.Screen
+                        name="Details"
+                        component={Details}
+                        options={({navigation}) => ({
+                            headerShown: true,
+                            animation: 'slide_from_right',
+                            headerBackVisible: true, 
+                            headerTintColor: "#FFFFFF",
+                            headerTransparent: true, 
+                            headerTitle: '',
+                            statusBarTranslucent: true
+                        })}
                     />
                 </Stack.Navigator>
             }

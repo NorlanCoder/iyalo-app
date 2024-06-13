@@ -19,7 +19,7 @@ const Home = () => {
     );
 
     const renderproperty = ({ item }) => (
-        <TouchableOpacity key={item.id} onPress={() => {}}>
+        <TouchableOpacity key={item.id} onPress={() => {navigation.navigate('Details', {item: item})}}>
             <PropertyHomeComponent name={item.nom} id={item.id_} />
         </TouchableOpacity>
     );
