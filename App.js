@@ -6,10 +6,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Welcom, Login, Register, Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, HomeAdmin} from './screens/root'; 
 import { useFonts } from 'expo-font';
 import Navigation from './navigation/nav';
+import { useTheme } from 'react-native-paper';
 
 // const Stack = createNativeStackNavigator();
 
 export default function App() {
+
+  const theme = useTheme();
+  theme.colors.secondaryContainer = "transaprent"
 
   const [loaded] = useFonts({
     KeepCalm: require('./assets/fonts/KeepCalm-Medium.ttf'),
@@ -28,9 +32,9 @@ export default function App() {
         barStyle="white-content"
         translucent
       />
-      {/* <NavigationContainer>
+      <NavigationContainer>
         <Navigation />
-      </NavigationContainer> */}
+      </NavigationContainer>
       
       {/* <Home /> */}
       {/* <Notification/> */}
@@ -38,7 +42,7 @@ export default function App() {
       {/* <Profile/> */}
       {/* <Infos/> */}
       {/* <EditInfos/> */}
-      <HomeAdmin/>
+      {/* <HomeAdmin/> */}
       {/* <Favoris/> */}
     </SafeAreaProvider>
   );
