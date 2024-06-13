@@ -7,20 +7,20 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import InfosComponent from '../../components/Visitor/InfosConponent';
 
 export default function Infos(){
-    // const navigation = useNavigation();
+    const navigation = useNavigation();
 
     return(
 
         <SafeAreaView className="flex-1 bg-slate-100">
             <Animated.View entering={FadeIn.delay(400)} className="flex flex-row justify-between items-center mt-8 px-3">
                 <View className="flex-row justify-center items-center">
-                    <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center mr-3" style={{ height: 40, width: 40,}}>
+                    <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center mr-3" style={{ height: 40, width: 40,}}>
                         <MaterialIcons name="keyboard-arrow-left" size={20} color="#000"/>
                     </TouchableOpacity>
                     <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Infos personnelles</Text>
                 </View>
 
-                <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                <TouchableOpacity onPress={() =>{navigation.navigate('EditProfil')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
                     <MaterialIcons name="edit" size={20} color="#000"/>
                 </TouchableOpacity>
             </Animated.View>

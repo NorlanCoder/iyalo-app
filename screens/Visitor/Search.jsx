@@ -117,13 +117,13 @@ export default function Search(){
                     </View>
                 </View>
 
-                <View className="h-12 flex-row rounded-xl my-2 justify-between">
-                    <TouchableOpacity onPress={() => {}} style={{flex: 0.45, backgroundColor: "#FFFFFF"}} className="rounded-2xl justify-center items-center">
+                <View className="h-12 flex-row rounded-xl my-2 justify-center">
+                    {/* <TouchableOpacity onPress={() => {}} style={{flex: 0.45, backgroundColor: "#FFFFFF"}} className="rounded-2xl justify-center items-center">
                         <Text adjustsFontSizeToFit={true} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Enregistrer</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
-                    <TouchableOpacity onPress={() => {}} style={{flex: 0.5, backgroundColor: "#00ddb3"}} className="rounded-2xl justify-center items-center">
-                        <Text adjustsFontSizeToFit={true} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Voir résultats</Text>
+                    <TouchableOpacity onPress={() => {}} style={{backgroundColor: "#00ddb3"}} className="rounded-2xl justify-center items-center p-2 px-5">
+                        <Text adjustsFontSizeToFit={true} style={{fontFamily: 'PoppinsRegular'}} className="text-[18px] ">Voir résultats</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

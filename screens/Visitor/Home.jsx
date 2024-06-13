@@ -27,7 +27,7 @@ const Home = () => {
     return (
         <SafeAreaView className="flex-1 bg-slate-100">
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50, paddingTop: 40}} style={{width: width}}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 100, paddingTop: 40}} style={{width: width}}>
                 {/* En tête */}
                 <View className="flex flex-row justify-between items-center px-3 mb-3" style={{width: width}}>
                     <View className="">
