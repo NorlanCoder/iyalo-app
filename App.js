@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { Welcom, Login, Register, Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, HomeAdmin} from './screens/root'; 
+import { Welcome, Login, Register, Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, HomeAdmin} from './screens/root'; 
 import { useFonts } from 'expo-font';
 import Navigation from './navigation/nav';
 import { useTheme } from 'react-native-paper';
@@ -32,9 +32,9 @@ export default function App() {
         barStyle="white-content"
         translucent
       />
-      <NavigationContainer>
+      {/* <NavigationContainer>
         <Navigation />
-      </NavigationContainer>
+      </NavigationContainer> */}
       
       {/* <Home /> */}
       {/* <Notification/> */}
@@ -44,6 +44,7 @@ export default function App() {
       {/* <EditInfos/> */}
       {/* <HomeAdmin/> */}
       {/* <Favoris/> */}
+      <Welcome/>
     </SafeAreaProvider>
   );
 }
