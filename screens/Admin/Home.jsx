@@ -53,7 +53,7 @@ const HomeAdmin = () => {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => {navigation.navigate('Annonces')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
+                        {/* <TouchableOpacity onPress={() => {navigation.navigate('Annonces')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
                                 <Entypo name='megaphone' color={"#00ddb3"} size={20}/>
                             </View>
@@ -65,7 +65,7 @@ const HomeAdmin = () => {
                             <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
                                 <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{20}</Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <TouchableOpacity onPress={() => {navigation.navigate('Visites')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
@@ -73,7 +73,7 @@ const HomeAdmin = () => {
                             </View>
 
                             <View style={{flex: 0.85}} className="h-24 w-16 justify-center">
-                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Nombre de {"\n"}visites actives</Text>
+                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Nombre de {"\n"}visites terminées</Text>
                             </View>
 
                             <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
@@ -95,7 +95,7 @@ const HomeAdmin = () => {
                             </View>
                         </View>
 
-                        <View style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
+                        {/* <View style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
                                 <MaterialCommunityIcons name='chart-line' color={"#00ddb3"} size={20}/>
                             </View>
@@ -107,7 +107,7 @@ const HomeAdmin = () => {
                             <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
                                 <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{40}%</Text>
                             </View>
-                        </View>
+                        </View> */}
                     </ScrollView>
                 </View>
                 :selected === "visites"?

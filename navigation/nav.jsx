@@ -160,6 +160,7 @@ export default function Navigation(){
                 admin ?
                 <Stack.Navigator>
                     <Stack.Screen name='AdminTab' component={AdminTab} options={{headerShown: false}} />
+                    <Stack.Screen name='AddProperties' component={AddProperties} options={{headerShown: false}} />
                     <Stack.Screen name='Properties' component={Properties} options={{headerShown: false}} />
                     <Stack.Screen name='Annonces' component={Annonces} options={{headerShown: false}} />
                     <Stack.Screen name='Visites' component={Visites} options={{headerShown: false}} />
