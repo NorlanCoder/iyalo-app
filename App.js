@@ -8,9 +8,13 @@ import { useFonts } from 'expo-font';
 import Navigation from './navigation/nav';
 import { useTheme } from 'react-native-paper';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/es/integration/react';
+import { persistStore } from 'redux-persist'
 import store from './store/store.js';
 
 // const Stack = createNativeStackNavigator();
+
+const persistor = persistStore(store)
 
 export default function App() {
 
@@ -29,18 +33,20 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <SafeAreaProvider style={styles.container}>
-        <StatusBar 
-          backgroundColor="transparent"
-          barStyle="white-content"
-          translucent
-        />
-        <NavigationContainer>
-          <Navigation />
-        </NavigationContainer>
-        
-        {/* <Welcome/> */}
-      </SafeAreaProvider>
+      <PersistGate persistor={persistor}>
+        <SafeAreaProvider style={styles.container}>
+          <StatusBar 
+            backgroundColor="transparent"
+            barStyle="white-content"
+            translucent
+          />
+          <NavigationContainer>
+            <Navigation />
+          </NavigationContainer>
+          
+          {/* <Welcome/> */}
+        </SafeAreaProvider>
+      </PersistGate>
     </Provider>
   );
 }

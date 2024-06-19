@@ -1,9 +1,12 @@
 import { StyleSheet, Text, TouchableWithoutFeedback, View, useWindowDimensions } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
-import React from 'react'
+import React, {useEffect} from 'react'
 import Animated, { useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import { useDispatch } from 'react-redux'
+import { ONBOARDING } from '../../store/reducers/actionName';
 
 const CustomButton = ({flatlistRef, flatlistIndex, dataLength, x}) => {
+    const dispatch = useDispatch()
     const {width} = useWindowDimensions();
 
     const buttonAnimationStyle = useAnimatedStyle(() => {
@@ -39,6 +42,8 @@ const CustomButton = ({flatlistRef, flatlistIndex, dataLength, x}) => {
             onPress={()=>{
                 if(flatlistIndex.value < (dataLength - 1)) {
                     flatlistRef.current?.scrollToIndex({index: flatlistIndex.value + 1})
+                }else{
+                    dispatch({ type: ONBOARDING, payload: false});
                 }
             }}
         >
