@@ -9,7 +9,12 @@ export default function Details(props){
         <SafeAreaView className="flex-1 bg-slate-100">
             <ScrollView className="" showsVerticalScrollIndicator={false}>
                 <View className="flex flex-row justify-between relative">
-                    <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className=" h-80 w-screen" />
+                    <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className=" h-80 w-screen " />
+                    <View className="flex-row mt-10 items-center w-full px-4 absolute top-0 left-0  z-50">
+                            <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300/25 rounded-xl items-center justify-center mr-3 " style={{ height: 40, width: 40,}}>
+                                <MaterialIcons name="keyboard-arrow-left" size={20} color="#fff"/>
+                            </TouchableOpacity>
+                        </View>
                     <View className="absolute top-0 left-0 bg-black/40 h-full w-full"></View>
                     <View className="absolute bottom-3 left-2 rounded-full flex flex-col justify-end h-full p-2">
                         <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="text-[13px] text-white">Meublé Fidrissè</Text>

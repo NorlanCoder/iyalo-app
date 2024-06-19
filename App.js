@@ -7,6 +7,8 @@ import { Welcome, Login, Register, Forgot, NewPassword, Home, Notification, Sear
 import { useFonts } from 'expo-font';
 import Navigation from './navigation/nav';
 import { useTheme } from 'react-native-paper';
+import { Provider } from 'react-redux';
+import store from './store/store.js';
 
 // const Stack = createNativeStackNavigator();
 
@@ -26,26 +28,20 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider style={styles.container}>
-      <StatusBar 
-        backgroundColor="transparent"
-        barStyle="white-content"
-        translucent
-      />
-      {/* <NavigationContainer>
-        <Navigation />
-      </NavigationContainer> */}
-      
-      {/* <Home /> */}
-      {/* <Notification/> */}
-      {/* <Search/> */}
-      {/* <Profile/> */}
-      {/* <Infos/> */}
-      {/* <EditInfos/> */}
-      {/* <HomeAdmin/> */}
-      {/* <Favoris/> */}
-      <Welcome/>
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider style={styles.container}>
+        <StatusBar 
+          backgroundColor="transparent"
+          barStyle="white-content"
+          translucent
+        />
+        <NavigationContainer>
+          <Navigation />
+        </NavigationContainer>
+        
+        {/* <Welcome/> */}
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 

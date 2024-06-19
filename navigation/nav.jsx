@@ -169,12 +169,13 @@ export default function Navigation(){
                 :
                 <Stack.Navigator>
                     
-                    <Stack.Screen name='Tab' component={Tabs} options={{headerShown: false}} />
+                    <Stack.Screen name='Tab' component={Tabs} options={{headerShown: false, headerTintColor: "transparent"}} />
                     <Stack.Screen
                         name="Notification"
                         component={Notification}
                         options={{
                         headerShown: false,
+                        headerTintColor: "transparent",
                         animation: 'slide_from_right',
                         }}
                     />
@@ -183,6 +184,7 @@ export default function Navigation(){
                         component={Search}
                         options={{
                         headerShown: false,
+                        headerTintColor: "transparent",
                         animation: 'slide_from_right',
                         }}
                     />
@@ -191,6 +193,7 @@ export default function Navigation(){
                         component={Profile}
                         options={{
                         headerShown: false,
+                        headerTintColor: "transparent",
                         animation: 'slide_from_right',
                         }}
                     />
@@ -198,13 +201,12 @@ export default function Navigation(){
                         name="Details"
                         component={Details}
                         options={({navigation}) => ({
-                            headerShown: true,
+                            headerShown: false,
                             animation: 'slide_from_right',
                             headerBackVisible: true, 
                             headerTintColor: "#FFFFFF",
                             headerTransparent: true, 
                             headerTitle: '',
-                            statusBarTranslucent: true
                         })}
                     />
                     
@@ -213,6 +215,7 @@ export default function Navigation(){
                         component={Infos}
                         options={{
                         headerShown: false,
+                        headerTintColor: "transparent",
                         animation: 'slide_from_right',
                         }}
                         
@@ -223,6 +226,7 @@ export default function Navigation(){
                         component={EditInfos}
                         options={{
                         headerShown: false,
+                        headerTintColor: "transparent",
                         animation: 'slide_from_right',
                         }}
                         

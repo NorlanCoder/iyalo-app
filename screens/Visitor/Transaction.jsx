@@ -9,7 +9,7 @@ export default function Transaction(){
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
-            <Header title={"Transtions"} />
+            <Header title={"Visite - Transtions"} />
 
             <ScrollView showsVerticalScrollIndicator={false} className="mx-3">
                 <View className="bg-white h-16 rounded-xl flex-row justify-between my-2">
