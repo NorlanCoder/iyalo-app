@@ -1,16 +1,33 @@
 import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { CATEGORY } from '../../utils/data/categoriedata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import PropertyHomeComponent from '../../components/Visitor/PropertyHomeComponent';
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 
 const Home = () => {
     const navigation = useNavigation();
 
-
     const {width} = useWindowDimensions()
+
+    const location = useSelector((state) => state.appReducer.location)
+
+    const [adress, setAdress] = useState("");
+
+    useEffect(() =>{
+        fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+Number(location.latitude)+'&lon='+Number(location.longitude)+'&addressdetails=1')
+        .then(response => response.json())
+        .then(res => {
+            if(res.display_name){
+                setAdress(res.display_name)
+            }
+        })
+        .catch(e => {
+            console.log('open street map', e)
+        })
+    },[location.longitude, location.latitude])
 
     const rendercategory = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => {}}>
@@ -26,24 +43,29 @@ const Home = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-slate-100">
-
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 100, paddingTop: 40}} style={{width: width}}>
-                {/* En tête */}
-                <View className="flex flex-row justify-between items-center px-3 mb-3" style={{width: width}}>
-                    <View className="">
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-primary text-lg">Bénin</Text>
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold">Abomey-Calavi</Text>
-                    </View>
-                    <View className="flex flex-row gap-x-1">
-                        <TouchableOpacity onPress={() =>{navigation.navigate('Search')}} className="h-full w-full bg-secondary rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
-                            <Feather name="search" size={22} color="#fff"/>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() =>{navigation.navigate('Notification')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
-                            <Feather name="bell" size={22} color="#000"/>
-                        </TouchableOpacity>
-                    </View>
+            {/* En tête */}
+            <View className="flex flex-row justify-between items-center px-3 mb-3 mt-10" style={{width: width}}>
+                <View className="">
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-primary text-lg">Bénin</Text>
+                    {
+                        adress === ""?
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold">--</Text>
+                        :
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold">{adress}</Text>
+                    }
+                    
                 </View>
+                <View className="flex flex-row gap-x-1">
+                    <TouchableOpacity onPress={() =>{navigation.navigate('Search')}} className="h-full w-full bg-secondary rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                        <Feather name="search" size={22} color="#fff"/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() =>{navigation.navigate('Notification')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                        <Feather name="bell" size={22} color="#000"/>
+                    </TouchableOpacity>
+                </View>
+            </View>
 
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 100, paddingTop: 10}} style={{width: width}}>
                 <View className=" px-1 w-screen">
                     
                     {/* PUB */}

@@ -1,8 +1,11 @@
 import { StyleSheet, View, Text, SafeAreaView, Image, KeyboardAvoidingView, TextInput, Pressable, Dimensions, TextInputProps, ScrollView, FlatList, TouchableOpacity } from "react-native";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import MapView, {PROVIDER_GOOGLE, Marker} from "react-native-maps";
+import { useSelector } from "react-redux";
 
 export default function Explore(){
+
+    const location = useSelector((state) => state.appReducer.location)
 
     const _map = useRef(null);
 
@@ -14,8 +17,8 @@ export default function Explore(){
                 showsUserLocation={true} 
                 followsUserLocation={true}
                 initialRegion={{
-                    latitude: Number(6.45000000),
-                    longitude: Number(2.35000000),
+                    latitude: Number(location.latitude),
+                    longitude: Number(location.longitude),
                     latitudeDelta: 0.04864195044303443,
                     longitudeDelta: 0.040142817690068,
                 }}

@@ -1,16 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { Welcome, Login, Register, Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, HomeAdmin} from './screens/root'; 
 import { useFonts } from 'expo-font';
-import Navigation from './navigation/nav';
+import * as Location from 'expo-location';
+import Index from './screens';
 import { useTheme } from 'react-native-paper';
 import { Provider } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/es/integration/react';
-import { persistStore } from 'redux-persist'
+import { persistStore } from 'redux-persist';
 import store from './store/store.js';
+import { LOCATION } from './store/reducers/actionName';
 
 // const Stack = createNativeStackNavigator();
 
@@ -40,11 +44,7 @@ export default function App() {
             barStyle="white-content"
             translucent
           />
-          <NavigationContainer>
-            <Navigation />
-          </NavigationContainer>
-          
-          {/* <Welcome/> */}
+          <Index/>
         </SafeAreaProvider>
       </PersistGate>
     </Provider>

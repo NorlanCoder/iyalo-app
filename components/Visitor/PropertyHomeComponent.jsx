@@ -1,10 +1,14 @@
 import { View, Text, TouchableOpacity, useWindowDimensions, Image, Pressable } from 'react-native'
-import { Octicons , Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Octicons , Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import React from 'react'
+import { getPreciseDistance } from 'geolib';
+import { useSelector } from 'react-redux';
 
 const PropertyHomeComponent = () => {
 
     const {width} = useWindowDimensions()
+
+    const location = useSelector((state) => state.appReducer.location)
 
     return (
         <View className="bg-white mr-2 p-2 rounded-xl" style={{width: width / 1.3}}>
@@ -48,23 +52,41 @@ const PropertyHomeComponent = () => {
 
                 <View className="w-full border-b border-b-slate-200 my-1"></View>
 
-                <View className="flex flex-row p-1">
+                <View className="flex-row justify-between items-center">
+                    <View className="flex flex-row p-1">
 
-                    <Pressable className="flex flex-row items-center mr-3">
-                        <MaterialCommunityIcons name="bed" size={17} color="black" />
-                        <Text className="pl-1 text-base text-primary font-bold" style={{fontFamily: 'KeepCalm'}}>2</Text>
-                    </Pressable>
+                        <Pressable className="flex flex-row items-center mr-3">
+                            <MaterialCommunityIcons name="bed" size={17} color="black" />
+                            <Text className="pl-1 text-base text-primary font-bold" style={{fontFamily: 'KeepCalm'}}>2</Text>
+                        </Pressable>
 
-                    <Pressable className="flex flex-row items-center mr-3">
-                        <MaterialCommunityIcons name="bathtub-outline" size={17} color="black" />
-                        <Text className="pl-1 text-base text-primary font-bold" style={{fontFamily: 'KeepCalm'}}>1</Text>
-                    </Pressable>
+                        <Pressable className="flex flex-row items-center mr-3">
+                            <MaterialCommunityIcons name="bathtub-outline" size={17} color="black" />
+                            <Text className="pl-1 text-base text-primary font-bold" style={{fontFamily: 'KeepCalm'}}>1</Text>
+                        </Pressable>
 
-                    <Pressable className="flex flex-row items-center mr-3">
-                        <MaterialCommunityIcons name="pool" size={17} color="black" />
-                        <Text className="pl-1 text-base text-primary font-bold" style={{fontFamily: 'KeepCalm'}}>0</Text>
-                    </Pressable>
-                </View>
+                        <Pressable className="flex flex-row items-center mr-3">
+                            <MaterialCommunityIcons name="" size={17} color="black" />
+                            <Text className="pl-1 text-base text-primary font-bold" style={{fontFamily: 'KeepCalm'}}>0</Text>
+                        </Pressable>
+                    </View>
+
+
+                    <View className="flex flex-row items-center mr-3">
+                        <MaterialCommunityIcons name="map-marker-distance" size={17} color="black" />
+                        <Text className="pl-1 text-base text-primary font-bold" style={{fontFamily: 'KeepCalm'}}>
+                            {/* {
+                                (location.latitude != null && location.longitude != null && item.shopInfo.location.latitude != 0 && item.shopInfo.location.longitude != 0) ?
+                                (getPreciseDistance(
+                                { latitude: Number(item.shopInfo.location.latitude), longitude: Number(item.shopInfo.location.longitude) },
+                                { latitude: Number(location.latitude), longitude: Number(location.longitude) }
+                                ) / 1000).toFixed(2)+' Km'
+                                :
+                                "..." 
+                            } */}
+                        </Text>
+                    </View> 
+                </View>    
             </View>
 
         </View>

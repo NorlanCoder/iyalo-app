@@ -1,9 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ONBOARDING } from './actionName';
+import { ONBOARDING, LOCATION, AUTHENTICATED } from './actionName';
 
 const initialState = {
     visit: false,
     onboarding: true,
+    isAuthenticated: false,
+    location: {
+        longitude: Number(0),
+        latitude: Number(0),
+    },
 }
 
 export default function appReducer(state = initialState, {type, payload}){
@@ -16,6 +21,20 @@ export default function appReducer(state = initialState, {type, payload}){
             }
             return nextState || state;
 
+        case AUTHENTICATED:
+            nextState = {
+                ...state,
+                isAuthenticated: payload
+            }
+            return nextState || state;
+
+        case LOCATION:
+            nextState = {
+                ...state,
+                location: payload
+            }
+            return nextState || state; 
+              
         default:
             return state;
     }
