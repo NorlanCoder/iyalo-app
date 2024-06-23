@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome } from '../screens/root';
+import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword} from '../screens/root';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { firstTime } from '../store/reducers/appReducer';
@@ -158,7 +158,7 @@ export default function Navigation(){
     const onboarding = useSelector((state) => state.appReducer.onboarding)
     const [admin, setAdmin] = useState(false)
 
-    console.log("<<<<<<<<<<<<<<", onboarding)
+    // console.log("<<<<<<<<<<<<<<", onboarding)
 
     if(onboarding){
         return <Welcome/>
@@ -238,6 +238,46 @@ export default function Navigation(){
                             animation: 'slide_from_right',
                             }}
                             
+                        />
+
+                        <Stack.Screen
+                            name="Login"
+                            component={Login}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
+                        />
+
+                        <Stack.Screen
+                            name="Register"
+                            component={Register}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
+                        />
+
+                        <Stack.Screen
+                            name="Forgot"
+                            component={Forgot}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
+                        />
+
+                        <Stack.Screen
+                            name="NewPassword"
+                            component={NewPassword}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
                         />
                     </Stack.Navigator>
                 }

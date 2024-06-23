@@ -59,6 +59,18 @@ const Register = () => {
                     </View>
 
                     <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-5">
+                        <Feather name="phone" size={24} color="black" />
+                        <TextInput
+                            autoCapitalize='none'
+                            textContentType='telephoneNumber'
+                            keyboardType='email-address'
+                            placeholder="Téléphone"
+                            className="w-full px-3 py-3 text-lg"
+                            style={{fontFamily: 'PoppinsRegular'}}
+                        />
+                    </View>
+
+                    <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-5">
                         <Ionicons name="lock-closed-outline" size={24} color="black" />
                         <TextInput
                             type="password"

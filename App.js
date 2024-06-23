@@ -10,7 +10,7 @@ import { useTheme } from 'react-native-paper';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import { persistStore } from 'redux-persist'
-import store from './store/store.js';
+import store from './store/configureStore';
 
 // const Stack = createNativeStackNavigator();
 
