@@ -6,6 +6,8 @@ import RequestAuth from '../Auth/RequestAuth';
 
 export default function Explore(){
 
+    const location = useSelector((state) => state.appReducer.location)
+
     const _map = useRef(null);
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
 
@@ -20,8 +22,8 @@ export default function Explore(){
                         showsUserLocation={true} 
                         followsUserLocation={true}
                         initialRegion={{
-                            latitude: Number(6.45000000),
-                            longitude: Number(2.35000000),
+                            latitude: Number(location.latitude),
+                            longitude: Number(location.longitude),
                             latitudeDelta: 0.04864195044303443,
                             longitudeDelta: 0.040142817690068,
                         }}

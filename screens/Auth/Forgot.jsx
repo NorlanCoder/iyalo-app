@@ -4,8 +4,10 @@ import { Feather } from '@expo/vector-icons';
 import ButtonLogin from '../../components/Auth/ButtonLogin';
 import React, {useState} from 'react'
 import { OtpInput } from 'react-native-otp-entry';
+import { useNavigation } from '@react-navigation/native';
 
 const Forgot = () => {
+    const navigation = useNavigation();
 
     const [otp, setOtp] = useState('')
     const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ const Forgot = () => {
                     className='absolute flex flex-row items-center'
                     style={{top: 40, left: 10, alignSelf: 'flex-start'}}
                 >
-                    <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40}}>
+                    <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40}}>
                         <Feather name="chevron-left" size={22} color="#555"/>
                     </TouchableOpacity>
                     <Text className="text-lg text-gray-700 font-bold ml-3" style={{fontFamily: 'PoppinsRegular'}}>Mot de passe oublié</Text>

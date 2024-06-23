@@ -4,8 +4,10 @@ import { Ionicons } from '@expo/vector-icons';
 import ButtonLogin from '../../components/Auth/ButtonLogin';
 import BlockSocial from '../../components/Auth/BlockSocial';
 import React, {useState} from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {
+    const navigation = useNavigation();
 
     const {width} = useWindowDimensions()
     const [passwordSecured, setPasswordSecured] = useState(true)
@@ -71,8 +73,10 @@ const Login = () => {
                             <MyCheckbox />
                             <Text className="pl-2 text-gray-400" style={{fontFamily: 'PoppinsRegular'}}>Se souvenir</Text>
                         </View>
-                        <Text className="pl-2 font-extrabold text-primary" style={{fontFamily: 'PoppinsRegular'}}>Mot de passe oublié</Text>
-                        
+
+                        <TouchableOpacity onPress={() => {navigation.navigate('Forgot')}}>
+                            <Text className="pl-2 font-extrabold text-primary" style={{fontFamily: 'PoppinsRegular'}}>Mot de passe oublié</Text>
+                        </TouchableOpacity>
                     </View>
 
                     <View className="mb-5">
@@ -88,7 +92,15 @@ const Login = () => {
                     <View className="w-100 justify-center px-2">
                         <BlockSocial name="Se connecter avec Google" />
                     </View>
-                    
+
+                    <View className="flex-row items-center justify-center mt-5">
+                        <Text className="font-['PoppinsRegular'] text-[#646982] text-[14px] mr-2">Vous n'avez pas de compte? </Text>
+                        
+                        <TouchableOpacity onPress={() => {navigation.push('Register')}}>
+                            <Text className="font-['PoppinsRegular'] font-extrabold text-primary">Inscrivez-vous</Text>
+                        </TouchableOpacity>
+            
+                    </View>
                 </View>
 
             </ScrollView>

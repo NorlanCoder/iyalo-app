@@ -1,7 +1,6 @@
 export const ONBOARDING = "ONBOARDING";
-
-
+export const LOCATION = "LOCATION";
+export const AUTHENTICATED = "AUTHENTICATED";
 
 // USER
-export const AUTHENTICATED = "AUTHENTICATED";
 export const USER = "USER";
