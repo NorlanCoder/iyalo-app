@@ -4,11 +4,62 @@ import { CATEGORY } from '../../utils/data/categoriedata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import PropertyResultComponent from '../../components/Visitor/PropertyResultComponent';
 import PubComponent from '../../components/Visitor/PubComponent';
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import { useNavigation } from '@react-navigation/native';
+import { apiURL } from '../../api/api';
 
-const PropertyListCat = () => {
+const PropertyListCat = (props) => {
+    const item = props.route.params.item
+
+    const navigation = useNavigation()
 
     const {width} = useWindowDimensions()
+
+    const [data, setData] = useState([]);
+
+    const getCatItem = async () => {
+        await fetch(apiURL + 'list/category/property/' + item.id, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res)
+            setData(res.data)
+        })
+        .catch( (e) => {
+            console.log(e);
+            // setLoadAlaUne(false)
+        })
+    }
+
+    const setFavorite = async (id) => {
+        console.log(id)
+        await fetch(apiURL + 'toggle/favoris/' + user.id + '/' + id, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            
+        })
+        .catch( (e) => {
+            console.log(e);
+            // setLoadAlaUne(false)
+        })
+    }
+
+    useEffect(() => {
+        getCatItem()
+    }, [])
 
     const rendercategory = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => {}}>
@@ -17,8 +68,8 @@ const PropertyListCat = () => {
     );
 
     const renderproperty = ({ item }) => (
-        <TouchableOpacity className="flex flex-col items-center" key={item.id} onPress={() => {}}>
-            <PropertyResultComponent name={item.nom} id={item.id_} />
+        <TouchableOpacity className="flex flex-col items-center" key={item.id} onPress={() => {navigation.navigate('Details', {item: item})}}>
+            <PropertyResultComponent item={item} setFavorite={setFavorite} name={item.nom} id={item.id_} />
         </TouchableOpacity>
     );
 
@@ -29,7 +80,7 @@ const PropertyListCat = () => {
                 {/* En tête */}
                 <View className="flex flex-row justify-between items-center px-3 mb-3" style={{width: width }}>
                     <View className='flex flex-row items-center' style={{ alignSelf: 'flex-start'}} >
-                        <TouchableOpacity onPress={() =>{}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40}}>
+                        <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40}}>
                             <Feather name="chevron-left" size={22} color="#555"/>
                         </TouchableOpacity>
                         <Text className="text-lg text-gray-700 font-bold ml-3" style={{fontFamily: 'PoppinsRegular'}}>Bureau</Text>
@@ -78,17 +129,31 @@ const PropertyListCat = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-slate-100" style={{width: width}}>
-
+            {/* En tête */}
+            <View className="flex flex-row justify-between items-center px-3 mb-2 mt-10" style={{width: width }}>
+                <View className='flex flex-row items-center' style={{ alignSelf: 'flex-start'}} >
+                    <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40}}>
+                        <Feather name="chevron-left" size={22} color="#555"/>
+                    </TouchableOpacity>
+                    <Text className="text-lg text-gray-700 font-bold ml-3" style={{fontFamily: 'PoppinsRegular'}}>{item.label}</Text>
+                </View>
+                <View className="flex flex-row gap-x-1">
+                    <TouchableOpacity onPress={() =>{navigation.navigate('Search')}} className="h-full w-full bg-secondary rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                        <Feather name="search" size={22} color="#fff"/>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            
             <View className=" px-1 w-screen">
 
                 <FlatList
-                    data={CATEGORY}
-                    ListHeaderComponent={HeaderListComponent}
+                    data={data}
+                    // ListHeaderComponent={HeaderListComponent}
                     horizontal={false}
                     renderItem={renderproperty}
                     keyExtractor={(item, index) => item.id}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{paddingVertical: 50, justifyContent: 'center'}}
+                    contentContainerStyle={{paddingBottom: 100, justifyContent: 'center'}}
                 />
 
             </View>

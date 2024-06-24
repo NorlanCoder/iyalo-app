@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword} from '../screens/root';
+import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword, PropertyListCat } from '../screens/root';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { firstTime } from '../store/reducers/appReducer';
@@ -234,6 +234,16 @@ export default function Navigation(){
                             <Stack.Screen
                                 name="EditProfil"
                                 component={EditInfos}
+                                options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                                }}
+                                
+                            />
+                            <Stack.Screen
+                                name="PropertyListCat"
+                                component={PropertyListCat}
                                 options={{
                                 headerShown: false,
                                 headerTintColor: "transparent",

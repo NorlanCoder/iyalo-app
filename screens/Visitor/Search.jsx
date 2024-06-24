@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -9,27 +9,141 @@ import { ROOM } from '../../utils/data/roomdata';
 import { BATH } from '../../utils/data/bathdata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import RangeSlider from '../../components/RangeSliderComponent';
+import { apiURL } from '../../api/api';
+import PropertyResultComponent from '../../components/Visitor/PropertyResultComponent';
 
 export default function Search(){
     const navigation = useNavigation();
     const inset = useSafeAreaInsets();
     const [select, setSelect] = useState('Résidentiel')
+    const [categorie, setCategorie] = useState([]);
+    const [cat, setCat] = useState("");
+    const [room, setRoom] = useState("");
+    const [bath, setBath] = useState("");
+    const [min, setMin] = useState("");
+    const [max, setMax] = useState("");
+    const [term, setTerm] = useState("");
+    const [step, setStep] = useState(0);
+    const [data, setData] = useState([]);
 
-    const rendercategory = ({ item }) => (
-        <TouchableOpacity key={item.id} onPress={() => {}}>
-            <CategoryComponent name={item.nom} id={item.id_} />
-        </TouchableOpacity>
-    );
+    const back = () => {
+        if(step == 0){
+            navigation.goBack()
+        }else{
+            setStep(step - 1)
+        }
+    }
 
-    const renderroom = ({ item }) => (
-        <TouchableOpacity key={item.id} onPress={() => {}}>
-            <CategoryComponent name={item.nbr} id={item.id_} />
-        </TouchableOpacity>
-    );
+    const getCategorie = async () => {
+        await fetch(apiURL + 'list/category/', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res)
+            setCategorie(res.data)
+            //   setLoadCategorie(false)
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
 
-    const renderbath = ({ item }) => (
-        <TouchableOpacity key={item.id} onPress={() => {}}>
-            <CategoryComponent name={item.nbr} id={item.id_} />
+    const getSearchedData = async () => {
+        if(cat == ""){
+            return
+        }
+
+        if(room == ""){
+            return
+        }
+
+        if(bath == ""){
+            return
+        }
+
+        if(min == ""){
+            return
+        }
+
+        if(max == ""){
+            return
+        }
+
+        if(term == ""){
+            return
+        }
+
+        setStep(step + 1)
+
+        await fetch(apiURL + `properties?bathroom=${bath}?category_id=${cat}?max_price=${max}?min_price=${min}?room=${room}?search=${term}`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res)
+            setData(res.data.data)
+        })
+        .catch( (e) => {
+            console.log(e);
+            // setLoadAlaUne(false)
+        })
+    }
+
+
+    useEffect(() => {
+        getCategorie();
+    }, [])
+
+    const rendercategory = ({ item }) => {
+        const bgStyle = cat === item.id ? 'bg-primary rounded-full py-2 px-4 ml-1 mr-2 flex justify-center items-center' : 'bg-slate-300 rounded-full py-2 px-4 mr-2 flex justify-center items-center'
+
+        return(
+            <TouchableOpacity key={item.id} onPress={() => {setCat(item.id)}}>
+                <View className={bgStyle}>
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="pt-1">{item.label}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    };
+
+    const renderroom = ({ item }) => {
+        const bgStyle = room === item.nbr ? 'bg-primary rounded-full py-2 px-4 ml-1 mr-2 flex justify-center items-center' : 'bg-slate-300 rounded-full py-2 px-4 mr-2 flex justify-center items-center'
+
+        return(
+            <TouchableOpacity key={item.id} onPress={() => {setRoom(item.nbr)}}>
+                <View className={bgStyle}>
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="pt-1">{item.nbr}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    };
+
+    const renderbath = ({ item }) => {
+        const bgStyle = bath === item.nbr ? 'bg-primary rounded-full py-2 px-4 ml-1 mr-2 flex justify-center items-center' : 'bg-slate-300 rounded-full py-2 px-4 mr-2 flex justify-center items-center'
+
+        return(
+            <TouchableOpacity key={item.id} onPress={() => {setBath(item.nbr)}}>
+                <View className={bgStyle}>
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="pt-1">{item.nbr}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    };
+
+    const renderproperty = ({ item }) => (
+        <TouchableOpacity className="flex flex-col items-center" key={item.id} onPress={() => {navigation.navigate('Details', {item: item})}}>
+            <PropertyResultComponent item={item} name={item.nom} id={item.id_} />
         </TouchableOpacity>
     );
 
@@ -37,98 +151,101 @@ export default function Search(){
         <SafeAreaView className="flex-1 bg-slate-100">
             <Animated.View entering={FadeIn.delay(400)} className="flex flex-row justify-between items-center mt-8 px-3">
                 <View className="flex-row justify-center items-center">
-                    <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center mr-3" style={{ height: 40, width: 40,}}>
+                    <TouchableOpacity onPress={() =>{back()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center mr-3" style={{ height: 40, width: 40,}}>
                         <MaterialIcons name="keyboard-arrow-left" size={20} color="#000"/>
                     </TouchableOpacity>
                     <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Recherche</Text>
                 </View>
             </Animated.View>
 
-            <ScrollView className="px-3 mt-2" showsVerticalScrollIndicator={false}>
-                {/* <View className="bg-white h-12 flex-row rounded-xl my-2">
-                    <TouchableOpacity onPress={() => {setSelect('Résidentiel')}} style={{flex: 0.5, backgroundColor: select === "Résidentiel"? "#00ddb3": null}} className="rounded-2xl justify-center items-center">
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Résidentiel</Text>
-                    </TouchableOpacity>
+            {
+                step == 0?
+                <ScrollView className="px-3 mt-2" showsVerticalScrollIndicator={false}>
+                    <View className="bg-white rounded-xl my-2 py-2">
+                        <View className="my-2">
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Catégorie</Text>
+                            <FlatList
+                                data={categorie}
+                                renderItem={rendercategory}
+                                horizontal={true}
+                                keyExtractor={(item, index) => item.id}
+                                showsHorizontalScrollIndicator={false}
+                                nestedScrollEnabled
+                            />
+                        </View>
+                        
+                        <View className="my-2">
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Nbre chambre(s)</Text>
+                            <FlatList
+                                data={ROOM}
+                                renderItem={renderroom}
+                                horizontal={true}
+                                keyExtractor={(item, index) => item.id}
+                                showsHorizontalScrollIndicator={false}
+                                nestedScrollEnabled
+                            />
+                        </View>
 
-                    <TouchableOpacity onPress={() => {setSelect('Commercial')}} style={{flex: 0.5, backgroundColor: select === "Commercial"? "#00ddb3": null}} className="rounded-2xl justify-center items-center">
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Commercial</Text>
-                    </TouchableOpacity>
-                </View> */}
+                        <View className="my-2">
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Nbre de douche(s)</Text>
+                            <FlatList
+                                data={BATH}
+                                renderItem={renderbath}
+                                horizontal={true}
+                                keyExtractor={(item, index) => item.id}
+                                showsHorizontalScrollIndicator={false}
+                                nestedScrollEnabled
+                            />
+                        </View>
+                        
+                    </View>
 
-                <View className="bg-white rounded-xl my-2 py-2">
-                    <View className="my-2">
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Catégorie</Text>
+                    <View className="bg-white rounded-xl my-2 py-2">
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Intervalle de prix</Text>
+
+                        <RangeSlider from={5000} to={100000} devise={"XOF"} setMin={setMin} setMax={setMax} />
+                    </View>
+
+                    <View className="bg-white rounded-xl my-2 py-2">
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Quartier</Text>
+
+                        <View className="border-[1px] h-12 border-[#bdbdbe48] rounded-lg justify-center mx-3">
+                            <TextInput
+                                placeholder={"Cotonou"}
+                                placeholderTextColor={'gray'}
+                                autoCapitalize="sentences"
+                                textContentType="name"
+                                keyboardType='default'
+                                value={term}
+                                onChangeText={(value) => setTerm(value)}
+                                className="bg-[#FDFDFD] h-full rounded-lg px-2 font-['PoppinsRegular']"
+                            />
+                        </View>
+                    </View>
+
+                    <View className="h-12 flex-row rounded-xl my-2 justify-center">
+                        <TouchableOpacity onPress={() => {getSearchedData()}} style={{backgroundColor: "#00ddb3"}} className="rounded-2xl justify-center items-center p-2 px-5">
+                            <Text adjustsFontSizeToFit={true} style={{fontFamily: 'PoppinsRegular'}} className="text-[18px] ">Voir résultats</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+                :step == 1?
+                    <View className=" px-1 w-screen mt-2">
+
                         <FlatList
-                            data={CATEGORY}
-                            renderItem={rendercategory}
-                            horizontal={true}
+                            data={data}
+                            // ListHeaderComponent={HeaderListComponent}
+                            horizontal={false}
+                            renderItem={renderproperty}
                             keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={{paddingBottom: 100, justifyContent: 'center'}}
                         />
+
                     </View>
-                    
-                    <View className="my-2">
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Nbre chambre(s)</Text>
-                        <FlatList
-                            data={ROOM}
-                            renderItem={renderroom}
-                            horizontal={true}
-                            keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
-                        />
-                    </View>
-
-                    <View className="my-2">
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Nbre de douche(s)</Text>
-                        <FlatList
-                            data={BATH}
-                            renderItem={renderbath}
-                            horizontal={true}
-                            keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
-                        />
-                    </View>
-                    
-                </View>
-
-                <View className="bg-white rounded-xl my-2 py-2">
-                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Intervalle de prix</Text>
-
-                    <RangeSlider from={5000} to={100000} devise={"XOF"}/>
-                </View>
-
-                <View className="bg-white rounded-xl my-2 py-2">
-                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-2">Quartier</Text>
-
-                    <View className="border-[1px] h-12 border-[#bdbdbe48] rounded-lg justify-center mx-3">
-                        <TextInput
-                            placeholder={"Cotonou"}
-                            placeholderTextColor={'gray'}
-                            autoCapitalize="sentences"
-                            textContentType="name"
-                            keyboardType='default'
-                            // value={data.ingredients}
-                            // onChangeText={(value) => setData({...data, ingredients: value})}
-                            className="bg-[#FDFDFD] h-full rounded-lg px-2 font-['PoppinsRegular']"
-                        />
-                    </View>
-                </View>
-
-                <View className="h-12 flex-row rounded-xl my-2 justify-center">
-                    {/* <TouchableOpacity onPress={() => {}} style={{flex: 0.45, backgroundColor: "#FFFFFF"}} className="rounded-2xl justify-center items-center">
-                        <Text adjustsFontSizeToFit={true} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Enregistrer</Text>
-                    </TouchableOpacity> */}
-
-                    <TouchableOpacity onPress={() => {}} style={{backgroundColor: "#00ddb3"}} className="rounded-2xl justify-center items-center p-2 px-5">
-                        <Text adjustsFontSizeToFit={true} style={{fontFamily: 'PoppinsRegular'}} className="text-[18px] ">Voir résultats</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-
-            
+                :
+                null
+            }
         </SafeAreaView>
     )
 }
