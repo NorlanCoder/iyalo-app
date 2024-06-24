@@ -13,6 +13,7 @@ import Favoris from "./Visitor/Favorite";
 import Transaction from "./Visitor/Transaction";
 import Details from "./Visitor/Details";
 import Explore from "./Visitor/Explore";
+import PropertyListCat from "./Visitor/PropertyListCat";
 
 import HomeAdmin from "./Admin/Home";
 import AddProperties from "./Admin/AddProperties";
@@ -22,4 +23,4 @@ import Properties from "./Admin/Properties";
 import Annonces from "./Admin/Annonces";
 import Visites from "./Admin/Visites";
 
-export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, Transaction, Details, Explore, HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites};
+export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, Transaction, Details, Explore, PropertyListCat, HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites};

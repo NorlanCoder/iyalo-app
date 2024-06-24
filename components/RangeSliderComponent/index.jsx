@@ -8,7 +8,7 @@ import Rail from "./Rail";
 import RailSelected from "./RailSelected";
 import Thumb from "./Thumb";
 
-const RangeSlider = ({ from, to, devise }) => {
+const RangeSlider = ({ from, to, devise, setMin, setMax }) => {
     // const RangeSlider = () => {
     const [low, setLow] = useState(from);
     const [high, setHigh] = useState(to);
@@ -22,7 +22,9 @@ const RangeSlider = ({ from, to, devise }) => {
     const handleValueChange = useCallback(
         (newLow, newHigh) => {
             setLow(newLow);
+            setMin(newLow)
             setHigh(newHigh);
+            setMax(newHigh)
         },
         [setLow, setHigh]
     );
@@ -72,7 +74,7 @@ const RangeSlider = ({ from, to, devise }) => {
                 style={{marginHorizontal: 5}}
                 min={from}
                 max={to}
-                step={10}
+                step={1000}
                 floatingLabel
                 renderThumb={renderThumb}
                 renderRail={renderRail}

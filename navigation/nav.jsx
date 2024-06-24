@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword} from '../screens/root';
+import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword, PropertyListCat } from '../screens/root';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { firstTime } from '../store/reducers/appReducer';
@@ -167,7 +167,7 @@ export default function Navigation(){
         return(
             <View className="flex-1">
                 {
-                    !isAuthenticated?
+                    
                         admin ?
                         <Stack.Navigator>
                             <Stack.Screen name='AdminTab' component={AdminTab} options={{headerShown: false}} />
@@ -244,18 +244,18 @@ export default function Navigation(){
                             <Stack.Screen name="Login" component={Login} options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} />
                             <Stack.Screen name="Register" component={Register} options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} />
                             <Stack.Screen name="Forgot" component={Forgot} options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} />
+                            <Stack.Screen
+                                name="PropertyListCat"
+                                component={PropertyListCat}
+                                options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                                }}
+                                
+                            />
                         </Stack.Navigator>
-                    :
-                    <Stack.Navigator
-                        screenOptions={{
-                            headerShown: false,
-                        }}
-                        initialRouteName={"Login"}
-                    >
-                        <Stack.Screen name="Login" component={Login} />
-                        <Stack.Screen name="Register" component={Register} />
-                        <Stack.Screen name="Forgot" component={Forgot} />
-                    </Stack.Navigator>
+                    
                 }
                 
             </View>

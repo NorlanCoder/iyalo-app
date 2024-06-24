@@ -15,10 +15,15 @@ const Home = () => {
     const {width} = useWindowDimensions()
 
     const location = useSelector((state) => state.appReducer.location)
+    const user = useSelector((state) => state.userReducer.user)
 
     const [categorie, setCategorie] = useState([]);
+    const [firstCatItem, setFirstCatItem] = useState([]);
+    const [secondCatItem, setSecondCatItem] = useState([]);
+    const [alaUne, setAlaUne] = useState([]);
     const [adress, setAdress] = useState("");
     const [loadCategorie, setLoadCategorie] = useState(true);
+    const [loadAlaUne, setLoadAlaUne] = useState(true);
 
     const getCategorie = async () => {
         await fetch(apiURL + 'list/category/', {
@@ -31,7 +36,7 @@ const Home = () => {
         })
         .then(response => response.json())
         .then(res => {
-        //   console.log(res)
+          console.log(res)
           setCategorie(res.data)
           setLoadCategorie(false)
         })
@@ -40,10 +45,101 @@ const Home = () => {
         })
     }
 
+    const getAlaUne = async () => {
+        await fetch(apiURL + 'list/last/properties', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log(res)
+            setAlaUne(res.data)
+            setLoadAlaUne(false)
+        })
+        .catch( (e) => {
+            console.log(e);
+            setLoadAlaUne(false)
+        })
+    }
+
+    const getFirstCat = async () => {
+        await fetch(apiURL + 'list/category/property/' + categorie[0].id, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log(res)
+            setFirstCatItem(res.data)
+            // setLoadAlaUne(false)
+            getSecondCat()
+        })
+        .catch( (e) => {
+            console.log(e);
+            // setLoadAlaUne(false)
+        })
+    }
+
+    const getSecondCat = async () => {
+        await fetch(apiURL + 'list/category/property/' + categorie[1].id, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log(res)
+            setSecondCatItem(res.data)
+            // setLoadAlaUne(false)
+        })
+        .catch( (e) => {
+            console.log(e);
+            // setLoadAlaUne(false)
+        })
+    }
+
+    const setFavorite = async (id) => {
+        console.log(id)
+        await fetch(apiURL + 'toggle/favoris/' + user.id + '/' + id, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            
+        })
+        .catch( (e) => {
+            console.log(e);
+            // setLoadAlaUne(false)
+        })
+    }
+
     useEffect(() => {
         getCategorie();
+        getAlaUne();
         console.log('sss');
     }, [])
+
+    useEffect(() => {
+        if(categorie.length > 0){
+            getFirstCat()
+        }
+    }, [categorie])
 
     useEffect(() =>{
         fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+Number(location.latitude)+'&lon='+Number(location.longitude)+'&addressdetails=1')
@@ -59,14 +155,14 @@ const Home = () => {
     },[])
 
     const rendercategory = ({ item }) => (
-        <TouchableOpacity key={item.id} onPress={() => {}}>
-            <CategoryComponent name={item.label} id={item.id} />
+        <TouchableOpacity key={item.id} onPress={() => {navigation.navigate('PropertyListCat', {item: item})}}>
+            <CategoryComponent item={item} name={item.label} id={item.id} />
         </TouchableOpacity>
     );
 
     const renderproperty = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => {navigation.navigate('Details', {item: item})}}>
-            <PropertyHomeComponent name={item.nom} id={item.id_} />
+            <PropertyHomeComponent item={item} setFavorite={setFavorite} name={item.nom} id={item.id_} />
         </TouchableOpacity>
     );
 
@@ -148,67 +244,90 @@ const Home = () => {
                         </View>
                     </View>
                     <View className='flex flex-col'>
-                        <FlatList
-                            data={CATEGORY}
-                            renderItem={renderproperty}
-                            horizontal={true}
-                            keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
-                        />
+                        {
+                            loadAlaUne?
+                            <View className="py-3">
+                                <ActivityIndicator size={40} color="#6C5248" />
+                            </View>
+                            :
+                            <FlatList
+                                data={alaUne}
+                                renderItem={renderproperty}
+                                horizontal={true}
+                                keyExtractor={(item, index) => item.id}
+                                showsHorizontalScrollIndicator={false}
+                                nestedScrollEnabled
+                            />
+                        }
+                        
                     </View>
 
                     <View className="w-full border-b border-b-slate-200 my-4"></View>
-
+                    
                     {/* Category 1 */}
-                    <View className="flex flex-row justify-between items-center my-2 mx-2">
-                        <View className="">
-                            <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">Appartement</Text>
-                        </View>
-                        <View className="flex flex-row gap-x-1">
-                            {/* <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
-                                <Text className="text-secondary font-bold">Tout voir</Text>
-                                <Feather name="chevron-right" size={15} color="#555"/>
+                    {
+                        categorie.length > 0?
+                        <View>
+                            <View className="flex flex-row justify-between items-center my-2 mx-2">
+                                <View className="">
+                                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">{categorie[0].label}</Text>
+                                </View>
+                                <View className="flex flex-row gap-x-1">
+                                    {/* <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
+                                        <Text className="text-secondary font-bold">Tout voir</Text>
+                                        <Feather name="chevron-right" size={15} color="#555"/>
 
-                            </TouchableOpacity> */}
-                        </View>
-                    </View>
-                    <View className='flex flex-col'>
-                        <FlatList
-                            data={CATEGORY}
-                            renderItem={renderproperty}
-                            horizontal={true}
-                            keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
-                        />
-                    </View>
+                                    </TouchableOpacity> */}
+                                </View>
+                            </View>
+                            <View className='flex flex-col'>
+                                <FlatList
+                                    data={firstCatItem}
+                                    renderItem={renderproperty}
+                                    horizontal={true}
+                                    keyExtractor={(item, index) => item.id}
+                                    showsHorizontalScrollIndicator={false}
+                                    nestedScrollEnabled
+                                />
+                            </View>
 
-                    <View className="w-full border-b border-b-slate-200 my-4"></View>
+                            <View className="w-full border-b border-b-slate-200 my-4"></View>
+                        </View>
+                        :
+                        null
+                    }
 
                     {/* Category 2 */}
-                    <View className="flex flex-row justify-between items-center my-2 mx-2">
-                        <View className="">
-                            <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">Bureau</Text>
-                        </View>
-                        <View className="flex flex-row gap-x-1">
-                            <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
-                                <Text className="text-secondary font-bold">Tout voir</Text>
-                                <Feather name="chevron-right" size={15} color="#555"/>
+                    {
+                        categorie.length > 0?
+                        <View>
+                            <View className="flex flex-row justify-between items-center my-2 mx-2">
+                                <View className="">
+                                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">{categorie[1].label}</Text>
+                                </View>
+                                <View className="flex flex-row gap-x-1">
+                                    <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
+                                        <Text className="text-secondary font-bold">Tout voir</Text>
+                                        <Feather name="chevron-right" size={15} color="#555"/>
 
-                            </TouchableOpacity>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View className='flex flex-col'>
+                                <FlatList
+                                    data={secondCatItem}
+                                    renderItem={renderproperty}
+                                    horizontal={true}
+                                    keyExtractor={(item, index) => item.id}
+                                    showsHorizontalScrollIndicator={false}
+                                    nestedScrollEnabled
+                                />
+                            </View>
                         </View>
-                    </View>
-                    <View className='flex flex-col'>
-                        <FlatList
-                            data={CATEGORY}
-                            renderItem={renderproperty}
-                            horizontal={true}
-                            keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
-                        />
-                    </View>
+                        :
+                        null
+                    }
+                    
                 
                 </View>
             </ScrollView>
