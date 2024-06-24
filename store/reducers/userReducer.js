@@ -1,4 +1,4 @@
-import { AUTHENTICATED, USER } from './actionName';
+import { AUTHENTICATED, USER, ISADMIN, SETTOKEN } from './actionName';
 
 const userState = {
     user: {
@@ -25,6 +25,7 @@ const userState = {
     isLoading: false,
     isAdmin: false,
     accessLocation: false,
+    token: "",
     position: {
         longitude: Number(0),
         latitude: Number(0),
@@ -47,6 +48,20 @@ export default function userReducer(state = userState, {type, payload}){
             nextState = {
                 ...state,
                 user: payload
+            }
+            return nextState || state;
+
+        case ISADMIN:
+            nextState = {
+                ...state,
+                isAdmin: payload
+            }
+            return nextState || state;
+
+        case SETTOKEN:
+            nextState = {
+                ...state,
+                token: payload
             }
             return nextState || state;
 

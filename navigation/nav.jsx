@@ -241,6 +241,9 @@ export default function Navigation(){
                                 }}
                                 
                             />
+                            <Stack.Screen name="Login" component={Login} options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} />
+                            <Stack.Screen name="Register" component={Register} options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} />
+                            <Stack.Screen name="Forgot" component={Forgot} options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} />
                         </Stack.Navigator>
                     :
                     <Stack.Navigator
