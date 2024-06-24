@@ -1,20 +1,49 @@
-import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
+import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList, ActivityIndicator} from 'react-native'
 import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { CATEGORY } from '../../utils/data/categoriedata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import PropertyHomeComponent from '../../components/Visitor/PropertyHomeComponent';
 import React, {useState, useEffect} from 'react'
+import { apiURL } from '../../api/api';
 
 const Home = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const {width} = useWindowDimensions()
 
     const location = useSelector((state) => state.appReducer.location)
 
+    const [categorie, setCategorie] = useState([]);
     const [adress, setAdress] = useState("");
+    const [loadCategorie, setLoadCategorie] = useState(true);
+
+    const getCategorie = async () => {
+        await fetch(apiURL + 'list/category/', {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            // Authorization: 'Bearer ' + user.token
+          }
+        })
+        .then(response => response.json())
+        .then(res => {
+        //   console.log(res)
+          setCategorie(res.data)
+          setLoadCategorie(false)
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
+
+    useEffect(() => {
+        getCategorie();
+        console.log('sss');
+    }, [])
 
     useEffect(() =>{
         fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+Number(location.latitude)+'&lon='+Number(location.longitude)+'&addressdetails=1')
@@ -27,11 +56,11 @@ const Home = () => {
         .catch(e => {
             console.log('open street map', e)
         })
-    },[location.longitude, location.latitude])
+    },[])
 
     const rendercategory = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => {}}>
-            <CategoryComponent name={item.nom} id={item.id_} />
+            <CategoryComponent name={item.label} id={item.id} />
         </TouchableOpacity>
     );
 
@@ -87,16 +116,24 @@ const Home = () => {
                     </View>
 
                     {/* Category List */}
-                    <View className='flex flex-col my-2'>
-                        <FlatList
-                            data={CATEGORY}
-                            renderItem={rendercategory}
-                            horizontal={true}
-                            keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
-                        />
-                    </View>
+                    {
+                        loadCategorie ?
+                        <View className="py-3">
+                            <ActivityIndicator size={40} color="#6C5248" />
+                        </View>
+                        :
+                        <View className='flex flex-col my-2'>
+                            <FlatList
+                                data={categorie}
+                                renderItem={rendercategory}
+                                horizontal={true}
+                                keyExtractor={(item, index) => item.id}
+                                showsHorizontalScrollIndicator={false}
+                                nestedScrollEnabled
+                            />
+                        </View>
+                    }
+                    
 
                     {/* A la Une */}
                     <View className="flex flex-row justify-between items-center my-2 mx-2">
@@ -129,11 +166,11 @@ const Home = () => {
                             <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-black text-lg">Appartement</Text>
                         </View>
                         <View className="flex flex-row gap-x-1">
-                            <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
+                            {/* <TouchableOpacity onPress={() =>{}} className=" p-1 px-0 rounded-full flex flex-row items-center justify-center">
                                 <Text className="text-secondary font-bold">Tout voir</Text>
                                 <Feather name="chevron-right" size={15} color="#555"/>
 
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                     </View>
                     <View className='flex flex-col'>

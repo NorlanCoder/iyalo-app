@@ -4,11 +4,10 @@ import { ONBOARDING, LOCATION, AUTHENTICATED } from './actionName';
 const initialState = {
     visit: false,
     onboarding: true,
-    isAuthenticated: false,
     location: {
-        longitude: Number(0),
-        latitude: Number(0),
-    },
+        "longitude": 0,
+        "latitude": 0,
+    }
 }
 
 export default function appReducer(state = initialState, {type, payload}){

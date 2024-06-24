@@ -156,7 +156,7 @@ const AdminTab = () => {
 
 export default function Navigation(){
     const onboarding = useSelector((state) => state.appReducer.onboarding)
-    const isAuthenticated = useSelector((state) => state.appReducer.isAuthenticated)
+    const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
     const [admin, setAdmin] = useState(false)
 
     // console.log("<<<<<<<<<<<<<<", onboarding)
