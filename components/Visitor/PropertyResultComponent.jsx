@@ -13,7 +13,7 @@ const PropertyResultComponent = ({item, setFavorite}) => {
     const location = useSelector((state) => state.appReducer.location)
 
     return (
-        <View className="bg-white mb-2 p-2 rounded-xl shadow-sm shadow-black" style={{width: width - 20 }}>
+        <View className="bg-white mb-2 p-2 rounded-xl shadow-sm" style={{width: width - 20 }}>
 
             <View className="flex flex-row justify-between items-center">
                 <View className="flex flex-row justify-start gap-x-2 items-center ">

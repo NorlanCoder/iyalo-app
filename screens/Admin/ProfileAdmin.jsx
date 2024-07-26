@@ -1,9 +1,34 @@
 import { useState } from 'react';
 import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons, Entypo, Fontisto, Foundation, FontAwesome } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { apiURL } from '../../api/api';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ProfileAdmin(){
     const {width} = useWindowDimensions()
+    const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
+    const myuser = useSelector((state) => state.userReducer)
+    const navigation = useNavigation();
+
+    const getlogoutFavorite = async () => {
+
+        await fetch(apiURL + 'logout', {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + myuser.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            dispatch({type: 'LOGOUT', payload: null});
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100 px-4">
@@ -18,13 +43,13 @@ export default function ProfileAdmin(){
                     </View>
 
                     <View className="justify-center items-center m-5">
-                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-1">John Doe</Text>
-                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] p-1">johndoe@gmail.com</Text>
+                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-1">{myuser.user.name}</Text>
+                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] p-1">{myuser.user.email}</Text>
                     </View>
                 </View>
 
                 <View className="bg-white rounded-md my-2">
-                    <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                    <TouchableOpacity onPress={() =>{navigation.navigate('InfoProfile')}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
                             <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <FontAwesome name="user" size={20} color="#000000"/>
@@ -82,7 +107,7 @@ export default function ProfileAdmin(){
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                    <TouchableOpacity onPress={() =>{getlogoutFavorite()}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
                             <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <MaterialIcons name="logout" size={20} color="#000000"/>

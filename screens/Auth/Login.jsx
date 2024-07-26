@@ -51,8 +51,8 @@ const Login = () => {
                 
                 setLoading(false)
                 // console.log(res.data.token)
-
-                navigation.navigate('Profile')
+                if(res[0].user.role=="announcer") navigation.navigate('AdminTab', { screen: 'Home' })
+                else navigation.navigate('Tab', { screen: 'Home' })
             }
             
         })

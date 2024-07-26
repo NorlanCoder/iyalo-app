@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
+import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList, ActivityIndicator, RefreshControl} from 'react-native'
 import { Feather, MaterialIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import Header from '../../components/Header';
 import { useSelector } from 'react-redux';
 import RequestAuth from '../Auth/RequestAuth';
+import { apiURL } from '../../api/api';
 
 export default function Transaction(){
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
-
+    const user = useSelector((state) => state.userReducer.user)
+    const myuser = useSelector((state) => state.userReducer)
+    
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
 

@@ -1,12 +1,34 @@
 import { useState } from 'react';
 import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons, Entypo, Fontisto, Foundation, FontAwesome } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import RequestAuth from '../Auth/RequestAuth';
+import { apiURL } from '../../api/api';
 
 export default function Profile(props){
     const {width} = useWindowDimensions()
+    const dispatch = useDispatch();
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
+    const myuser = useSelector((state) => state.userReducer)
+
+    const getlogoutFavorite = async () => {
+
+        await fetch(apiURL + 'logout', {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + myuser.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            dispatch({type: 'LOGOUT', payload: null});
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
 
     // console.log(isAuthenticated)
 
@@ -15,7 +37,7 @@ export default function Profile(props){
             {
                 isAuthenticated ?
                 <ScrollView className="px-4" showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50, justifyContent: 'center'}}>
-                    <View className="w-full h-56 justify-center items-center mt-10" >
+                    <View className="w-full h-56 justify-center items-center mt-2" >
                         <View style={{borderWidth: 0.7, borderColor: "#6E6F84"}} className="h-28 w-28 rounded-full justify-center items-center">
                             <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />
 
@@ -25,12 +47,12 @@ export default function Profile(props){
                         </View>
 
                         <View className="justify-center items-center m-5">
-                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-1">John Doe</Text>
-                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] p-1">johndoe@gmail.com</Text>
+                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] p-1">{myuser.user.name}</Text>
+                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] p-1">{myuser.user.email}</Text>
                         </View>
                     </View>
 
-                    <View className="bg-white rounded-md my-2">
+                    <View className="bg-white rounded-md mb-2">
                         <TouchableOpacity onPress={() =>{props.navigation.navigate('InfoProfil')}} className="flex-row justify-between mx-3 my-3 w-full">
                             <View className="flex-row justify-center items-center">
                                 <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
@@ -72,6 +94,20 @@ export default function Profile(props){
                                 
                             </View>
                         </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                            <View className="flex-row justify-center items-center">
+                                <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
+                                    <Fontisto name="star" size={20} color="yellow"/>
+                                </View>
+                                
+                                <View className="gap-1">
+                                    <Text className="font-['PoppinsRegular'] font-bold text-[18px]">Devenir annonceur</Text>
+                                    <Text className="font-['PoppinsRegular'] text-[13px]">Cliquer ici pour devenir annonceur</Text>
+                                </View>
+                                
+                            </View>
+                        </TouchableOpacity>
                     </View>
 
                     <View className="bg-white rounded-md my-2">
@@ -89,7 +125,7 @@ export default function Profile(props){
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                        <TouchableOpacity onPress={() =>{getlogoutFavorite()}} className="flex-row justify-between mx-3 my-3 w-full">
                             <View className="flex-row justify-center items-center">
                                 <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                     <MaterialIcons name="logout" size={20} color="#000000"/>

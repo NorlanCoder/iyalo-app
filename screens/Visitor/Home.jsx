@@ -16,6 +16,7 @@ const Home = () => {
 
     const location = useSelector((state) => state.appReducer.location)
     const user = useSelector((state) => state.userReducer.user)
+    const myuser = useSelector((state) => state.userReducer)
 
     const [categorie, setCategorie] = useState([]);
     const [firstCatItem, setFirstCatItem] = useState([]);
@@ -36,7 +37,7 @@ const Home = () => {
         })
         .then(response => response.json())
         .then(res => {
-          console.log(res)
+        //   console.log(res)
           setCategorie(res.data)
           setLoadCategorie(false)
         })
@@ -110,13 +111,13 @@ const Home = () => {
     }
 
     const setFavorite = async (id) => {
-        console.log(id)
+        console.log(user)
         await fetch(apiURL + 'toggle/favoris/' + user.id + '/' + id, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                // Authorization: 'Bearer ' + user.token
+                Authorization: 'Bearer ' + myuser.token
             }
         })
         .then(response => response.json())
@@ -132,7 +133,7 @@ const Home = () => {
     useEffect(() => {
         getCategorie();
         getAlaUne();
-        console.log('sss');
+        // console.log('sss');
     }, [])
 
     useEffect(() => {
@@ -223,6 +224,7 @@ const Home = () => {
                                 data={categorie}
                                 renderItem={rendercategory}
                                 horizontal={true}
+                                
                                 keyExtractor={(item, index) => item.id}
                                 showsHorizontalScrollIndicator={false}
                                 nestedScrollEnabled

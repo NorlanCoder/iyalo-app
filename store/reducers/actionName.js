@@ -6,3 +6,4 @@ export const AUTHENTICATED = "AUTHENTICATED";
 export const USER = "USER";
 export const ISADMIN = "ISADMIN";
 export const SETTOKEN = "SETTOKEN";
+export const LOGOUT = "LOGOUT";
