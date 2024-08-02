@@ -6,7 +6,7 @@ export const HOME = [
         backgoundColor: '#00ddb3',
         titleColor: '#6C5248',
         text: 'Explorez une multitude de biens immobiliers disponibles à la location dans votre région.',
-        animation: require('../../assets/lottie/1714822733750.json')
+        animation: require('../../assets/lottie/loading.json')
     },
     {
         id: 'H0002',
@@ -14,7 +14,7 @@ export const HOME = [
         backgoundColor: '#6C5248',
         titleColor: '#A75537',
         text: 'Découvrez des détails complets sur les propriétés qui correspondent à vos besoins. Parcourez des photos détaillées.',
-        animation: require('../../assets/lottie/1714822733750.json')
+        animation: require('../../assets/lottie/k62Nu3vsyq.json')
     },
     {
         id: 'H0003',
