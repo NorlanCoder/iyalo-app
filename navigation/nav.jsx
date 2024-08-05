@@ -170,124 +170,121 @@ export default function Navigation(){
             <View className="flex-1">
                 {
                     
-                        admin ?
-                        <Stack.Navigator>
-                            <Stack.Screen name='AdminTab' component={AdminTab} options={{headerShown: false}} />
-                            <Stack.Screen name='AddProperties' component={AddProperties} options={{headerShown: false, animation: 'slide_from_right',}} />
-                            <Stack.Screen name='Properties' component={Properties} options={{headerShown: false, animation: 'slide_from_right',}} />
-                            <Stack.Screen name='Annonces' component={Annonces} options={{headerShown: false, animation: 'slide_from_right',}} />
-                            <Stack.Screen name='Visites' component={Visites} options={{headerShown: false, animation: 'slide_from_right',}} />
-                            <Stack.Screen name='InfoProfile' component={InfoAdmin} options={{headerShown: false, animation: 'slide_from_right',}} />
-                            <Stack.Screen name="Login" 
-                                component={Login} 
-                                options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
-                            />
-                            <Stack.Screen 
-                                name="Register" 
-                                component={Register} 
-                                options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
-                            />
-                            <Stack.Screen 
-                                name="Forgot" 
-                                component={Forgot} 
-                                options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
-                            />
-                        </Stack.Navigator>
-                        :
-                        <Stack.Navigator>
+                    admin ?
+                    <Stack.Navigator>
+                        <Stack.Screen name='AdminTab' component={AdminTab} options={{headerShown: false}} />
+                        <Stack.Screen name='AddProperties' component={AddProperties} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name='Properties' component={Properties} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name='Annonces' component={Annonces} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name='Visites' component={Visites} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name='InfoProfile' component={InfoAdmin} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name="Login" 
+                            component={Login} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
+                        <Stack.Screen 
+                            name="Register" 
+                            component={Register} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
+                        <Stack.Screen 
+                            name="Forgot" 
+                            component={Forgot} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
+                    </Stack.Navigator>
+                    :
+                    <Stack.Navigator>
+                        
+                        <Stack.Screen name='Tab' component={Tabs} options={{headerShown: false, headerTintColor: "transparent"}} />
+                        <Stack.Screen
+                            name="Notification"
+                            component={Notification}
+                            options={{
+                            headerShown: false,
+                            headerTintColor: "transparent",
+                            animation: 'slide_from_right',
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Search"
+                            component={Search}
+                            options={{
+                            headerShown: false,
+                            headerTintColor: "transparent",
+                            animation: 'slide_from_right',
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Profile"
+                            component={Profile}
+                            options={{
+                            headerShown: false,
+                            headerTintColor: "transparent",
+                            animation: 'slide_from_right',
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Details"
+                            component={Details}
+                            options={({navigation}) => ({
+                                headerShown: false,
+                                animation: 'slide_from_right',
+                                headerBackVisible: true, 
+                                headerTintColor: "#FFFFFF",
+                                headerTransparent: true, 
+                                headerTitle: '',
+                            })}
+                        />
+                        
+                        <Stack.Screen
+                            name="InfoProfil"
+                            component={Infos}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
                             
-                            <Stack.Screen name='Tab' component={Tabs} options={{headerShown: false, headerTintColor: "transparent"}} />
-                            <Stack.Screen
-                                name="Notification"
-                                component={Notification}
-                                options={{
+                        />
+    
+                        <Stack.Screen
+                            name="EditProfil"
+                            component={EditInfos}
+                            options={{
                                 headerShown: false,
                                 headerTintColor: "transparent",
                                 animation: 'slide_from_right',
-                                }}
-                            />
-                            <Stack.Screen
-                                name="Search"
-                                component={Search}
-                                options={{
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Login" 
+                            component={Login} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
+                        <Stack.Screen 
+                            name="Register" 
+                            component={Register} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
+                        <Stack.Screen 
+                            name="Forgot" 
+                            component={Forgot} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
+                        <Stack.Screen
+                            name="PropertyListCat"
+                            component={PropertyListCat}
+                            options={{
                                 headerShown: false,
                                 headerTintColor: "transparent",
                                 animation: 'slide_from_right',
-                                }}
-                            />
-                            <Stack.Screen
-                                name="Profile"
-                                component={Profile}
-                                options={{
-                                headerShown: false,
-                                headerTintColor: "transparent",
-                                animation: 'slide_from_right',
-                                }}
-                            />
-                            <Stack.Screen
-                                name="Details"
-                                component={Details}
-                                options={({navigation}) => ({
-                                    headerShown: false,
-                                    animation: 'slide_from_right',
-                                    headerBackVisible: true, 
-                                    headerTintColor: "#FFFFFF",
-                                    headerTransparent: true, 
-                                    headerTitle: '',
-                                })}
-                            />
-                            
-                            <Stack.Screen
-                                name="InfoProfil"
-                                component={Infos}
-                                options={{
-                                    headerShown: false,
-                                    headerTintColor: "transparent",
-                                    animation: 'slide_from_right',
-                                }}
-                                
-                            />
-        
-                            <Stack.Screen
-                                name="EditProfil"
-                                component={EditInfos}
-                                options={{
-                                    headerShown: false,
-                                    headerTintColor: "transparent",
-                                    animation: 'slide_from_right',
-                                }}
-                            />
-                            <Stack.Screen
-                                name="Login" 
-                                component={Login} 
-                                options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
-                            />
-                            <Stack.Screen 
-                                name="Register" 
-                                component={Register} 
-                                options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
-                            />
-                            <Stack.Screen 
-                                name="Forgot" 
-                                component={Forgot} 
-                                options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
-                            />
-                            <Stack.Screen
-                                name="PropertyListCat"
-                                component={PropertyListCat}
-                                options={{
-                                    headerShown: false,
-                                    headerTintColor: "transparent",
-                                    animation: 'slide_from_right',
-                                }}
-                            />
-                        </Stack.Navigator>
-                    
+                            }}
+                        />
+                    </Stack.Navigator>
                 }
-                
             </View>
         )
     }
     
 }
-
