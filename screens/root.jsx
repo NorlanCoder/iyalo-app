@@ -23,5 +23,6 @@ import Properties from "./Admin/Properties";
 import Annonces from "./Admin/Annonces";
 import Visites from "./Admin/Visites";
 import InfoAdmin from "./Admin/InfoAdmin";
+import DetailsProperty from "./Admin/DetailsProperty";
 
-export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, Transaction, Details, Explore, PropertyListCat, HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, InfoAdmin};
+export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, Transaction, Details, Explore, PropertyListCat, HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, InfoAdmin, DetailsProperty};

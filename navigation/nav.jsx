@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword, PropertyListCat, InfoAdmin } from '../screens/root';
+import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword, PropertyListCat, InfoAdmin, DetailsProperty} from '../screens/root';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { firstTime } from '../store/reducers/appReducer';
@@ -178,6 +178,7 @@ export default function Navigation(){
                         <Stack.Screen name='Annonces' component={Annonces} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name='Visites' component={Visites} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name='InfoProfile' component={InfoAdmin} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name='DetailsProperty' component={DetailsProperty} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name="Login" 
                             component={Login} 
                             options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 

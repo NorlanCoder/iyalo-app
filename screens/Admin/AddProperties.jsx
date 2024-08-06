@@ -96,12 +96,19 @@ export default function AddProperties(){
     const FREQUENCE = [
         {
             id: 'A001',
-            label: 'Jour'
+            label: 'Jour',
+            value: 'daily'
         },
         {
             id: 'A002',
-            label: 'Mois'
-        }
+            label: 'Mois',
+            value: 'monthly'
+        },
+        {
+            id: 'A003',
+            label: 'Année',
+            value: 'yearly'
+        },
     ]
 
     const formValidation = Yup.object().shape({
@@ -292,19 +299,35 @@ export default function AddProperties(){
                         const imagesToSend = [];
 
                         if(image0 !== null){
-                            imagesToSend.push(image0)
+                            imagesToSend.push({
+                                name: image0.fileName,
+                                uri: image0.uri,
+                                type: 'image/jpeg',
+                            })
                         }
 
                         if(image1 !== null){
-                            imagesToSend.push(imagesToSend.push(image1))
+                            imagesToSend.push(imagesToSend.push({
+                                name: image1.fileName,
+                                uri: image1.uri,
+                                type: 'image/jpeg',
+                            }))
                         }
                         
                         if(image2 !== null){
-                            imagesToSend.push(imagesToSend.push(image2))
+                            imagesToSend.push(imagesToSend.push({
+                                name: image2.fileName,
+                                uri: image2.uri,
+                                type: 'image/jpeg',
+                            }))
                         }
 
                         if(image3 !== null){
-                            imagesToSend.push(imagesToSend.push(image3))
+                            imagesToSend.push(imagesToSend.push({
+                                name: image3.fileName,
+                                uri: image3.uri,
+                                type: 'image/jpeg',
+                            }))
                         }
 
                         const dataToSend = new FormData();
@@ -325,14 +348,15 @@ export default function AddProperties(){
                         dataToSend.append('swingpool', values.swingpools);
                         dataToSend.append('visite_price', values.visitePrices);
                         dataToSend.append('conditions', values.conditions);
-                        dataToSend.append('device', "XOF");
-                        dataToSend.append('cover', image);
-                        dataToSend.append('images', imagesToSend);
-
-                        // console.log('data', dataToSend)
-
-                        // console.log('>>>>>>>>>>>>>>', image)
-                        // console.log('>>>>>>frequency>>>>>>>>', frequency)
+                        dataToSend.append('device', "FCFA");
+                        dataToSend.append('cover', {
+                            name: image.fileName,
+                            uri: image.uri,
+                            type: 'image/jpeg',
+                        });
+                        imagesToSend.forEach(image => {
+                            dataToSend.append('images[]', image);
+                        })
 
                         fetch(apiURL+'announcer/property/create', {
                             method: 'POST',
@@ -343,50 +367,29 @@ export default function AddProperties(){
                                 Authorization: 'Bearer ' + token
                             },
                             body: dataToSend
-                            // JSON.stringify({
-                            //     label: values.label,
-                            //     category_id: catVal,
-                            //     price: values.prices,
-                            //     frequency: frequency,
-                            //     city: values.city,
-                            //     country: values.country,
-                            //     district: values.district,
-                            //     lat: location.latitude,
-                            //     long: location.longitude,
-                            //     description: values.description,
-                            //     room: values.rooms,
-                            //     bathroom: values.bathrooms,
-                            //     lounge: values.lounges,
-                            //     swingpool: values.swingpools,
-                            //     visite_price: values.visitePrices,
-                            //     conditions: values.conditions,
-                            //     device: "XOF",
-                            //     cover: image,
-                            //     images: [image0, image1, image2, image3]
-                            // })
                         })
                         .then(response => response.json())
                         .then(res => {
                             // console.log(token)
                             console.log('>>>>>>>>>>>>>>>>>>>', res)
-                            // if(res.status === 200){
-                            //     setLoading(false);
-                            //     console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
-                            //     // showMessage({
-                            //     //     message: "Succès",
-                            //     //     description: res.message,
-                            //     //     type: "success",
-                            //     // });
-                            //     navigation.goBack();
-                            // }else{
-                            //     setLoading(false);
-                            //     console.log('>>>>>>>>>2>>>>>>>>>>', res.message)
-                            //     // showMessage({
-                            //     //     message: "Erreur",
-                            //     //     description: res.message,
-                            //     //     type: "danger",
-                            //     // });
-                            // }
+                            if(res.status === 200){
+                                setLoading(false);
+                                console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
+                                // showMessage({
+                                //     message: "Succès",
+                                //     description: res.message,
+                                //     type: "success",
+                                // });
+                                navigation.goBack();
+                            }else{
+                                setLoading(false);
+                                console.log('>>>>>>>>>2>>>>>>>>>>', res)
+                                // showMessage({
+                                //     message: "Erreur",
+                                //     description: res.message,
+                                //     type: "danger",
+                                // });
+                            }
 
                             if(res.message === "Unauthenticated."){
                                 // dispatch({ type: DECONNEXION, value: true});
@@ -646,7 +649,7 @@ export default function AddProperties(){
                                         >
                                             <Picker.Item key="0" label="----- Choisir une fréquence -----" value="" id="0" itemStyle ={{fontFamily: 'PoppinsRegular'}} />
                                             {
-                                                FREQUENCE.map(item => <Picker.Item key={item.id} label={item.label} value={item.label} id={item.label} itemStyle ={{fontFamily: 'PoppinsRegular'}} />)   
+                                                FREQUENCE.map(item => <Picker.Item key={item.id} label={item.label} value={item.value} id={item.label} itemStyle ={{fontFamily: 'PoppinsRegular'}} />)   
                                             }
                                         </Picker>
                                     </View>
