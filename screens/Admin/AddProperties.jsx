@@ -96,12 +96,16 @@ export default function AddProperties(){
     const FREQUENCE = [
         {
             id: 'A001',
-            label: 'Jour'
+            label: 'daily'
         },
         {
             id: 'A002',
-            label: 'Mois'
-        }
+            label: 'monthly'
+        },
+        {
+            id: 'A003',
+            label: 'yearly'
+        },
     ]
 
     const formValidation = Yup.object().shape({
@@ -233,6 +237,7 @@ export default function AddProperties(){
                     validationSchema={formValidation}
                     initialValues={{label: "", city: "", district: "", country: "", rooms: "", bathrooms: "", lounges: "", swingpools: "", prices: "", visitePrices: "", conditions: "", description: ""}}
                     onSubmit={values => {
+
                         if(catVal === "" ){
                             setCatErr('Ajouter une catégorie')
                             setLoading(false)
@@ -249,7 +254,7 @@ export default function AddProperties(){
 
                         setFreqErr(null)
 
-                        console.log('vdvdfbdf', image)
+                        // console.log('vdvdfbdf', image)
 
                         if(image === null){
                             setImgCoverErr('Ajouter une image pour le cover')
@@ -287,25 +292,33 @@ export default function AddProperties(){
 
                         setLoading(true);
 
-                        console.log(values)
+                        console.log(image)
 
                         const imagesToSend = [];
+                        var cover = null, im1={}, im2={}, im3={}, im4={};
+
+                        if(image !== null){
+                            cover = {"name": image.fileName, "fileSize": image.fileSize, "height": image.height, "type": image.mimeType, "uri": image.uri, "width": image.width}
+                        }
+
 
                         if(image0 !== null){
-                            imagesToSend.push(image0)
+                            im1 = {"name": image0.fileName, "fileSize": image0.fileSize, "height": image0.height, "type": image0.mimeType, "uri": image0.uri, "width": image0.width}
                         }
 
                         if(image1 !== null){
-                            imagesToSend.push(imagesToSend.push(image1))
+                            im2 = {"name": image1.fileName, "fileSize": image1.fileSize, "height": image1.height, "type": image1.mimeType, "uri": image1.uri, "width": image1.width}
                         }
                         
                         if(image2 !== null){
-                            imagesToSend.push(imagesToSend.push(image2))
+                            im3 = {"name": image2.fileName, "fileSize": image2.fileSize, "height": image2.height, "type": image2.mimeType, "uri": image2.uri, "width": image2.width}
                         }
 
                         if(image3 !== null){
-                            imagesToSend.push(imagesToSend.push(image3))
+                            im4 = {"name": image3.fileName, "fileSize": image3.fileSize, "height": image3.height, "type": image3.mimeType, "uri": image3.uri, "width": image3.width}
                         }
+
+                        console.log(im3)
 
                         const dataToSend = new FormData();
 
@@ -325,11 +338,14 @@ export default function AddProperties(){
                         dataToSend.append('swingpool', values.swingpools);
                         dataToSend.append('visite_price', values.visitePrices);
                         dataToSend.append('conditions', values.conditions);
-                        dataToSend.append('device', "XOF");
-                        dataToSend.append('cover', image);
-                        dataToSend.append('images', imagesToSend);
+                        dataToSend.append('device', "FCFA");
+                        dataToSend.append('cover', cover);
+                        dataToSend.append('images[]', im1);
+                        dataToSend.append('images[]', im2);
+                        dataToSend.append('images[]', im3);
+                        dataToSend.append('images[]', im4 );
 
-                        // console.log('data', dataToSend)
+                        // console.log(dataToSend)
 
                         // console.log('>>>>>>>>>>>>>>', image)
                         // console.log('>>>>>>frequency>>>>>>>>', frequency)
