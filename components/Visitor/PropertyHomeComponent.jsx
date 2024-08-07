@@ -3,6 +3,7 @@ import { Octicons , Entypo, MaterialCommunityIcons, MaterialIcons, Feather } fro
 import React from 'react'
 import { getPreciseDistance } from 'geolib';
 import { useSelector } from 'react-redux';
+import { baseURL } from '../../api/api';
 
 const PropertyHomeComponent = ({item, setFavorite}) => {
 
@@ -26,7 +27,7 @@ const PropertyHomeComponent = ({item, setFavorite}) => {
             </View>
 
             <View className="mt-1 relative">
-                <Image source={{uri: item.cover_url}} style={{width: '100%', height: width / 2.3}}  className="rounded-xl" />
+                <Image source={{uri: baseURL + item.cover_url}} style={{width: '100%', height: width / 2.3}}  className="rounded-xl" />
                 <View className="absolute top-0 w-full flex flex-row justify-between items-center p-2">
                     <TouchableOpacity className="bg-black/40 p-[8px] py-0 rounded-full flex flex-row items-center">
                         <Octicons name="star-fill" size={15} color="yellow" />

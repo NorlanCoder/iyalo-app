@@ -2,11 +2,14 @@ import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, Ima
 import { Feather, MaterialIcons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { baseURL } from '../../api/api';
+import moment from 'moment'
 
 export default function DetailsProperty(props){
     const navigation = useNavigation();
 
     const item = props.route.params.item;
+
+    // console.log(item)
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
@@ -33,9 +36,9 @@ export default function DetailsProperty(props){
                 <View className="px-4 pt-4 flex flex-row justify-between items-center">
                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-lg text-terre3">Appartement - ({item.price} {item.device}) </Text>
 
-                    {/* <TouchableOpacity disabled={true} onPress={() => {}} className="h-10 w-24 items-center justify-center rounded-full bg-primary">
+                    <TouchableOpacity onPress={() => {navigation.navigate('UpdatePropertie', {item: item} )}} className="h-10 w-24 items-center justify-center rounded-md bg-primary">
                         <Text style={{fontFamily: 'PoppinsRegular', color: "#53535E"}} className="text-[14px] ">Modifier</Text>
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                 </View>
 
                 <View className="px-4 pt-4 flex flex-row items-center">
@@ -47,7 +50,7 @@ export default function DetailsProperty(props){
 
                 <View className="px-4 mt-4 pt-4 border-t border-t-black/10 flex flex-col">
                     <View className="flex flex-row justify-between items-center my-1">
-                        <Text style={{fontFamily: 'PoppinsRegular', color: "#3D405B"}} className="text-[12px]">Publier le 12 Juin 2024 </Text>
+                        <Text style={{fontFamily: 'PoppinsRegular', color: "#3D405B"}} className="text-[12px]">Publier le {moment(item.created_at).format('LL')}</Text>
                         <View style={{backgroundColor: "#FFFFFF"}} className="h-9 items-center justify-center rounded-lg px-5 border border-secondary/60">
                             <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[14px] text-secondary ">{item.district} - {item.city}</Text>
                         </View>
@@ -79,22 +82,37 @@ export default function DetailsProperty(props){
                 <View className="px-4 border-t border-t-black/10 mb-4 pt-4 flex flex-col">
                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-xl mb-4">Photos</Text>
 
-                    <View className="flex-row">
-                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
-                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
-                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
-                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
-                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
-                        </TouchableOpacity>
-                    </View>
-                    
+                    <FlatList
+                        data={item.media}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        renderItem={({item}) => {
+                            return(
+                                <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
+                                    <Image source={{uri: baseURL + item}} className="h-24 w-24" />
+                                </TouchableOpacity>
+                            )
+                        }}
+                        keyExtractor={item => item}
+                        />
                 </View>
+
+                    {/* <View className="flex-row">
+                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
+                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
+                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
+                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
+                            <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
+                        </TouchableOpacity>
+                    </View> */}
+                    
+                
 
                 {/* <View className="px-4 border-t border-t-black/10 mb-4 pt-4 flex flex-col">
                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-xl mb-4">Annonceur</Text>
