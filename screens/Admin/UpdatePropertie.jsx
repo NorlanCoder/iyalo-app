@@ -21,11 +21,31 @@ export default function UpdatePropertie(props){
     const location = useSelector((state) => state.appReducer.location)
     const token = useSelector((state) => state.userReducer.token)
 
-    const [image, setImage] = useState(item.cover_url);
-    const [image0, setImage0] = useState(item.media[0]);
-    const [image1, setImage1] = useState(item.media[1]);
-    const [image2, setImage2] = useState(item.media[2]);
-    const [image3, setImage3] = useState(item.media[3]);
+    const [image, setImage] = useState({
+        name: "",
+        uri: item.cover_url,
+        type: 'image/jpeg'
+    });
+    const [image0, setImage0] = useState({
+        name: "",
+        uri: item.media[0],
+        type: 'image/jpeg'
+    });
+    const [image1, setImage1] = useState({
+        name: "",
+        uri: item.media[1],
+        type: 'image/jpeg'
+    });
+    const [image2, setImage2] = useState({
+        name: "",
+        uri: item.media[2],
+        type: 'image/jpeg'
+    });
+    const [image3, setImage3] = useState({
+        name: "",
+        uri: item.media[3],
+        type: 'image/jpeg'
+    });
     const [catVal, setCatVal] = useState(item.category_id);
     const [frequency, setFrequency] = useState(item.frequency);
     const [choix, setChoix] = useState(null);
@@ -35,7 +55,7 @@ export default function UpdatePropertie(props){
     const [freqErr, setFreqErr] = useState("")
     const [loading, setLoading] = useState(false);
     const [selectValue, setSelectValue] = useState({
-        categorie: "",
+        categorie: item.category_id,
         categorie_id: item.category_id
     })
     const [selectValue2, setSelectValue2] = useState({
@@ -158,19 +178,39 @@ export default function UpdatePropertie(props){
 
         }else{
             if(img === 0){
-                setImage(result.assets[0])
+                setImage({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange(true)
             }else if(img === 1){
-                setImage0(result.assets[0])
+                setImage0({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange0(true)
             }else if(img === 2){
-                setImage1(result.assets[0])
+                setImage1({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange1(true)
             }else if(img === 3){
-                setImage2(result.assets[0])
+                setImage2({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange2(true)
             }else{
-                setImage3(result.assets[0])
+                setImage3({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange3(true)
             }
         }
@@ -192,19 +232,39 @@ export default function UpdatePropertie(props){
 
         }else{
             if(img === 0){
-                setImage(result.assets[0])
+                setImage({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange(true)
             }else if(img === 1){
-                setImage0(result.assets[0])
+                setImage0({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange0(true)
             }else if(img === 2){
-                setImage1(result.assets[0])
+                setImage1({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange1(true)
             }else if(img === 3){
-                setImage2(result.assets[0])
+                setImage2({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange2(true)
             }else{
-                setImage3(result.assets[0])
+                setImage3({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
                 setImgChange3(true)
             }
         }
@@ -212,23 +272,43 @@ export default function UpdatePropertie(props){
 
     const supPhot = (img) => {
         if(img === 0){
-            setImage(null);
+            setImage({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
             setImgChange(false)
         }else if(img === 1){
-            setImage0(null);
+            setImage0({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
             setImgChange0(false)
         }else if(img === 2){
-            setImage1(null);
+            setImage1({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
             setImgChange1(false)
         }else if(img === 3){
-            setImage2(null);
+            setImage2({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
             setImgChange2(false)
         }else{
-            setImage3(null);
+            setImage3({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
             setImgChange3(false)
         }
@@ -261,7 +341,7 @@ export default function UpdatePropertie(props){
 
                         console.log('vdvdfbdf', image)
 
-                        if(image === null){
+                        if(image.uri === ""){
                             setImgCoverErr('Ajouter une image pour le cover')
                             setLoading(false)
                             return
@@ -269,25 +349,25 @@ export default function UpdatePropertie(props){
 
                         setImgCoverErr(null)
 
-                        if(image0 === null){
+                        if(image0.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
                         }
 
-                        if(image1 === null){
+                        if(image1.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
                         }
 
-                        if(image2 === null){
+                        if(image2.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
                         }
 
-                        if(image3 === null){
+                        if(image3.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
@@ -301,57 +381,57 @@ export default function UpdatePropertie(props){
 
                         const imagesToSend = [];
 
-                        if(image0 !== null){
-                            if(image0 !== null){
+                        if(image0.uri !== ""){
+                            if(image0.uri.includes('file')){
                                 imagesToSend.push({
-                                    name: image0.fileName,
+                                    name: image0.name,
                                     uri: image0.uri,
                                     type: 'image/jpeg',
                                 })
                             }else{
-                                imagesToSend.push(image0)
+                                imagesToSend.push(image0.uri)
                             }
                         }else {
 
                         }
 
-                        if(image1 !== null){
-                            if(image1 !== null){
+                        if(image1.uri !== ""){
+                            if(image1.uri.includes('file')){
                                 imagesToSend.push(imagesToSend.push({
-                                    name: image1.fileName,
+                                    name: image1.name,
                                     uri: image1.uri,
                                     type: 'image/jpeg',
                                 }))
                             }else{
-                                imagesToSend.push(image1)
+                                imagesToSend.push(image1.uri)
                             }
                         }else {
 
                         }
 
-                        if(image2 !== null){
-                            if(image2 !== null){
+                        if(image2.uri !== ""){
+                            if(image2.uri.includes('file')){
                                 imagesToSend.push(imagesToSend.push({
-                                    name: image2.fileName,
+                                    name: image2.name,
                                     uri: image2.uri,
                                     type: 'image/jpeg',
                                 }))
                             }else{
-                                imagesToSend.push(image2)
+                                imagesToSend.push(image2.uri)
                             }
                         }else {
 
                         }
 
-                        if(image3 !== null){
-                            if(image3 !== null){
+                        if(image3.uri !== ""){
+                            if(image3.uri.includes('file')){
                                 imagesToSend.push(imagesToSend.push({
-                                    name: image3.fileName,
+                                    name: image3.name,
                                     uri: image3.uri,
                                     type: 'image/jpeg',
                                 }))
                             }else{
-                                imagesToSend.push(image3)
+                                imagesToSend.push(image3.uri)
                             }
                         }else {
 
@@ -376,17 +456,15 @@ export default function UpdatePropertie(props){
                         dataToSend.append('visite_price', values.visitePrices);
                         dataToSend.append('conditions', values.conditions);
                         dataToSend.append('device', "FCFA");
-                        if(image !== null){
+                        if(image !== ""){
                             if(image.uri.includes('file')){
                                 dataToSend.append('cover', {
-                                    name: image.fileName,
+                                    name: image.name,
                                     uri: image.uri,
                                     type: 'image/jpeg',
                                 });
                             }else{
-                                dataToSend.append('cover', {
-                                    
-                                });
+                                dataToSend.append('cover', image.uri);
                             }
                         }
                         
@@ -573,7 +651,7 @@ export default function UpdatePropertie(props){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('rooms')}
                                             onBlur={handleBlur('rooms')}
-                                            value={values.rooms}
+                                            value={`${values.rooms}`}
                                         />
                                     </View>
                                     {errors.rooms &&
@@ -593,7 +671,7 @@ export default function UpdatePropertie(props){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('bathrooms')}
                                             onBlur={handleBlur('bathrooms')}
-                                            value={values.bathrooms}
+                                            value={`${values.bathrooms}`}
                                         />
                                     </View>
                                     {errors.bathrooms &&
@@ -615,7 +693,7 @@ export default function UpdatePropertie(props){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('lounges')}
                                             onBlur={handleBlur('lounges')}
-                                            value={values.lounges}
+                                            value={`${values.lounges}`}
                                         />
                                     </View>
                                     {errors.lounges &&
@@ -635,7 +713,7 @@ export default function UpdatePropertie(props){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('swingpools')}
                                             onBlur={handleBlur('swingpools')}
-                                            value={values.swingpools}
+                                            value={`${values.swingpools}`}
                                         />
                                     </View>
                                     {errors.swingpools &&
@@ -657,7 +735,7 @@ export default function UpdatePropertie(props){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('prices')}
                                             onBlur={handleBlur('prices')}
-                                            value={values.prices}
+                                            value={`${values.prices}`}
                                         />
                                     </View>
                                     {errors.prices &&
@@ -707,7 +785,7 @@ export default function UpdatePropertie(props){
                                         keyboardType="phone-pad"
                                         onChangeText={handleChange('visitePrices')}
                                         onBlur={handleBlur('visitePrices')}
-                                        value={values.visitePrices}
+                                        value={`${values.visitePrices}`}
                                     />
                                 </View>
                                 {errors.visitePrices &&
@@ -790,8 +868,8 @@ export default function UpdatePropertie(props){
 
                                 <TouchableOpacity onPress={() => onOpen(0)} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                     {
-                                        image !== null?
-                                        <Image source={imgChange? {uri: image} : {uri: baseURL+`${image}`}} resizeMode='cover' className="rounded-lg h-full w-full" />
+                                        image.uri !== ""?
+                                        <Image source={imgChange? {uri: image.uri} : {uri: baseURL+`${image.uri}`}} resizeMode='cover' className="rounded-lg h-full w-full" />
                                         :
                                         <Feather name='camera' size={40} color={"#00ddb3"}/>
                                     } 
@@ -807,8 +885,8 @@ export default function UpdatePropertie(props){
                                 <View className="flex-row justify-between">
                                     <TouchableOpacity onPress={() => onOpen(1)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image0 !== null?
-                                            <Image source={imgChange0? {uri: image0} : {uri: baseURL+`${image0}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image0.uri !== ""?
+                                            <Image source={imgChange0? {uri: image0.uri} : {uri: baseURL+`${image0.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -816,8 +894,8 @@ export default function UpdatePropertie(props){
                 
                                     <TouchableOpacity onPress={() => onOpen(2)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image1 !== null?
-                                            <Image source={imgChange1? {uri: image1} : {uri: baseURL+`${image1}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image1.uri !== ""?
+                                            <Image source={imgChange1? {uri: image1.uri} : {uri: baseURL+`${image1.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -825,8 +903,8 @@ export default function UpdatePropertie(props){
 
                                     <TouchableOpacity onPress={() => onOpen(3)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image2 !== null?
-                                            <Image source={imgChange2? {uri: image2} : {uri: baseURL+`${image2}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image2.uri !== ""?
+                                            <Image source={imgChange2? {uri: image2.uri} : {uri: baseURL+`${image2.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -834,8 +912,8 @@ export default function UpdatePropertie(props){
 
                                     <TouchableOpacity onPress={() => onOpen(4)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image3 !== null?
-                                            <Image source={imgChange3? {uri: image3} : {uri: baseURL+`${image3}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image3.uri !== ""?
+                                            <Image source={imgChange3? {uri: image3.uri} : {uri: baseURL+`${image3.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -851,7 +929,7 @@ export default function UpdatePropertie(props){
                                     loading? 
                                     <ActivityIndicator size={20} color="#fff" />
                                     :
-                                    <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[16px] ">Créer</Text>
+                                    <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[16px] ">Modifier</Text>
                                 }
                             </TouchableOpacity>
                         </View>

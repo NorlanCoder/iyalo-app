@@ -3,6 +3,7 @@ import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, Scr
 import { Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { MenuProvider } from 'react-native-popup-menu';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Header from '../../components/Header';
@@ -56,7 +57,7 @@ export default function Properties(){
     }
 
     const getAllNextProperties = async () => {
-        setShowContent(false)
+        // setShowContent(false)
         await fetch(nextPage, {
             method: 'GET',
             headers: {
@@ -107,41 +108,65 @@ export default function Properties(){
         console.log(id)
     }
 
+    const changeState = async (id) => {
+        console.log(id)
+        setLoading(true)
+        await fetch(apiURL + 'announcer/property/'+id+'/action', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log('========================1', res)
+            if(res.status === 200){
+                getProperties();
+            }else{
+                
+            }
+        })
+    }
+
     const renderItem = ({item}) => {
         return(
             <TouchableOpacity className="flex flex-col items-center" key={item.id} onPress={() => {navigation.navigate('DetailsProperty', {item: item} )}}>
-                <PropertyResultComponent item={item} setFavorite={setFavorite} />
+                <PropertyResultComponent item={item} setFavorite={setFavorite} changeState={changeState} />
             </TouchableOpacity>
         )
     };
 
     return(
-        <SafeAreaView className="flex-1">
-            <Header title={"Propriétés"} 
-                right= {
-                    <TouchableOpacity onPress={() =>{navigation.navigate('AddProperties')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
-                        <MaterialIcons name="add" size={20} color="#000"/>
-                    </TouchableOpacity>
-                }
-            />
-
-            {/* <View className="px-1 w-screen mt-2"> */}
-                <FlatList
-                    data={data}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => item.id}
-                    showsVerticalScrollIndicator={false}
-                    // contentContainerStyle={{paddingVertical: 10, paddingBottom: 80, justifyContent: 'center'}}
-                    onEndReachedThreshold = {0.5}
-                    onEndReached={() => {
-                        if(nextPage !== null){
-                            getAllNextProperties()
-                        }
-                    }}
+        <MenuProvider>
+            <SafeAreaView className="flex-1">
+                <Header title={"Propriétés"} 
+                    right= {
+                        <TouchableOpacity onPress={() =>{navigation.navigate('AddProperties')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                            <MaterialIcons name="add" size={20} color="#000"/>
+                        </TouchableOpacity>
+                    }
                 />
 
-            {/* </View> */}
-        </SafeAreaView>
+                {/* <View className="px-1 w-screen mt-2"> */}
+                    <FlatList
+                        data={data}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                        renderItem={renderItem}
+                        keyExtractor={(item, index) => item.id}
+                        showsVerticalScrollIndicator={false}
+                        // contentContainerStyle={{paddingVertical: 10, paddingBottom: 80, justifyContent: 'center'}}
+                        onEndReachedThreshold = {0.5}
+                        onEndReached={() => {
+                            if(nextPage !== null){
+                                getAllNextProperties()
+                            }
+                        }}
+                    />
+
+                {/* </View> */}
+            </SafeAreaView>
+        </MenuProvider>
     )
 }

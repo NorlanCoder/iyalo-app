@@ -25,9 +25,11 @@ import Visites from "./Admin/Visites";
 import InfoAdmin from "./Admin/InfoAdmin";
 import DetailsProperty from "./Admin/DetailsProperty";
 import UpdatePropertie from "./Admin/UpdatePropertie";
+import VisiteByProperty from "./Admin/VisiteByProperty";
+import RatingByProperty from "./Admin/RatingByProperty";
 
 export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, 
     Profile, Infos, EditInfos, Favoris, Transaction, Details, Explore, PropertyListCat, 
     HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, InfoAdmin, DetailsProperty,
-    UpdatePropertie,
+    UpdatePropertie, VisiteByProperty, RatingByProperty
 };

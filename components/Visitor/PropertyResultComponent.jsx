@@ -1,15 +1,29 @@
-import { View, Text, TouchableOpacity, useWindowDimensions, Image, Pressable } from 'react-native'
+import { View, Text, TouchableOpacity, useWindowDimensions, Image, Pressable, StyleSheet } from 'react-native'
 import { Octicons , Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react'
+import { Menu, MenuProvider, MenuOptions, MenuTrigger, } from "react-native-popup-menu";
 import { getPreciseDistance } from 'geolib';
 import { useSelector } from 'react-redux';
 import { baseURL } from '../../api/api';
+import { Edit, Delete, Activate, ListVisite } from '../CustomContent';
 
-const PropertyResultComponent = ({item, setFavorite}) => {
+const Divider = () => <View style={styles.divider} />;
+
+const PropertyResultComponent = ({item, setFavorite, changeState}) => {
+    const navigation = useNavigation();
 
     const {width} = useWindowDimensions()
 
     const location = useSelector((state) => state.appReducer.location)
+
+    let val = false
+
+    if(item.status == 1){
+        val = true
+    }else{
+        val = false
+    }
 
     return (
         <View className="bg-white mb-2 p-2 rounded-xl shadow-sm" style={{width: width - 20 }}>
@@ -17,23 +31,54 @@ const PropertyResultComponent = ({item, setFavorite}) => {
             <View className="flex flex-row justify-between items-center">
                 <View className="flex flex-row justify-start gap-x-2 items-center ">
                     <Image source={require('../../assets/png-clipart.png')} style={{width: 30, height: 30}}  className="rounded-full" />
-                    <Text style={{fontFamily: 'KeepCalm'}}>John Doe</Text>
+                    <Text style={{fontFamily: 'KeepCalm'}}>{item.user.name}</Text>
                 </View>
-                <TouchableOpacity className="bg-primary p-2 rounded-xl">
+                <Menu>
+                    <MenuTrigger
+                        customStyles={{
+                            triggerWrapper: {
+                                height: 33, width: 33, backgroundColor: "#00ddb3", padding: 1, justifyContent: "center", alignItems: "center", alignContent: "center", borderRadius: 10
+                            },
+                        }}
+                    >
+                        <Entypo name="dots-three-vertical" size={18} color="black" />
+                    </MenuTrigger>
+                    
+                    <MenuOptions
+                        customStyles={{
+                            optionsContainer: {
+                                borderRadius: 10,
+                            },
+                        }}
+                    >
+                        {/* <Divider />
+                            <Explore text="Consulter la propriété" onPress={()=> navigation.push('DetailsProprietes',{data: item})} iconName="block" /> */}
+                        <Activate text="Activé/Désactivé" onPress={()=> {changeState(item.id)}} iconName="switch" val={val} />
+                        <Divider />
+                        <ListVisite text="Liste des visites" onPress={()=> {navigation.push('VisiteByProperty',{item: item})}} iconName="list" />
+                        <Divider />
+                        <Edit text="Modifier" 
+                            onPress={() => {navigation.navigate('UpdatePropertie', {item: item} )}}
+                            iconName="edit" />
+                        <Divider />
+                        <Delete text="Supprimer" onPress={()=> {}} iconName="delete" />
+                    </MenuOptions>
+                </Menu>
+                {/* <TouchableOpacity className="bg-primary p-2 rounded-xl">
                     <Entypo name="dots-three-vertical" size={18} color="black" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             <View className="mt-1 relative">
                 <Image source={{uri: baseURL + item.cover_url}} style={{width: '100%', height: width / 2.3}}  className="rounded-xl" />
                 <View className="absolute top-0 w-full flex flex-row justify-between items-center p-2">
-                    <TouchableOpacity className="bg-black/40 p-[8px] py-0 rounded-full flex flex-row items-center">
+                    <TouchableOpacity onPress={()=> {navigation.push('RatingByProperty',{item: item})}} className="bg-black/40 p-[8px] py-0 rounded-full flex flex-row items-center">
                         <Octicons name="star-fill" size={15} color="yellow" />
-                        <Text className="pl-1 text-white font-bold text-lg" style={{fontFamily: 'PoppinsRegular'}}>8</Text>
+                        <Text className="pl-1 text-white font-bold text-lg" style={{fontFamily: 'PoppinsRegular'}}>{item.note.length}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() =>{setFavorite(item.id)}} className="bg-black/40 p-[6px] rounded-full">
+                    {/* <TouchableOpacity onPress={() =>{setFavorite(item.id)}} className="bg-black/40 p-[6px] rounded-full">
                         <Octicons name="heart" size={18} color="white" />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
 
@@ -93,4 +138,17 @@ const PropertyResultComponent = ({item, setFavorite}) => {
     )
 }
 
-export default PropertyResultComponent
+export default PropertyResultComponent;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        marginVertical: 100,
+        marginHorizontal: 100,
+    },
+    divider: {
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: "#7F8487",
+    },
+});

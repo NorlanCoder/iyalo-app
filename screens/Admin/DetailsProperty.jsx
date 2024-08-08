@@ -9,7 +9,7 @@ export default function DetailsProperty(props){
 
     const item = props.route.params.item;
 
-    // console.log(item)
+    console.log(item)
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
