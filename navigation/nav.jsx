@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, 
+import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, CompleteProfile,
     ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, 
     Forgot, NewPassword, PropertyListCat, InfoAdmin, DetailsProperty, UpdatePropertie, VisiteByProperty, RatingByProperty
 } from '../screens/root';
@@ -258,6 +258,15 @@ export default function Navigation(){
                         <Stack.Screen
                             name="EditProfil"
                             component={EditInfos}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
+                        />
+                        <Stack.Screen
+                            name="CompleteProfile"
+                            component={CompleteProfile}
                             options={{
                                 headerShown: false,
                                 headerTintColor: "transparent",

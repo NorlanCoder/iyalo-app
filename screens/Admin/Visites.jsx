@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {  StyleSheet, Text, View, TextInput, ScrollView, Image, TouchableOpacity, Platform, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons, Entypo, Ionicons, FontAwesome, Fontisto } from '@expo/vector-icons';
 import { Dialog } from 'react-native-paper';
+import { apiURL } from '../../api/api';
 import moment from 'moment'
 import 'moment/locale/fr'
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -19,8 +20,10 @@ export default function Visites(){
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [dateDebut, setDateDebut] = useState() 
+    const [loading, setLoading] = useState(false);
 
     const onChange = (event, selectedDate) => {
+        console.log(selectedDate)
         const currentDate = selectedDate || date;
         // setShow(Platform.OS === 'ios' ? 'spinner' : 'default');
         setShow(false);
@@ -46,6 +49,57 @@ export default function Visites(){
         setVisible(!visible)
     }
 
+    const addVisite = () => {
+        fetch(apiURL+'announcer/property/create', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                // 'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: dataToSend
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log(token)
+            console.log('>>>>>>>>>>>>>>>>>>>', res)
+            if(res.status === 200){
+                setLoading(false);
+                console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
+                // showMessage({
+                //     message: "Succès",
+                //     description: res.message,
+                //     type: "success",
+                // });
+                navigation.goBack();
+            }else{
+                setLoading(false);
+                console.log('>>>>>>>>>2>>>>>>>>>>', res)
+                // showMessage({
+                //     message: "Erreur",
+                //     description: res.message,
+                //     type: "danger",
+                // });
+            }
+
+            if(res.message === "Unauthenticated."){
+                // dispatch({ type: DECONNEXION, value: true});
+                // dispatch({ type: DECONNEXIONDATA, value: true});
+                // dispatch({type: SWITCHAUTHSCREEN, value: "Login"})
+            }
+        })
+        .catch(e => {
+            console.log(e)
+            setLoading(false);
+            // console.log('>>>>>>>>>3>>>>>>>>>>', res.messag)
+            // showMessage({
+            //     message: "Erreur",
+            //     description: "Erreur de connexion",
+            //     type: "danger",
+            // });
+        })
+    }
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
@@ -121,6 +175,15 @@ export default function Visites(){
                         </View>
                         
                     </View>
+
+                    <TouchableOpacity onPress={() => {}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
+                        {
+                            loading? 
+                            <ActivityIndicator size={20} color="#fff" />
+                            :
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[16px] ">Ajouter</Text>
+                        }
+                    </TouchableOpacity>
                 </View>
             </ModalPopup>
         </SafeAreaView>

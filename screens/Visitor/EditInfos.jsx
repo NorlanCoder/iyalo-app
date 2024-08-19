@@ -1,18 +1,155 @@
 import { useState } from 'react';
-import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
+import {  Text, View, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator} from 'react-native'
 import { Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSelector, useDispatch } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 import EditInfoTextInputComponent from '../../components/Visitor/EditInfoTextImputComponent';
+import { apiURL } from '../../api/api';
 
 export default function EditInfos(){
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const myuser = useSelector((state) => state.userReducer)
+
+    const [name, setName] = useState(myuser.user.name);
+    const [phone, setPhone] = useState(myuser.user.phone);
+    const [oldPass, setOldPass] = useState("");
+    const [newPass, setNewPass] = useState("");
+    const [confirmPass, setConfirmPass] = useState("");
+    const [secureText1, setSecureText1] = useState(true);
+    const [secureText2, setSecureText2] = useState(true);
+    const [secureText3, setSecureText3] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [loading2, setLoading2] = useState(false);
+    const [message, setMessage] = useState(null);
+    const [message2, setMessage2] = useState(null);
+
+    // console.log(myuser)
+
+    const updateInfo = async () => {
+        if(!name){
+            setMessage("Entrer votre nom");
+            return
+        }
+
+        if(!phone){
+            setMessage("Entrer votre contact");
+            return
+        }
+
+        setMessage(null)
+
+        setLoading(true)
+        await fetch(apiURL + 'update_info', {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + myuser.token
+            },
+            body: JSON.stringify({
+                "name": name,
+                "phone": phone,
+                "email": myuser.user.email,
+                "birthday": "",
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res)
+            if(res.status === 200){
+                getUser()
+            }else{
+                setLoading(false)
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+            setLoading(false);
+        })
+    }
+
+    const updatePassword = async () => {
+        if(!oldPass){
+            setMessage2("Entrer votre ancien mot de passe");
+            return
+        }
+
+        if(!newPass){
+            setMessage2("Entrer un nouveau mot de passe");
+            return
+        }
+
+        if(!confirmPass){
+            setMessage2("Confirmer le mot de passe");
+            return
+        }
+
+        setMessage2(null)
+
+        setLoading2(true);
+        await fetch(apiURL + 'update_pass', {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + myuser.token
+            },
+            body: JSON.stringify({
+                "older": oldPass,
+                "password": newPass,
+                "confirm": confirmPass,
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res)
+            if(res.status === 200){
+                setLoading2(false);
+                navigation.goBack();
+            }else{
+                setLoading2(false);
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+            setLoading2(false);
+        })
+    }
+
+    const getUser = async () => {
+        await fetch(apiURL + 'getinfo', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + myuser.token
+            },
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res)
+            if(res.status === 200){
+                setLoading(false)
+                dispatch({type: 'AUTHENTICATED', payload: true});
+                dispatch({type: 'USER', payload: res.data});
+                navigation.goBack();
+            }else{
+                setLoading(false)
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+            setLoading(false);
+        })
+    }
 
     return(
-
         <SafeAreaView className="flex-1 bg-slate-100">
-            <Animated.View entering={FadeIn.delay(400)} className="flex flex-row justify-between items-center mt-2 px-3">
+            <Animated.View entering={FadeIn.delay(400)} className="flex flex-row justify-between items-center px-3 mt-8">
                 <View className="flex-row justify-center items-center">
                     <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center mr-3" style={{ height: 40, width: 40,}}>
                         <MaterialIcons name="keyboard-arrow-left" size={20} color="#000"/>
@@ -21,15 +158,81 @@ export default function EditInfos(){
                 </View>
             </Animated.View>
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50}}>
-                <EditInfoTextInputComponent title={"Nom"} placeholder={"Doe"}  />
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 50}}>
+                <View className="bg-primary/50 h-7 mt-2 rounded-lg justify-center">
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[14px] text-center">Infos personnelles</Text>
+                </View>
 
-                <EditInfoTextInputComponent title={"Prénom"} placeholder={"John"}  />
+                <EditInfoTextInputComponent title={"Nom"} placeholder={"Doe"} value={name} onChangeText={(value) => setName(value)} />
 
-                <EditInfoTextInputComponent title={"Téléphone"} placeholder={"+229..."}  />
+                {/* <EditInfoTextInputComponent title={"Prénom"} placeholder={"John"} value={myuser.user.name} /> */}
 
-                <TouchableOpacity className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
-                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Modifier</Text>
+                <EditInfoTextInputComponent title={"Téléphone"} placeholder={"+229..."} value={phone} onChangeText={(value) => setPhone(value)} />
+
+                {message && <Text className="text-[#E50506] font-['PoppinsRegular'] text-[14px] text-center">{message}</Text>}
+
+                <TouchableOpacity onPress={() => {updateInfo()}} className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
+                    {
+                        loading?
+                        <ActivityIndicator size={"small"} color={"#000"}/>
+                        :
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Modifier</Text>
+                    }
+                </TouchableOpacity>
+
+                <View className="bg-primary/50 h-7 mt-2 rounded-lg justify-center">
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[14px] text-center">Mot de passe</Text>
+                </View>
+
+                <EditInfoTextInputComponent 
+                    title={"Ancien mot de passe"} 
+                    placeholder={"*****"} 
+                    onChangeText={(value) => setOldPass(value)} 
+                    isSecure={secureText1}
+                    icon={
+                        secureText1 ? 
+                        <Ionicons name="eye-off" size={20} color="black"/>
+                        :
+                        <Ionicons name="eye" size={20} color="black"/>
+                    }
+                    onPress={() => {setSecureText1(!secureText1)}}
+                />
+                <EditInfoTextInputComponent 
+                    title={"Nouveau mot de passe"} 
+                    placeholder={"*****"} 
+                    onChangeText={(value) => setNewPass(value)} 
+                    isSecure={secureText2}
+                    icon={
+                        secureText2 ? 
+                        <Ionicons name="eye-off" size={20} color="black"/>
+                        :
+                        <Ionicons name="eye" size={20} color="black"/>
+                    }
+                    onPress={() => {setSecureText2(!secureText2)}}
+                />
+                <EditInfoTextInputComponent 
+                    title={"Confirmer mot de passe"} 
+                    placeholder={"*****"} 
+                    onChangeText={(value) => setConfirmPass(value)} 
+                    isSecure={secureText3}
+                    icon={
+                        secureText3 ? 
+                        <Ionicons name="eye-off" size={20} color="black"/>
+                        :
+                        <Ionicons name="eye" size={20} color="black"/>
+                    }
+                    onPress={() => {setSecureText3(!secureText3)}}
+                />
+
+                {message2 && <Text className="text-[#E50506] font-['PoppinsRegular'] text-[14px] text-center">{message2}</Text>}
+
+                <TouchableOpacity onPress={() => {updatePassword()}} className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
+                    {
+                        loading2?
+                        <ActivityIndicator size={"small"} color={"#000"}/>
+                        :
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Modifier</Text>
+                    }
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

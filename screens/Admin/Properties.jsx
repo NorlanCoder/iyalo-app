@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Header from '../../components/Header';
 import { apiURL } from '../../api/api';
 import PropertyResultComponent from '../../components/Visitor/PropertyResultComponent';
+import { DisplayLoading } from '../../components/DisplayLoading';
 
 export default function Properties(){
     const navigation = useNavigation()
@@ -149,7 +150,10 @@ export default function Properties(){
                     }
                 />
 
-                {/* <View className="px-1 w-screen mt-2"> */}
+                {
+                    loading?
+                    <DisplayLoading/>
+                    :
                     <FlatList
                         data={data}
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
@@ -164,8 +168,7 @@ export default function Properties(){
                             }
                         }}
                     />
-
-                {/* </View> */}
+                }
             </SafeAreaView>
         </MenuProvider>
     )

@@ -30,8 +30,6 @@ export default function Profile(props){
         })
     }
 
-    // console.log(isAuthenticated)
-
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
             {
@@ -41,7 +39,7 @@ export default function Profile(props){
                         <View style={{borderWidth: 0.7, borderColor: "#6E6F84"}} className="h-28 w-28 rounded-full justify-center items-center">
                             <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />
 
-                            <TouchableOpacity onPress={() => {props.navigation.navigate('InfoProfil')}} className="h-8 w-8 bg-primary/40 rounded-full absolute bottom-0 right-0 items-center justify-center">
+                            <TouchableOpacity onPress={() => {}} className="h-8 w-8 bg-primary/40 rounded-full absolute bottom-0 right-0 items-center justify-center">
                                 <Entypo name="edit" size={20} color="#000"/>
                             </TouchableOpacity>
                         </View>
@@ -95,7 +93,7 @@ export default function Profile(props){
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                        <TouchableOpacity onPress={() =>{props.navigation.navigate('CompleteProfile')}} className="flex-row justify-between mx-3 my-3 w-full">
                             <View className="flex-row justify-center items-center">
                                 <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                     <Fontisto name="star" size={20} color="yellow"/>

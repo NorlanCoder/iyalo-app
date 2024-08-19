@@ -37,6 +37,22 @@ export const Edit = ({ text, onPress, iconName }) => (
     </MenuOption>
 );
 
+export const Add = ({ text, onPress, iconName }) => (
+    <MenuOption
+        onSelect={onPress}
+        customStyles={{
+            optionWrapper: {
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+            },
+        }}
+    >
+        <Text style={{fontFamily: 'KeepCalm'}}>{text}</Text>
+        <Entypo name={iconName} size={24} color="black" />
+    </MenuOption>
+);
+
 export const ListVisite = ({ text, onPress, iconName }) => (
     <MenuOption
         onSelect={onPress}

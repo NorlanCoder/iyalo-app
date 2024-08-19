@@ -6,6 +6,7 @@ import 'moment/locale/fr'
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
 import { apiURL } from '../../api/api';
+import { DisplayLoading } from '../../components/DisplayLoading';
 
 moment.locale('fr')
 
@@ -145,20 +146,25 @@ export default function VisiteByProperty(props){
         <SafeAreaView className="flex-1 bg-slate-100">
             <Header title={"Liste des visites"} />
 
-            <FlatList
-                data={data}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => item.id}
-                showsVerticalScrollIndicator={false}
-                // contentContainerStyle={{paddingVertical: 10, paddingBottom: 80, justifyContent: 'center'}}
-                onEndReachedThreshold = {0.5}
-                onEndReached={() => {
-                    if(nextPage !== null){
-                        getAllNextVisite()
-                    }
-                }}
-            />
+            {
+                loading?
+                <DisplayLoading/>
+                :
+                <FlatList
+                    data={data}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    // contentContainerStyle={{paddingVertical: 10, paddingBottom: 80, justifyContent: 'center'}}
+                    onEndReachedThreshold = {0.5}
+                    onEndReached={() => {
+                        if(nextPage !== null){
+                            getAllNextVisite()
+                        }
+                    }}
+                />
+            }
         </SafeAreaView>
     )
 }

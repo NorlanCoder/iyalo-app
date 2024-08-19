@@ -5,9 +5,13 @@ import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import InfosComponent from '../../components/Visitor/InfosConponent';
+import { useSelector } from 'react-redux';
 
 export default function Infos(){
     const navigation = useNavigation();
+    const myuser = useSelector((state) => state.userReducer)
+
+    // console.log(myuser.user)
 
     return(
 
@@ -26,13 +30,13 @@ export default function Infos(){
             </Animated.View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50, paddingTop: 10}}>
-                <InfosComponent title={"Nom"} name={"Doe"} />
+                <InfosComponent title={"Nom"} name={myuser.user.name} />
 
-                <InfosComponent title={"Prénom"} name={"John"} />
+                {/* <InfosComponent title={"Prénom"} name={myuser.user.name} /> */}
 
-                <InfosComponent title={"Email"} name={"johndoe@gmail.com"} />
+                <InfosComponent title={"Email"} name={myuser.user.email} />
 
-                <InfosComponent title={"Téléphone"} name={"+22999999999"} />
+                <InfosComponent title={"Téléphone"} name={myuser.user.phone} />
             </ScrollView>
         </SafeAreaView>
     )

@@ -7,6 +7,7 @@ import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import PropertyHomeComponent from '../../components/Visitor/PropertyHomeComponent';
 import React, {useState, useEffect} from 'react'
 import { apiURL } from '../../api/api';
+import { DATAMAP } from '../../store/reducers/actionName';
 
 const Home = () => {
     const navigation = useNavigation();
@@ -28,16 +29,16 @@ const Home = () => {
 
     const getCategorie = async () => {
         await fetch(apiURL + 'list/category/', {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            // Authorization: 'Bearer ' + user.token
-          }
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: 'Bearer ' + user.token
+            }
         })
         .then(response => response.json())
         .then(res => {
-        //   console.log(res)
+        //   console.log('  ',res.data[0])
           setCategorie(res.data)
           setLoadCategorie(false)
         })
@@ -57,8 +58,9 @@ const Home = () => {
         })
         .then(response => response.json())
         .then(res => {
-            // console.log(res)
+            // console.log('  ',res.data[0])
             setAlaUne(res.data)
+            dispatch({type: DATAMAP, payload: res.data});
             setLoadAlaUne(false)
         })
         .catch( (e) => {

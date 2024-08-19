@@ -2,6 +2,10 @@ import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, Ima
 import { Feather, MaterialIcons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { baseURL } from '../../api/api';
+import moment from 'moment'
+import 'moment/locale/fr'
+
+moment.locale('fr')
 
 export default function Details(props){
     const navigation = useNavigation();
@@ -30,13 +34,13 @@ export default function Details(props){
                     </TouchableOpacity>
                 </View>
 
-                <View className="px-4 pt-4 flex flex-row justify-between items-center">
+                {/* <View className="px-4 pt-4 flex flex-row justify-between items-center">
                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-lg text-terre3">{item.price} {item.device}</Text>
 
-                    {/* <TouchableOpacity disabled={true} onPress={() => {}} className="h-10 w-24 items-center justify-center rounded-full bg-primary">
+                    <TouchableOpacity disabled={true} onPress={() => {}} className="h-10 w-24 items-center justify-center rounded-full bg-primary">
                         <Text style={{fontFamily: 'PoppinsRegular', color: "#53535E"}} className="text-[14px] ">Modifier</Text>
-                    </TouchableOpacity> */}
-                </View>
+                    </TouchableOpacity>
+                </View> */}
 
                 <View className="px-4 pt-4 flex flex-row items-center">
                     <View className="h-8 w-28 items-center justify-center rounded-lg bg-secondary">
@@ -47,16 +51,16 @@ export default function Details(props){
 
                 <View className="px-4 mt-4 pt-4 border-t border-t-black/10 flex flex-col">
                     <View className="flex flex-row justify-between items-center my-1">
-                        <Text style={{fontFamily: 'PoppinsRegular', color: "#3D405B"}} className="text-[12px]">Publier le 12 Juin 2024 </Text>
+                        <Text style={{fontFamily: 'PoppinsRegular', color: "#3D405B"}} className="text-[12px]">Publier le {moment(item.created_at).format('LL')} </Text>
                         <View style={{backgroundColor: "#FFFFFF"}} className="h-9 items-center justify-center rounded-lg px-5 border border-secondary/60">
                             <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[14px] text-secondary ">{item.city} - {item.district}</Text>
                         </View>
                     </View>
                     
                     <View className="flex flex-row justify-between items-center my-1">
-                        <Text style={{fontFamily: 'PoppinsRegular', color: "#3D405B"}} className="text-[12px]">Catégorie </Text>
+                        <Text style={{fontFamily: 'PoppinsRegular', color: "#3D405B"}} className="text-[12px]">Catégorie</Text>
                         <View style={{borderWidth: 0.7, backgroundColor: "#FFFFFF"}} className="h-9 items-center justify-center rounded-lg px-5 border border-secondary/60">
-                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[14px] text-secondary">Appartement</Text>
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[14px] text-secondary">{item.category.label}</Text>
                         </View>
                     </View>
                 </View>
@@ -79,6 +83,24 @@ export default function Details(props){
                 <View className="px-4 border-t border-t-black/10 mb-4 pt-4 flex flex-col">
                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-xl mb-4">Photos</Text>
 
+                    <FlatList
+                        data={item.media}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        renderItem={({item}) => {
+                            return(
+                                <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
+                                    <Image source={{uri: baseURL + item}} className="h-24 w-24" />
+                                </TouchableOpacity>
+                            )
+                        }}
+                        keyExtractor={item => item}
+                        />
+                </View>
+
+                {/* <View className="px-4 border-t border-t-black/10 mb-4 pt-4 flex flex-col">
+                    <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-xl mb-4">Photos</Text>
+
                     <View className="flex-row">
                         <TouchableOpacity onPress={() => {}} className="h-24 w-24 bg-slate-800 mr-2">
                             <Image source={require('../../assets/IMG-20230904-WA0019.jpg')} className="h-24 w-24" />
@@ -94,21 +116,21 @@ export default function Details(props){
                         </TouchableOpacity>
                     </View>
                     
-                </View>
+                </View> */}
 
                 <View className="px-4 border-t border-t-black/10 mb-4 pt-4 flex flex-col">
                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-xl mb-4">Annonceur</Text>
                     <View className="flex flex-row items-center gap-x-5">
-                        <Image source={require('../../assets/png-clipart.png')} className='rounded-full h-10 w-10' />
-                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-semibold text-lg mb-2">John Doe</Text>
+                        <Image source={item.user.image_url !== null? {uri: baseURL+item.user.image_url} : require('../../assets/png-clipart.png')} className='rounded-full h-10 w-10' />
+                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-semibold text-lg mb-2">{item.user.name}</Text>
                     </View>
                     <View className="flex flex-row items-center mt-4 pl-4 gap-x-5">
                         <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-lg">Tel:</Text>
-                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-semibold text-[15px]">+22999999999</Text>
+                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-semibold text-[15px]">{item.user.phone}</Text>
                     </View>
                     <View className="flex flex-row items-center my-4 pl-4 gap-x-5">
                         <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-lg">Email:</Text>
-                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-semibold text-[15px]">johndoe@gmail.com</Text>
+                        <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-semibold text-[15px]">{item.user.email}</Text>
                     </View>
                 </View>
 
