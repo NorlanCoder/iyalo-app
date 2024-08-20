@@ -1,15 +1,121 @@
 import { useState } from 'react';
-import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
+import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, ActivityIndicator, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons, Entypo, Fontisto, Foundation, FontAwesome } from '@expo/vector-icons';
+import { Dialog, } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker'
 import { useSelector, useDispatch } from 'react-redux';
 import RequestAuth from '../Auth/RequestAuth';
 import { apiURL } from '../../api/api';
 
 export default function Profile(props){
+    const token = useSelector((state) => state.userReducer.token)
+
     const {width} = useWindowDimensions()
     const dispatch = useDispatch();
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
     const myuser = useSelector((state) => state.userReducer)
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const hideDialog = () => setVisible(false);
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 4],
+            quality: 0.2,
+            // base64: true
+        });
+        setVisible(false);
+
+        console.log(result.assets[0])
+
+        if(result.canceled){
+
+        }else{
+            setLoading(true)
+
+            const dataToSend = new FormData();
+
+            dataToSend.append('image', {
+                name: result.assets[0].fileName,
+                uri: result.assets[0].uri,
+                type: 'image/jpeg',
+            });
+
+            console.log('form data', dataToSend)
+
+            fetch(apiURL+'update_image', {
+                method: 'PUT',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    // 'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token
+                },
+                body: dataToSend
+            })
+            .then(response => response.json())
+            .then(res => {
+                console.log(res)
+                if(res.status === 200){
+                    setLoading(false)
+                }else{
+                    setLoading(false)
+                }
+            })
+        }
+    };
+
+    const takeImage = async () => {
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 4],
+            quality: 0.2,
+            // base64: true
+        });
+        setVisible(false);
+
+        console.log(result.assets)
+
+        if(result.canceled){
+
+        }else{
+            setLoading(true)
+
+            const dataToSend = new FormData();
+
+            dataToSend.append('image', {
+                name: result.assets[0].fileName,
+                uri: result.assets[0].uri,
+                type: 'image/jpeg',
+            });
+
+            console.log('form data', dataToSend)
+
+            fetch(apiURL+'update_image', {
+                method: 'PUT',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    // 'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token
+                },
+                body: dataToSend
+            })
+            .then(response => response.json())
+            .then(res => {
+                console.log(res)
+                if(res.status === 200){
+                    setLoading(false)
+                }else{
+                    setLoading(false)
+                }
+            })
+        }
+    };
 
     const getlogoutFavorite = async () => {
 
@@ -39,8 +145,13 @@ export default function Profile(props){
                         <View style={{borderWidth: 0.7, borderColor: "#6E6F84"}} className="h-28 w-28 rounded-full justify-center items-center">
                             <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />
 
-                            <TouchableOpacity onPress={() => {}} className="h-8 w-8 bg-primary/40 rounded-full absolute bottom-0 right-0 items-center justify-center">
-                                <Entypo name="edit" size={20} color="#000"/>
+                            <TouchableOpacity onPress={() => {setVisible(true)}} className="h-8 w-8 bg-primary/40 rounded-full absolute bottom-0 right-0 items-center justify-center">
+                                {
+                                    loading?
+                                        <ActivityIndicator size={"small"} color={"#000000"} />
+                                        :
+                                    <Entypo name="edit" size={20} color="#000"/>
+                                }
                             </TouchableOpacity>
                         </View>
 
@@ -145,6 +256,30 @@ export default function Profile(props){
 
             }
             
+            <Dialog visible={visible} onDismiss={hideDialog}>
+                <Dialog.Title>Choisir une image</Dialog.Title>
+                <Dialog.Content>
+                    <View style={{height: 120, flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={() => {takeImage()}}  style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            {/* <Icon name='camera' type='ant-design' size={30} color="black"/> */}
+                            <Image className="h-14 w-14 self-center opacity-80" source={require("../../assets/camera.png")}/>
+                            <Text style={{marginTop: 10, fontFamily: 'PoppinsRegular'}} >Appareil photo</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() =>{pickImage()}} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <Image className="h-14 w-14 self-center opacity-80" source={require('../../assets/image-gallery.png')}/>
+                            {/* <MaterialIcons name="photo-library" size={30} color="black" /> */}
+                            <Text style={{marginTop: 10, fontFamily: 'PoppinsRegular'}}>Gallerie</Text>
+
+                        </TouchableOpacity>
+
+                        {/* <TouchableOpacity onPress={() => supPhot()} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <Image className="h-14 w-14 self-center opacity-80" source={require("../../assets/delete.png")}/>
+                            <Text style={{marginTop: 10, fontFamily: 'PoppinsRegular'}} >Supprimer</Text>
+                        </TouchableOpacity> */}
+                    </View>
+                </Dialog.Content>
+            </Dialog>
         </SafeAreaView>
     )
 }
