@@ -22,6 +22,13 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.norlan.iyalo",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyALdvmLQpFDpUCl41TROKDSr7MgRiS1jos"
+        }
       }
     },
     "web": {
@@ -29,6 +36,11 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4ad0702a-388d-4a76-9118-8a14d963436d"
+      }
+    }
   }
 }

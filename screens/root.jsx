@@ -14,6 +14,7 @@ import Transaction from "./Visitor/Transaction";
 import Details from "./Visitor/Details";
 import Explore from "./Visitor/Explore";
 import PropertyListCat from "./Visitor/PropertyListCat";
+import CompleteProfile from "./Visitor/CompleteProfile";
 
 import HomeAdmin from "./Admin/Home";
 import AddProperties from "./Admin/AddProperties";
@@ -23,5 +24,13 @@ import Properties from "./Admin/Properties";
 import Annonces from "./Admin/Annonces";
 import Visites from "./Admin/Visites";
 import InfoAdmin from "./Admin/InfoAdmin";
+import DetailsProperty from "./Admin/DetailsProperty";
+import UpdatePropertie from "./Admin/UpdatePropertie";
+import VisiteByProperty from "./Admin/VisiteByProperty";
+import RatingByProperty from "./Admin/RatingByProperty";
 
-export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, Profile, Infos, EditInfos, Favoris, Transaction, Details, Explore, PropertyListCat, HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, InfoAdmin};
+export {Welcome, Login, Register,Forgot, NewPassword, Home, Notification, Search, 
+    Profile, Infos, EditInfos, Favoris, Transaction, Details, Explore, PropertyListCat, CompleteProfile,
+    HomeAdmin, AddProperties, NotificationAdmin, ProfileAdmin, Properties, Annonces, Visites, InfoAdmin, DetailsProperty,
+    UpdatePropertie, VisiteByProperty, RatingByProperty
+};

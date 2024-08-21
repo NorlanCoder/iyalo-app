@@ -53,6 +53,20 @@ const HomeAdmin = () => {
                             </View>
                         </TouchableOpacity>
 
+                        <TouchableOpacity onPress={() => {}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
+                            <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
+                                <FontAwesome name='building' color={"#00ddb3"} size={20}/>
+                            </View>
+
+                            <View style={{flex: 0.85}} className="h-24 w-16 justify-center">
+                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Liste des disponibilités</Text>
+                            </View>
+
+                            <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
+                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{}</Text>
+                            </View>
+                        </TouchableOpacity>
+
                         {/* <TouchableOpacity onPress={() => {navigation.navigate('Annonces')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
                                 <Entypo name='megaphone' color={"#00ddb3"} size={20}/>

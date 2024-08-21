@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ONBOARDING, LOCATION, AUTHENTICATED } from './actionName';
+import { ONBOARDING, LOCATION, AUTHENTICATED, DATAMAP } from './actionName';
 
 const initialState = {
     visit: false,
@@ -7,7 +7,8 @@ const initialState = {
     location: {
         "longitude": 0,
         "latitude": 0,
-    }
+    },
+    dataMap: [],
 }
 
 export default function appReducer(state = initialState, {type, payload}){
@@ -34,6 +35,13 @@ export default function appReducer(state = initialState, {type, payload}){
             }
             return nextState || state; 
               
+        case DATAMAP:
+            nextState = {
+                ...state,
+                dataMap: payload
+            }
+            return nextState || state; 
+            
         default:
             return state;
     }

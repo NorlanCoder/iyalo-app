@@ -1,20 +1,27 @@
-import { View, Text, TouchableOpacity, useWindowDimensions, Image, Pressable } from 'react-native'
-import { Octicons , Entypo, MaterialCommunityIcons, MaterialIcons, Feather } from '@expo/vector-icons';
-import React from 'react'
+import { View, Text, TouchableOpacity, useWindowDimensions, Image, Pressable, StyleSheet, ActivityIndicator, Platform } from 'react-native'
+import { Octicons , Entypo, MaterialCommunityIcons, Ionicons, Fontisto } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react'
+import { Menu, MenuProvider, MenuOptions, MenuTrigger, } from "react-native-popup-menu";
 import { getPreciseDistance } from 'geolib';
 import { useSelector } from 'react-redux';
 import { baseURL } from '../../api/api';
+import { Edit, Delete, Activate, ListVisite, Add } from '../CustomContent';
+import { ModalPopup } from '../Admin/ModalPopup';
+import { apiURL } from '../../api/api';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from 'moment'
+import 'moment/locale/fr'
 
-const PropertyHomeComponent = ({item, setFavorite}) => {
+moment.locale('fr')
 
-    // const item = props.item
-
+const PropertyListByCatComponent = ({item, setFavorite, changeState}) => {
     const {width} = useWindowDimensions()
 
     const location = useSelector((state) => state.appReducer.location)
 
     return (
-        <View className="bg-white mr-2 p-2 rounded-xl" style={{width: width / 1.3}}>
+        <View className="bg-white mb-2 p-2 rounded-xl shadow-sm" style={{width: width - 20 }}>
 
             <View className="flex flex-row justify-between items-center">
                 <View className="flex flex-row justify-start gap-x-2 items-center ">
@@ -90,9 +97,21 @@ const PropertyHomeComponent = ({item, setFavorite}) => {
                     </View> 
                 </View>    
             </View>
-
         </View>
     )
 }
 
-export default PropertyHomeComponent
+export default PropertyListByCatComponent;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        marginVertical: 100,
+        marginHorizontal: 100,
+    },
+    divider: {
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: "#7F8487",
+    },
+});

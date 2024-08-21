@@ -4,27 +4,50 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker'
+import moment from 'moment';
 import { Dialog, } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {Picker} from '@react-native-picker/picker';
 import Header from '../../components/Header';
 import { apiURL } from '../../api/api';
+import { baseURL } from '../../api/api';
 
-export default function AddProperties(){
+export default function UpdatePropertie(props){
     const navigation = useNavigation();
+
+    const item = props.route.params.item;
 
     const location = useSelector((state) => state.appReducer.location)
     const token = useSelector((state) => state.userReducer.token)
 
-    const [image, setImage] = useState(null);
-    const [image0, setImage0] = useState(null);
-    const [image1, setImage1] = useState(null);
-    const [image2, setImage2] = useState(null);
-    const [image3, setImage3] = useState(null);
-    const [imageCover, setImageCover] = useState(null);
-    const [catVal, setCatVal] = useState('');
-    const [frequency, setFrequency] = useState('');
+    const [image, setImage] = useState({
+        name: "",
+        uri: item.cover_url,
+        type: 'image/jpeg'
+    });
+    const [image0, setImage0] = useState({
+        name: "",
+        uri: item.media[0],
+        type: 'image/jpeg'
+    });
+    const [image1, setImage1] = useState({
+        name: "",
+        uri: item.media[1],
+        type: 'image/jpeg'
+    });
+    const [image2, setImage2] = useState({
+        name: "",
+        uri: item.media[2],
+        type: 'image/jpeg'
+    });
+    const [image3, setImage3] = useState({
+        name: "",
+        uri: item.media[3],
+        type: 'image/jpeg'
+    });
+    const [catVal, setCatVal] = useState(item.category_id);
+    const [frequency, setFrequency] = useState(item.frequency);
     const [choix, setChoix] = useState(null);
     const [imgCoverErr, setImgCoverErr] = useState('')
     const [imgErr, setImgErr] = useState("")
@@ -32,15 +55,21 @@ export default function AddProperties(){
     const [freqErr, setFreqErr] = useState("")
     const [loading, setLoading] = useState(false);
     const [selectValue, setSelectValue] = useState({
-        categorie: "",
-        categorie_id: ""
+        categorie: item.category_id,
+        categorie_id: item.category_id
     })
     const [selectValue2, setSelectValue2] = useState({
-        frequency: "",
+        frequency: item.frequency,
         frequency_id: ""
     })
     const [categorie, setCategorie] = useState([]);
     const [visible, setVisible] = useState(false);
+
+    const [imgChange, setImgChange] = useState(false);
+    const [imgChange0, setImgChange0] = useState(false);
+    const [imgChange1, setImgChange1] = useState(false);
+    const [imgChange2, setImgChange2] = useState(false);
+    const [imgChange3, setImgChange3] = useState(false);
 
     const hideDialog = () => setVisible(false);
 
@@ -60,27 +89,6 @@ export default function AddProperties(){
         })
         .catch( (e) => {
             console.log(e);
-        })
-    }
-
-    const addProperty = async (id) => {
-        console.log(user)
-        await fetch(apiURL + 'announcer/property/create', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + myuser.token
-            },
-            body
-        })
-        .then(response => response.json())
-        .then(res => {
-            onRefresh();
-        })
-        .catch( (e) => {
-            console.log(e);
-            // setLoadAlaUne(false)
         })
     }
 
@@ -170,15 +178,40 @@ export default function AddProperties(){
 
         }else{
             if(img === 0){
-                setImage(result.assets[0])
+                setImage({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange(true)
             }else if(img === 1){
-                setImage0(result.assets[0])
+                setImage0({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange0(true)
             }else if(img === 2){
-                setImage1(result.assets[0])
+                setImage1({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange1(true)
             }else if(img === 3){
-                setImage2(result.assets[0])
+                setImage2({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange2(true)
             }else{
-                setImage3(result.assets[0])
+                setImage3({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange3(true)
             }
         }
     };
@@ -199,48 +232,97 @@ export default function AddProperties(){
 
         }else{
             if(img === 0){
-                setImage(result.assets[0])
+                setImage({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange(true)
             }else if(img === 1){
-                setImage0(result.assets[0])
+                setImage0({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange0(true)
             }else if(img === 2){
-                setImage1(result.assets[0])
+                setImage1({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange1(true)
             }else if(img === 3){
-                setImage2(result.assets[0])
+                setImage2({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange2(true)
             }else{
-                setImage3(result.assets[0])
+                setImage3({
+                    name: result.assets[0].fileName,
+                    uri: result.assets[0].uri,
+                    type: result.assets[0].type,
+                })
+                setImgChange3(true)
             }
         }
     };
 
     const supPhot = (img) => {
         if(img === 0){
-            setImage(null);
+            setImage({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
+            setImgChange(false)
         }else if(img === 1){
-            setImage0(null);
+            setImage0({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
+            setImgChange0(false)
         }else if(img === 2){
-            setImage1(null);
+            setImage1({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
+            setImgChange1(false)
         }else if(img === 3){
-            setImage2(null);
+            setImage2({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
+            setImgChange2(false)
         }else{
-            setImage3(null);
+            setImage3({
+                name: "",
+                uri: "",
+                type: "",
+            });
             setVisible(false);
+            setImgChange3(false)
         }
     }
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
-            <Header title={"Ajouter une propriété"} />
+            <Header title={"Modifier une propriété"} />
 
             <ScrollView contentContainerStyle={{paddingBottom: 90}} showsVerticalScrollIndicator={false} >
                 <Formik
                     validationSchema={formValidation}
-                    initialValues={{label: "", city: "", district: "", country: "", rooms: "", bathrooms: "", lounges: "", swingpools: "", prices: "", visitePrices: "", conditions: "", description: ""}}
+                    initialValues={{label: item.label, city: item.city, district: item.district, country: item.country, rooms: item.room, bathrooms: item.bathroom, lounges: item.lounge, swingpools: item.swingpool, prices: item.price, visitePrices: item.visite_price, conditions: item.conditions, description: item.description}}
                     onSubmit={values => {
-
                         if(catVal === "" ){
                             setCatErr('Ajouter une catégorie')
                             setLoading(false)
@@ -257,9 +339,9 @@ export default function AddProperties(){
 
                         setFreqErr(null)
 
-                        // console.log('vdvdfbdf', image)
+                        console.log('vdvdfbdf', image)
 
-                        if(image === null){
+                        if(image.uri === ""){
                             setImgCoverErr('Ajouter une image pour le cover')
                             setLoading(false)
                             return
@@ -267,25 +349,25 @@ export default function AddProperties(){
 
                         setImgCoverErr(null)
 
-                        if(image0 === null){
+                        if(image0.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
                         }
 
-                        if(image1 === null){
+                        if(image1.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
                         }
 
-                        if(image2 === null){
+                        if(image2.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
                         }
 
-                        if(image3 === null){
+                        if(image3.uri === null){
                             setImgErr('Ajouter des images')
                             setLoading(false)
                             return
@@ -295,49 +377,65 @@ export default function AddProperties(){
 
                         setLoading(true);
 
-                        console.log(image)
+                        console.log(values)
 
                         const imagesToSend = [];
-                        var cover = null, im1={}, im2={}, im3={}, im4={};
 
-                        if(image !== null){
-                            cover = {"name": image.fileName, "fileSize": image.fileSize, "height": image.height, "type": image.mimeType, "uri": image.uri, "width": image.width}
+                        if(image0.uri !== ""){
+                            if(image0.uri.includes('file')){
+                                imagesToSend.push({
+                                    name: image0.name,
+                                    uri: image0.uri,
+                                    type: 'image/jpeg',
+                                })
+                            }else{
+                                imagesToSend.push(image0.uri)
+                            }
+                        }else {
+
                         }
 
+                        if(image1.uri !== ""){
+                            if(image1.uri.includes('file')){
+                                imagesToSend.push(imagesToSend.push({
+                                    name: image1.name,
+                                    uri: image1.uri,
+                                    type: 'image/jpeg',
+                                }))
+                            }else{
+                                imagesToSend.push(image1.uri)
+                            }
+                        }else {
 
-                        if(image0 !== null){
-                            imagesToSend.push({
-                                name: image0.fileName,
-                                uri: image0.uri,
-                                type: 'image/jpeg',
-                            })
                         }
 
-                        if(image1 !== null){
-                            imagesToSend.push(imagesToSend.push({
-                                name: image1.fileName,
-                                uri: image1.uri,
-                                type: 'image/jpeg',
-                            }))
-                        }
-                        
-                        if(image2 !== null){
-                            imagesToSend.push(imagesToSend.push({
-                                name: image2.fileName,
-                                uri: image2.uri,
-                                type: 'image/jpeg',
-                            }))
+                        if(image2.uri !== ""){
+                            if(image2.uri.includes('file')){
+                                imagesToSend.push(imagesToSend.push({
+                                    name: image2.name,
+                                    uri: image2.uri,
+                                    type: 'image/jpeg',
+                                }))
+                            }else{
+                                imagesToSend.push(image2.uri)
+                            }
+                        }else {
+
                         }
 
-                        if(image3 !== null){
-                            imagesToSend.push(imagesToSend.push({
-                                name: image3.fileName,
-                                uri: image3.uri,
-                                type: 'image/jpeg',
-                            }))
-                        }
+                        if(image3.uri !== ""){
+                            if(image3.uri.includes('file')){
+                                imagesToSend.push(imagesToSend.push({
+                                    name: image3.name,
+                                    uri: image3.uri,
+                                    type: 'image/jpeg',
+                                }))
+                            }else{
+                                imagesToSend.push(image3.uri)
+                            }
+                        }else {
 
-                        console.log(im3)
+                        }
 
                         const dataToSend = new FormData();
 
@@ -358,17 +456,24 @@ export default function AddProperties(){
                         dataToSend.append('visite_price', values.visitePrices);
                         dataToSend.append('conditions', values.conditions);
                         dataToSend.append('device', "FCFA");
-                        dataToSend.append('cover', {
-                            name: image.fileName,
-                            uri: image.uri,
-                            type: 'image/jpeg',
-                        });
+                        if(image !== ""){
+                            if(image.uri.includes('file')){
+                                dataToSend.append('cover', {
+                                    name: image.name,
+                                    uri: image.uri,
+                                    type: 'image/jpeg',
+                                });
+                            }else{
+                                dataToSend.append('cover', image.uri);
+                            }
+                        }
+                        
                         imagesToSend.forEach(image => {
                             dataToSend.append('images[]', image);
                         })
 
-                        fetch(apiURL+'announcer/property/create', {
-                            method: 'POST',
+                        fetch(apiURL+'announcer/property/'+item.id+'/update', {
+                            method: 'PUT',
                             headers: {
                                 Accept: 'application/json',
                                 'Content-Type': 'multipart/form-data',
@@ -546,7 +651,7 @@ export default function AddProperties(){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('rooms')}
                                             onBlur={handleBlur('rooms')}
-                                            value={values.rooms}
+                                            value={`${values.rooms}`}
                                         />
                                     </View>
                                     {errors.rooms &&
@@ -566,7 +671,7 @@ export default function AddProperties(){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('bathrooms')}
                                             onBlur={handleBlur('bathrooms')}
-                                            value={values.bathrooms}
+                                            value={`${values.bathrooms}`}
                                         />
                                     </View>
                                     {errors.bathrooms &&
@@ -588,7 +693,7 @@ export default function AddProperties(){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('lounges')}
                                             onBlur={handleBlur('lounges')}
-                                            value={values.lounges}
+                                            value={`${values.lounges}`}
                                         />
                                     </View>
                                     {errors.lounges &&
@@ -608,7 +713,7 @@ export default function AddProperties(){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('swingpools')}
                                             onBlur={handleBlur('swingpools')}
-                                            value={values.swingpools}
+                                            value={`${values.swingpools}`}
                                         />
                                     </View>
                                     {errors.swingpools &&
@@ -630,7 +735,7 @@ export default function AddProperties(){
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('prices')}
                                             onBlur={handleBlur('prices')}
-                                            value={values.prices}
+                                            value={`${values.prices}`}
                                         />
                                     </View>
                                     {errors.prices &&
@@ -680,7 +785,7 @@ export default function AddProperties(){
                                         keyboardType="phone-pad"
                                         onChangeText={handleChange('visitePrices')}
                                         onBlur={handleBlur('visitePrices')}
-                                        value={values.visitePrices}
+                                        value={`${values.visitePrices}`}
                                     />
                                 </View>
                                 {errors.visitePrices &&
@@ -763,8 +868,8 @@ export default function AddProperties(){
 
                                 <TouchableOpacity onPress={() => onOpen(0)} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                     {
-                                        image !== null?
-                                        <Image source={{uri: image.uri}} resizeMode='cover' className="rounded-lg h-full w-full" />
+                                        image.uri !== ""?
+                                        <Image source={imgChange? {uri: image.uri} : {uri: baseURL+`${image.uri}`}} resizeMode='cover' className="rounded-lg h-full w-full" />
                                         :
                                         <Feather name='camera' size={40} color={"#00ddb3"}/>
                                     } 
@@ -780,8 +885,8 @@ export default function AddProperties(){
                                 <View className="flex-row justify-between">
                                     <TouchableOpacity onPress={() => onOpen(1)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image0 !== null?
-                                            <Image source={{uri: image0.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image0.uri !== ""?
+                                            <Image source={imgChange0? {uri: image0.uri} : {uri: baseURL+`${image0.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -789,8 +894,8 @@ export default function AddProperties(){
                 
                                     <TouchableOpacity onPress={() => onOpen(2)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image1 !== null?
-                                            <Image source={{uri: image1.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image1.uri !== ""?
+                                            <Image source={imgChange1? {uri: image1.uri} : {uri: baseURL+`${image1.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -798,8 +903,8 @@ export default function AddProperties(){
 
                                     <TouchableOpacity onPress={() => onOpen(3)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image2 !== null?
-                                            <Image source={{uri: image2.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image2.uri !== ""?
+                                            <Image source={imgChange2? {uri: image2.uri} : {uri: baseURL+`${image2.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -807,8 +912,8 @@ export default function AddProperties(){
 
                                     <TouchableOpacity onPress={() => onOpen(4)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                                         {
-                                            image3 !== null?
-                                            <Image source={{uri: image3.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
+                                            image3.uri !== ""?
+                                            <Image source={imgChange3? {uri: image3.uri} : {uri: baseURL+`${image3.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
                                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                                         } 
@@ -824,7 +929,7 @@ export default function AddProperties(){
                                     loading? 
                                     <ActivityIndicator size={20} color="#fff" />
                                     :
-                                    <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[16px] ">Créer</Text>
+                                    <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[16px] ">Modifier</Text>
                                 }
                             </TouchableOpacity>
                         </View>
