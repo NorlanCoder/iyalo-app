@@ -6,6 +6,7 @@ import { apiURL } from '../../api/api';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ProfileAdmin(){
+    const dispatch = useDispatch();
     const {width} = useWindowDimensions()
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
     const myuser = useSelector((state) => state.userReducer)
