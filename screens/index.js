@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Platform, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -20,7 +21,7 @@ Notifications.setNotificationHandler({
 
 export default function Index(){
 
-    const isAuthenticated = useSelector((state) => state.appReducer.isAuthenticated)
+    const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
     const tokenAuth = useSelector((state) => state.userReducer.token)
 
     const dispatch = useDispatch()
@@ -60,29 +61,7 @@ export default function Index(){
     }
 
     const sendNotifToken = (token) => {
-        fetch(apiURL+'save_token', {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + tokenAuth
-            },
-            body: JSON.stringify({
-                'token_notify': token
-            })
-        })
-        .then(response => response.json())
-        .then(res => {
-            console.log('token', res)
-            if(res.status === 200){
-
-            }else{
-
-            }
-        })
-        .catch(e => {
-            console.log(e)
-        })
+        
     }
 
     const NotificationListner = () => {
@@ -166,7 +145,29 @@ export default function Index(){
 
                 console.log('Mon token', token)
                 
-                sendNotifToken(token);
+                fetch(apiURL+'save_token', {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + tokenAuth
+                    },
+                    body: JSON.stringify({
+                        'token_notify': token
+                    })
+                })
+                .then(response => response.json())
+                .then(res => {
+                    console.log('token', res)
+                    if(res.status === 200){
+        
+                    }else{
+        
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })
             } catch (e) {
                 token = `${e}`;
             }
@@ -178,27 +179,29 @@ export default function Index(){
     }
 
     useEffect(() => {
-        console.log("get token ")
-        registerForPushNotificationsAsync().then(token => token && setExpoPushToken(token));
-    
-        if (Platform.OS === 'android') {
-            Notifications.getNotificationChannelsAsync().then(value => setChannels(value ?? []));
+        if(isAuthenticated){
+            console.log("get token ")
+            registerForPushNotificationsAsync().then(token => token && setExpoPushToken(token));
+        
+            if (Platform.OS === 'android') {
+                Notifications.getNotificationChannelsAsync().then(value => setChannels(value ?? []));
+            }
+            notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+                setNotification(notification);
+            });
+        
+            responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+                console.log('my response', response);
+            });
+        
+            return () => {
+                notificationListener.current &&
+                    Notifications.removeNotificationSubscription(notificationListener.current);
+                responseListener.current &&
+                    Notifications.removeNotificationSubscription(responseListener.current);
+            };
         }
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-        });
-    
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log('my response', response);
-        });
-    
-        return () => {
-            notificationListener.current &&
-                Notifications.removeNotificationSubscription(notificationListener.current);
-            responseListener.current &&
-                Notifications.removeNotificationSubscription(responseListener.current);
-        };
-    }, []);
+    }, [isAuthenticated]);
 
     return(
         <NavigationContainer>
