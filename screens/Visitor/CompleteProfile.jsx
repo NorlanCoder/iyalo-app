@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import {  Text, View, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator} from 'react-native'
 import { Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import { Dialog, } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,42 +18,105 @@ export default function CompleteProfile(){
     const myuser = useSelector((state) => state.userReducer)
 
     const [adresse, setAdresse] = useState("");
-    const [card, setCard] = useState("");
-    const [logo, setLogo] = useState("");
+    const [logo, setLogo] = useState(null);
+    const [document, setDocument] = useState(null);
     const [loading, setLoading] = useState("");
     const [message, setMessage] = useState(null);
+    const [visible, setVisible] = useState(false);
+
+    const hideDialog = () => setVisible(false);
+    
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 4],
+            quality: 0.2,
+        });
+        // setVisible(false);
+    
+        if (result.canceled) {
+            return;
+        }
+    
+        if (result.assets && result.assets.length > 0) {
+            setLogo(result.assets[0])
+        }
+    };
+
+    const takeImage = async () => {
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 4],
+            quality: 0.2,
+        });
+        // setVisible(false);
+    
+        if (result.canceled) {
+            return;
+        }
+    
+        if (result.assets && result.assets.length > 0) {
+            setLogo(result.assets[0])
+        }
+    };
+
+    const pickDocument = async() => {
+        const documentResult = await DocumentPicker.getDocumentAsync({
+            type: '*/*',
+            copyToCacheDirectory: false,
+        });
+
+        if(documentResult.type === "success"){
+            setDocument(documentResult);
+        }
+    }
 
     const complete = async () => {
-        // if(!oldPass){
-        //     setMessage2("Entrer votre ancien mot de passe");
-        //     return
-        // }
+        if(adresse === ""){
+            setMessage("Entrer votre adresse");
+            return
+        }
 
-        // if(!newPass){
-        //     setMessage2("Entrer un nouveau mot de passe");
-        //     return
-        // }
+        if(logo === null){
+            setMessage("Ajouter un logo");
+            return
+        }
 
-        // if(!confirmPass){
-        //     setMessage2("Confirmer le mot de passe");
-        //     return
-        // }
-
+        if(document === null){
+            setMessage("Ajouter un document");
+            return
+        }
         setMessage(null)
+        setLoading(true);
+        
+        const formData = new FormData();
+
+        formData.append('adresse', adresse);
+
+        formData.append('logo', {
+            name: logoResult.uri.split('/').pop(),
+            uri: logoResult.uri,
+            type: 'image/jpeg',
+        });
+
+        formData.append('card', {
+            name: document.name,
+            uri: document.uri,
+            type: document.mimeType || 'application/octet-stream',
+        });
 
         setLoading(true);
         await fetch(apiURL + 'became_announcer', {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json',
+                // 'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
                 Authorization: 'Bearer ' + myuser.token
             },
-            body: JSON.stringify({
-                "adress": adresse,
-                "card": card,
-                "logo": logo,
-            })
+            body: formData
         })
         .then(response => response.json())
         .then(res => {
@@ -81,8 +147,33 @@ export default function CompleteProfile(){
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 50}}>
                 <EditInfoTextInputComponent title={"Adresse"} placeholder={"Cotonou"} value={adresse} onChangeText={(value) => setAdresse(value)} />
-                <EditInfoTextInputComponent title={"Adresse"} placeholder={"Cotonou"} value={adresse} onChangeText={(value) => setAdresse(value)} />
-                <EditInfoTextInputComponent title={"Adresse"} placeholder={"Cotonou"} value={adresse} onChangeText={(value) => setAdresse(value)} />
+                
+                <View className="h-28 mx-4 my-4 justify-center">
+                    <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Logo</Text>
+
+                    <TouchableOpacity onPress={() => {setVisible(true)}} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                        {
+                            logo !== null?
+                            <Image source={{uri: logo}} resizeMode='cover' className="rounded-lg h-full w-full" />
+                            :
+                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                        } 
+                    </TouchableOpacity>
+                </View>
+
+                <View className="h-28 mx-4 my-4 justify-center">
+                    <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Logo</Text>
+
+                    <TouchableOpacity onPress={() => {pickDocument()}} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                        {
+                            document !== null?
+                            // <Image source={{uri: logo}} resizeMode='cover' className="rounded-lg h-full w-full" />
+                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Logo</Text>
+                            :
+                            <Feather name='document' size={40} color={"#00ddb3"}/>
+                        }
+                    </TouchableOpacity>
+                </View>
 
                 {message && <Text className="text-[#E50506] font-['PoppinsRegular'] text-[14px] text-center">{message}</Text>}
 
@@ -95,6 +186,31 @@ export default function CompleteProfile(){
                     }
                 </TouchableOpacity>
             </ScrollView>
+
+            <Dialog visible={visible} onDismiss={hideDialog}>
+                <Dialog.Title>Choisir une image</Dialog.Title>
+                <Dialog.Content>
+                    <View style={{height: 120, flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={() => {takeImage()}}  style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            {/* <Icon name='camera' type='ant-design' size={30} color="black"/> */}
+                            <Image className="h-14 w-14 self-center opacity-80" source={require("../../assets/camera.png")}/>
+                            <Text style={{marginTop: 10, fontFamily: 'PoppinsRegular'}} >Appareil photo</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() =>{pickImage()}} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <Image className="h-14 w-14 self-center opacity-80" source={require('../../assets/image-gallery.png')}/>
+                            {/* <MaterialIcons name="photo-library" size={30} color="black" /> */}
+                            <Text style={{marginTop: 10, fontFamily: 'PoppinsRegular'}}>Gallerie</Text>
+
+                        </TouchableOpacity>
+
+                        {/* <TouchableOpacity onPress={() => supPhot()} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <Image className="h-14 w-14 self-center opacity-80" source={require("../../assets/delete.png")}/>
+                            <Text style={{marginTop: 10, fontFamily: 'PoppinsRegular'}} >Supprimer</Text>
+                        </TouchableOpacity> */}
+                    </View>
+                </Dialog.Content>
+            </Dialog>
         </SafeAreaView>
     )
 }
