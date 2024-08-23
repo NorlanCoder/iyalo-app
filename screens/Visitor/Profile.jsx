@@ -19,54 +19,157 @@ export default function Profile(props){
 
     const hideDialog = () => setVisible(false);
 
+    // const pickImage = async () => {
+    //     let result = await ImagePicker.launchImageLibraryAsync({
+    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //         allowsEditing: true,
+    //         aspect: [4, 4],
+    //         quality: 0.2,
+    //         // base64: true
+    //     });
+    //     setVisible(false);
+
+    //     console.log(result.assets[0])
+
+    //     if(result.canceled){
+
+    //     }else{
+    //         setLoading(true)
+
+    //         const dataToSend = new FormData();
+
+    //         dataToSend.append('image', {
+    //             name: result.assets[0].fileName,
+    //             uri: result.assets[0].uri,
+    //             type: 'image/jpeg',
+    //         });
+
+    //         console.log('form data', dataToSend)
+
+    //         fetch(apiURL + 'update_image', {
+    //             method: 'PUT',
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Content-Type': 'multipart/form-data',
+    //                 // 'Content-Type': 'application/json',
+    //                 Authorization: 'Bearer ' + token
+    //             },
+    //             body: dataToSend
+    //         })
+    //         .then(response => response.json())
+    //         .then(res => {
+    //             console.log(res)
+    //             if(res.status === 200){
+    //                 setLoading(false)
+    //             }else{
+    //                 setLoading(false)
+    //             }
+    //         })
+    //     }
+    // };
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 4],
             quality: 0.2,
-            // base64: true
         });
         setVisible(false);
-
-        console.log(result.assets[0])
-
-        if(result.canceled){
-
-        }else{
-            setLoading(true)
-
+    
+        if (result.canceled) {
+            return;
+        }
+    
+        if (result.assets && result.assets.length > 0) {
+            setLoading(true);
+    
             const dataToSend = new FormData();
-
             dataToSend.append('image', {
                 name: result.assets[0].fileName,
                 uri: result.assets[0].uri,
                 type: 'image/jpeg',
             });
-
-            console.log('form data', dataToSend)
-
-            fetch(apiURL+'update_image', {
+    
+            console.log('form data', dataToSend);
+    
+            fetch(apiURL + 'update_image', {
                 method: 'PUT',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'multipart/form-data',
-                    // 'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + token
+                    Authorization: 'Bearer ' + token,
                 },
-                body: dataToSend
+                body: dataToSend,
             })
-            .then(response => response.json())
-            .then(res => {
-                console.log(res)
-                if(res.status === 200){
-                    setLoading(false)
-                }else{
-                    setLoading(false)
+            .then(response => {
+                console.log('response ',response.json())
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                console.log('response ',response.json())
+                return response.json();
+                
             })
+            .then(res => {
+                console.log(res);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setLoading(false);
+            });
         }
     };
+
+    // const takeImage = async () => {
+    //     let result = await ImagePicker.launchCameraAsync({
+    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //         allowsEditing: true,
+    //         aspect: [4, 4],
+    //         quality: 0.2,
+    //         // base64: true
+    //     });
+    //     setVisible(false);
+
+    //     console.log(result.assets)
+
+    //     if(result.canceled){
+
+    //     }else{
+    //         setLoading(true)
+
+    //         const dataToSend = new FormData();
+
+    //         dataToSend.append('image', {
+    //             name: result.assets[0].fileName,
+    //             uri: result.assets[0].uri,
+    //             type: 'image/jpeg',
+    //         });
+
+    //         console.log('form data', dataToSend)
+
+    //         fetch(apiURL+'update_image', {
+    //             method: 'PUT',
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Content-Type': 'multipart/form-data',
+    //                 // 'Content-Type': 'application/json',
+    //                 Authorization: 'Bearer ' + token
+    //             },
+    //             body: dataToSend
+    //         })
+    //         .then(response => response.json())
+    //         .then(res => {
+    //             console.log(res)
+    //             if(res.status === 200){
+    //                 setLoading(false)
+    //             }else{
+    //                 setLoading(false)
+    //             }
+    //         })
+    //     }
+    // };
 
     const takeImage = async () => {
         let result = await ImagePicker.launchCameraAsync({
@@ -74,46 +177,48 @@ export default function Profile(props){
             allowsEditing: true,
             aspect: [4, 4],
             quality: 0.2,
-            // base64: true
         });
         setVisible(false);
-
-        console.log(result.assets)
-
-        if(result.canceled){
-
-        }else{
-            setLoading(true)
-
+    
+        if (result.canceled) {
+            return;
+        }
+    
+        if (result.assets && result.assets.length > 0) {
+            setLoading(true);
+    
             const dataToSend = new FormData();
-
             dataToSend.append('image', {
                 name: result.assets[0].fileName,
                 uri: result.assets[0].uri,
                 type: 'image/jpeg',
             });
-
-            console.log('form data', dataToSend)
-
-            fetch(apiURL+'update_image', {
+    
+            console.log('form data', dataToSend);
+    
+            fetch(apiURL + 'update_image', {
                 method: 'PUT',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'multipart/form-data',
-                    // 'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + token
+                    Authorization: 'Bearer ' + token,
                 },
-                body: dataToSend
+                body: dataToSend,
             })
-            .then(response => response.json())
-            .then(res => {
-                console.log(res)
-                if(res.status === 200){
-                    setLoading(false)
-                }else{
-                    setLoading(false)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                return response.json();
             })
+            .then(res => {
+                console.log(res);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setLoading(false);
+            });
         }
     };
 

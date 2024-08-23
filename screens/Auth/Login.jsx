@@ -43,10 +43,9 @@ const Login = () => {
                 console.log(res.message)
                 setLoading(false)
             } else if(res[0].token) {
-
-                dispatch({type: 'AUTHENTICATED', payload: true});
                 dispatch({type: 'USER', payload: res[0].user});
                 dispatch({type: 'SETTOKEN', payload: res[0].token});
+                dispatch({type: 'AUTHENTICATED', payload: true});
                 if(res[0].user.role=="announcer") dispatch({type: 'ISADMIN', payload: true});
                 
                 setLoading(false)
