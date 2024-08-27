@@ -87,11 +87,12 @@ const Register = () => {
                 // console.log("Compte créer avec succès");
                 // console.log(res);
 
-                dispatch({type: 'AUTHENTICATED', payload: true});
-                dispatch({type: 'USER', payload: res.data.user});
-                dispatch({type: 'SETTOKEN', payload: res.data.token});
+                // dispatch({type: 'AUTHENTICATED', payload: true});
+                // dispatch({type: 'USER', payload: res.data.user});
+                // dispatch({type: 'SETTOKEN', payload: res.data.token});
                 // if(res.data.user.role=="announcer") dispatch({type: ISADMIN, payload: true});
-                navigation.navigate('Tab', { screen: 'Home' })
+                // navigation.navigate('Tab', { screen: 'Home' })
+                navigation.goBack();
 
                 setLoading(false);
             }

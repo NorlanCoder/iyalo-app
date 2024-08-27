@@ -4,8 +4,8 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, Feather, Entypo, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, AddProperties, Details, Explore, NotificationAdmin, CompleteProfile,
-    ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, 
-    Forgot, NewPassword, PropertyListCat, InfoAdmin, DetailsProperty, UpdatePropertie, VisiteByProperty, RatingByProperty
+    ProfileAdmin, Properties, Annonces, Visites, Infos, EditInfos, Welcome, Login, Register, Forgot, NewPassword, PropertyListCat, InfoAdmin, DetailsProperty, 
+    UpdatePropertie, VisiteByProperty, RatingByProperty, SecurityVisitor, SecurityAdmin, EditInfosAdmin
 } from '../screens/root';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -185,6 +185,8 @@ export default function Navigation(){
                         <Stack.Screen name='UpdatePropertie' component={UpdatePropertie} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name='VisiteByProperty' component={VisiteByProperty} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name='RatingByProperty' component={RatingByProperty} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name='SecurityAdmin' component={SecurityAdmin} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen name='EditInfosAdmin' component={EditInfosAdmin} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name="Login" 
                             component={Login} 
                             options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
@@ -267,6 +269,15 @@ export default function Navigation(){
                         <Stack.Screen
                             name="CompleteProfile"
                             component={CompleteProfile}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
+                        />
+                        <Stack.Screen
+                            name="SecurityVisitor"
+                            component={SecurityVisitor}
                             options={{
                                 headerShown: false,
                                 headerTintColor: "transparent",
