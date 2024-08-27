@@ -1,17 +1,19 @@
 import { View, Text, TouchableOpacity, useWindowDimensions, Image, Pressable } from 'react-native'
 import { Octicons , Entypo, MaterialCommunityIcons, MaterialIcons, Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react'
 import { getPreciseDistance } from 'geolib';
 import { useSelector } from 'react-redux';
 import { baseURL } from '../../api/api';
 
 const PropertyHomeComponent = ({item, setFavorite}) => {
-
+    const navigation = useNavigation()
     // const item = props.item
 
     const {width} = useWindowDimensions()
 
     const location = useSelector((state) => state.appReducer.location)
+    const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
 
     return (
         <View className="bg-white mr-2 p-2 rounded-xl" style={{width: width / 1.3}}>
@@ -33,7 +35,7 @@ const PropertyHomeComponent = ({item, setFavorite}) => {
                         <Octicons name="star-fill" size={15} color="yellow" />
                         <Text className="pl-1 text-white font-bold text-lg" style={{fontFamily: 'PoppinsRegular'}}>{item.note.length}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {setFavorite(item.id)}} className="bg-black/40 p-[6px] rounded-full">
+                    <TouchableOpacity onPress={() => {isAuthenticated? setFavorite(item.id) : navigation.navigate('Login')}} className="bg-black/40 p-[6px] rounded-full">
                         <Octicons name="heart" size={18} color="white" />
                     </TouchableOpacity>
                 </View>

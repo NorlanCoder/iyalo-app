@@ -113,7 +113,7 @@ const Home = () => {
     }
 
     const setFavorite = async (id) => {
-        console.log(user)
+        // console.log(user)
         await fetch(apiURL + 'toggle/favoris/' + user.id + '/' + id, {
             method: 'GET',
             headers: {
@@ -124,9 +124,12 @@ const Home = () => {
         })
         .then(response => response.json())
         .then(res => {
-            
+            if(res.status === 200 || res.status === 201){
+
+            } 
+            console.log(res)
         })
-        .catch( (e) => {
+        .catch((e) => {
             console.log(e);
             // setLoadAlaUne(false)
         })
@@ -164,7 +167,7 @@ const Home = () => {
     );
 
     const renderproperty = ({ item }) => (
-        <TouchableOpacity key={item.id} onPress={() => {navigation.navigate('Details', {item: item})}}>
+        <TouchableOpacity key={item.id} onPress={() => {navigation.navigate('Details', {item: item}, {setFavorite: setFavorite} )}}>
             <PropertyHomeComponent item={item} setFavorite={setFavorite} name={item.nom} id={item.id_} />
         </TouchableOpacity>
     );
