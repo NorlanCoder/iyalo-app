@@ -1,16 +1,19 @@
 import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, Image, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { WebView } from 'react-native-webview';
+import { Button, Dialog, Portal, PaperProvider, Provider, Modal as PaperModal } from 'react-native-paper';
 import { baseURL } from '../../api/api';
 import moment from 'moment'
 import 'moment/locale/fr'
-
 moment.locale('fr')
 
 export default function Details(props){
     const navigation = useNavigation();
 
     const item = props.route.params.item
+
+    console.log(props.route.params)
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100">

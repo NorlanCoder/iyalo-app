@@ -22,7 +22,7 @@ export default function InfoAdmin(){
                     <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Infos personnelles</Text>
                 </View>
 
-                <TouchableOpacity onPress={() =>{navigation.navigate('EditProfil')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
+                <TouchableOpacity onPress={() =>{navigation.navigate('EditInfosAdmin')}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center" style={{ height: 40, width: 40,}}>
                     <MaterialIcons name="edit" size={20} color="#000"/>
                 </TouchableOpacity>
             </Animated.View>

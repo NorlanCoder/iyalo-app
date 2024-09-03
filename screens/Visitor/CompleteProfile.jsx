@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {  Text, View, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator} from 'react-native'
+import {  Text, View, Image, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator} from 'react-native'
 import { Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
@@ -17,6 +17,8 @@ export default function CompleteProfile(){
 
     const myuser = useSelector((state) => state.userReducer)
 
+    console.log(myuser.token)
+
     const [adresse, setAdresse] = useState("");
     const [logo, setLogo] = useState(null);
     const [document, setDocument] = useState(null);
@@ -33,7 +35,7 @@ export default function CompleteProfile(){
             aspect: [4, 4],
             quality: 0.2,
         });
-        // setVisible(false);
+        setVisible(false);
     
         if (result.canceled) {
             return;
@@ -51,7 +53,7 @@ export default function CompleteProfile(){
             aspect: [4, 4],
             quality: 0.2,
         });
-        // setVisible(false);
+        setVisible(false);
     
         if (result.canceled) {
             return;
@@ -68,8 +70,10 @@ export default function CompleteProfile(){
             copyToCacheDirectory: false,
         });
 
-        if(documentResult.type === "success"){
-            setDocument(documentResult);
+        if(documentResult.assets && documentResult.assets.length > 0) {
+            console.log(documentResult.assets[0]);
+
+            setDocument(documentResult.assets[0]);
         }
     }
 
@@ -91,36 +95,40 @@ export default function CompleteProfile(){
         setMessage(null)
         setLoading(true);
         
-        const formData = new FormData();
+        const dataToSend = new FormData();
 
-        formData.append('adresse', adresse);
-
-        formData.append('logo', {
-            name: logoResult.uri.split('/').pop(),
-            uri: logoResult.uri,
+        dataToSend.append('adress', adresse);
+        dataToSend.append('card', {
+            name: document.name,
+            uri: document.uri,
+            type: document.mimeType,
+        });
+        dataToSend.append('logo', {
+            name: logo.fileName,
+            uri: logo.uri,
             type: 'image/jpeg',
         });
 
-        formData.append('card', {
-            name: document.name,
-            uri: document.uri,
-            type: document.mimeType || 'application/octet-stream',
-        });
+        console.log('data', dataToSend._parts);
 
         setLoading(true);
         await fetch(apiURL + 'became_announcer', {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                // 'Content-Type': 'application/json',
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
+                // 'Content-Type': 'multipart/form-data',
                 Authorization: 'Bearer ' + myuser.token
             },
-            body: formData
+            body: JSON.stringify({
+                'adress': adresse,
+                'card': document.uri,
+                'logo': logo.uri
+            })
         })
         .then(response => response.json())
         .then(res => {
-            console.log(res)
+            console.log('response  ',res)
             if(res.status === 200){
                 setLoading(false);
                 navigation.goBack();
@@ -154,28 +162,28 @@ export default function CompleteProfile(){
                     <TouchableOpacity onPress={() => {setVisible(true)}} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                         {
                             logo !== null?
-                            <Image source={{uri: logo}} resizeMode='cover' className="rounded-lg h-full w-full" />
+                            <Image source={{uri: logo.uri}} resizeMode='cover' className="rounded-lg h-full w-full" />
                             :
                             <Feather name='camera' size={40} color={"#00ddb3"}/>
                         } 
                     </TouchableOpacity>
                 </View>
 
-                <View className="h-28 mx-4 my-4 justify-center">
-                    <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Logo</Text>
+                <View className="h-28 mx-4 mt-6 mb-4 justify-center">
+                    <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Document</Text>
 
-                    <TouchableOpacity onPress={() => {pickDocument()}} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                    <TouchableOpacity onPress={() => {pickDocument()}} style={{borderWidth: 0.7,}} className="h-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
                         {
                             document !== null?
                             // <Image source={{uri: logo}} resizeMode='cover' className="rounded-lg h-full w-full" />
-                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Logo</Text>
+                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">{document.name}</Text>
                             :
-                            <Feather name='document' size={40} color={"#00ddb3"}/>
+                            <Ionicons name='document' size={40} color={"#00ddb3"}/>
                         }
                     </TouchableOpacity>
                 </View>
 
-                {message && <Text className="text-[#E50506] font-['PoppinsRegular'] text-[14px] text-center">{message}</Text>}
+                {message && <Text className="text-[#E50506] font-['PoppinsRegular'] text-[14px] text-center mt-4">{message}</Text>}
 
                 <TouchableOpacity onPress={() => {complete()}} className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
                     {

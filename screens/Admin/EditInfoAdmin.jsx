@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import EditInfoTextInputComponent from '../../components/Visitor/EditInfoTextImputComponent';
 import { apiURL } from '../../api/api';
 
-export default function EditInfos(){
+export default function EditInfosAdmin(){
     const navigation = useNavigation();
     const dispatch = useDispatch();
 

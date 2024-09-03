@@ -281,7 +281,7 @@ export default function Profile(props){
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                        <TouchableOpacity onPress={() =>{props.navigation.navigate('SecurityVisitor')}} className="flex-row justify-between mx-3 my-3 w-full">
                             <View className="flex-row justify-center items-center">
                                 <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                     <Fontisto name="locked" size={20} color="#000000"/>

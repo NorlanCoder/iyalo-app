@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList, RefreshControl, ActivityIndicator} from 'react-native'
+import {  StyleSheet, Text, View, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList, RefreshControl, ActivityIndicator} from 'react-native'
 import { Feather, MaterialIcons, Entypo, Octicons } from '@expo/vector-icons';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CATEGORY } from '../../utils/data/categoriedata';
@@ -10,11 +10,11 @@ import { BATH } from '../../utils/data/bathdata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import { useSelector } from 'react-redux';
 import RequestAuth from '../Auth/RequestAuth';
-import { apiURL } from '../../api/api';
+import { apiURL, baseURL } from '../../api/api';
 
 
 export default function Favoris(){
-
+    const navigation = useNavigation();
     const rendercategory = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => {}}>
             <CategoryComponent name={item.nom} id={item.id_} />
@@ -78,7 +78,7 @@ export default function Favoris(){
         })
         .then(response => response.json())
         .then(res => {
-            // console.log(res)
+            console.log('liste favoris', res)
             setFav(res.data)
             setLoading(false)
         })
@@ -89,17 +89,16 @@ export default function Favoris(){
     }
 
     useEffect(() => {
-        
         getFavorite()
-        
     }, [isAuthenticated])
+
 
     const renderItem = ({item}) => {
         console.log(item)
         return(
-            <TouchableOpacity className="bg-white h-32 m-3 rounded-xl flex-row">
+            <TouchableOpacity onPress={() => {navigation.navigate('Details', {item: item})}} className="bg-white h-32 m-3 rounded-xl flex-row">
                 <View  className="justify-center items-center p-2">
-                    <Image className="h-28 w-28 rounded-xl" source={require("../../assets/IMG-20230904-WA0019.jpg")}/>
+                    <Image className="h-28 w-28 rounded-xl" source={{uri: baseURL + item.cover_url}}/>
                 </View>
 
                 <View className="p-2 gap-2 justify-center w-[65%]">
@@ -119,7 +118,7 @@ export default function Favoris(){
                     
 
                     <View>
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] text-primary/70 ">XOF {item.price} <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[14px] text-gray-400"> / {item.frequency}</Text></Text>
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] text-primary/70 ">XOF {item.price} <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[14px] text-gray-400"> / {item.frequency === "monthly"? "Mois": item.frequency === "daily"? "Jour": "Année"}</Text></Text>
                         {/* <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Meublé</Text> */}
                     </View>
                     
@@ -155,21 +154,19 @@ export default function Favoris(){
                         <ActivityIndicator size={50} color="#6C5248" />
                     </View>
                     :
-                    <View className="my-2">
-                        <FlatList
-                            data={fav}
-                            renderItem={renderItem}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
-                            ListEmptyComponent={
-                                <View className="w-[100vw] h-[80vh] flex justify-center items-center" style={{ justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={{fontFamily: 'KeepCalm'}} className>Aucun Favoris</Text>
-                                </View>
-                            }
-                            keyExtractor={(item, index) => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            nestedScrollEnabled
-                        />
-                    </View>
+                    <FlatList
+                        data={fav}
+                        renderItem={renderItem}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                        ListEmptyComponent={
+                            <View className="w-[100vw] h-[80vh] flex justify-center items-center" style={{ justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{fontFamily: 'KeepCalm'}} className>Aucun Favoris</Text>
+                            </View>
+                        }
+                        keyExtractor={(item, index) => item.id}
+                        showsHorizontalScrollIndicator={false}
+                        nestedScrollEnabled
+                    />
                 :
                     <RequestAuth/>
 
