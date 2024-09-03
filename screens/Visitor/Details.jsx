@@ -1,9 +1,13 @@
-import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, Image, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList} from 'react-native'
-import { Feather, MaterialIcons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import React, { useState, useRef, useEffect } from 'react'
+import {  StyleSheet, Text, View, Modal, Image, ScrollView, TouchableOpacity, Animated, ActivityIndicator, SafeAreaView, FlatList} from 'react-native'
+import { Feather, MaterialIcons, Entypo, Ionicons, FontAwesome, Fontisto, Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { Icon } from 'react-native-elements';
 import { WebView } from 'react-native-webview';
 import { Button, Dialog, Portal, PaperProvider, Provider, Modal as PaperModal } from 'react-native-paper';
-import { baseURL } from '../../api/api';
+import { baseURL, API_KEY_SECRETE, API_KEY_SECRETE_TEST, fedapayBASEURL, fedapayBASEURL_TEST, apiURL } from '../../api/api';
+import { useSelector } from 'react-redux';
+import { ModalPopup } from '../../components/Admin/ModalPopup';
 import moment from 'moment'
 import 'moment/locale/fr'
 moment.locale('fr')
@@ -11,12 +15,263 @@ moment.locale('fr')
 export default function Details(props){
     const navigation = useNavigation();
 
+    const user = useSelector((state) => state.userReducer.user)
+    const myuser = useSelector((state) => state.userReducer)
+
+    console.log(props.route.params.item)
+
     const item = props.route.params.item
 
-    console.log(props.route.params)
+    const [urlPayment, setUrlPayment] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [init, setInit] = useState({});
+    const [showWebview, setShowWebview] = useState(false);
+    const [visible, setVisible] = useState(false)
+    const [day, setDay] = useState("Lundi")
+    const [hour, setHour] = useState("12:00")
+    const hideModal = () => setShowWebview(false);const scaleValue = useRef(new Animated.Value(0)).current;
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+        toggleModal();
+    }, [visible]);
+
+    const toggleModal = () => {
+        if (visible) {
+            setVisible(true);
+            Animated.spring(scaleValue, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            setTimeout(() => setVisible(false), 200);
+            Animated.timing(scaleValue, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+        }
+    };
+
+    const getCalendar = async () => {
+        await fetch(apiURL + "announcer/property/"+item.id+"/calendar", {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + myuser.token
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+              console.log('  ',res)
+            // setCategorie(res.data)
+            // setLoadCategorie(false)
+        })
+        .catch( (e) => {
+            console.log(e);
+            // setLoadCategorie(false)
+        })
+    }
+
+    useEffect(() => {
+        getCalendar()
+    }, [item])
+
+    const close = () => {
+        setModalVisible(!modalVisible)
+    }
+
+    const doTransaction = async () => {
+        setLoading(true)
+        await fetch(fedapayBASEURL_TEST+"transactions", {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + API_KEY_SECRETE_TEST
+            },
+            body: JSON.stringify({
+                description : "Transaction de " + user.name,
+                amount : item.price || 100,
+                currency : {
+                    iso : "XOF"
+                },
+                callback_url : apiURL + "visit/callback",
+                custom_metadata: {
+                    user_id: user.id,
+                    property_id: item.id,
+                    day: day,
+                    hour: hour,
+                },
+                customer : {
+                    firstname : user.name,
+                    // lastname : user.prenom,
+                    email : user.email,
+                    transaction: {}
+                },
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log('FedaPay response >>>11>>>', res["v1/transaction"])
+            // generateToken(res["v1/transaction"].id)
+            setInit(res["v1/transaction"])
+        })
+        .catch(e => {
+            console.log(e)
+            setLoading(false);
+            // showMessage({
+            //     message: "Erreur",
+            //     description: "Une erreur est survenue",
+            //     type: "danger",
+            // });
+        })
+    }
+
+    const generateToken = async (id) => {
+        await fetch(fedapayBASEURL_TEST+ "transactions/" + id + "/token" , {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + API_KEY_SECRETE_TEST
+            },
+            body: JSON.stringify({
+                description : "Transaction de " + user.name,
+                amount : item.price || 100,
+                currency : {
+                    iso : "XOF"
+                },
+                callback_url : apiURL + "visit/callback",
+                custom_metadata: {
+                    user_id: user.id,
+                    property_id: item.id,
+                    day: day,
+                    hour: hour,
+                },
+                customer : {
+                    firstname : user.name,
+                    // lastname : user.prenom,
+                    email : user.email,
+                    transaction: {}
+                }
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log('FedaPay transaction token generated >>>>>>', res)
+            setUrlPayment(res.url)
+            // sendPayment(res.token)
+        
+            if(res.url){
+                setShowWebview(true)
+                setLoading(false)
+            }
+        })
+        .catch(e => {
+            console.log(e)
+            setLoading(false);
+            // showMessage({
+            //     message: "Erreur",
+            //     description: "Une erreur est survenue",
+            //     type: "danger",
+            // });
+        })
+    }
+
+    useEffect(() => {
+        if(init.id){
+            generateToken(init.id)
+        }
+    },[init])
+
+    // const doReservation = () => {
+    //     setLoading(true)
+    //     fetch(apiURL + 'visite/create', {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             // ContentType: 'multipart/form-data',
+    //             'Content-Type': 'application/json',
+    //             Authorization: 'Bearer ' + user.token
+    //         },
+    //         body: JSON.stringify({
+    //             propriete_id: props.route.params.data.id,
+    //             ref_paiement: init.reference,
+    //             montant: props.route.params.data.price,
+    //         })
+    //     })
+    //     .then(response => response.json())
+    //     .then(res => {
+    //         // console.log(token)
+    //         console.log('>>>>>>>>>>>>>>>>>>>', res)
+    //         if(res.status === 200){
+    //             setLoading(false);
+    //             // showMessage({
+    //             //     message: "Succès",
+    //             //     description: res.message,
+    //             //     type: "success",
+    //             // });
+    //             navigation.goBack();
+    //         }else{
+    //             setLoading(false);
+    //             // showMessage({
+    //             //     message: "Erreur",
+    //             //     description: res.message,
+    //             //     type: "danger",
+    //             // });
+    //         }
+    //     })
+    //     .catch(e => {
+    //         console.log(e)
+    //         setLoading(false);
+    //         // showMessage({
+    //         //     message: "Erreur",
+    //         //     description: "Erreur de connexion",
+    //         //     type: "danger",
+    //         // });
+    //     })
+    // }
+
+    function onNavigationStateChange({ url }) {
+        console.log(">>>", url);
+    
+        if(url.includes('approved')){
+            setLoading(false)
+            hideModal()
+            navigation.goBack();
+            // showMessage({
+            //     message: "Succès",
+            //     description: "Paiement éffectué avec succès",
+            //     type: "success",
+            // });
+            // doReservation();
+        }else if(url.includes('declined')){
+            setLoading(false)
+            hideModal()
+            // showMessage({
+            //     message: "Décliné",
+            //     description: "Paiement décliné avec succès",
+            //     type: "info",
+            // });
+        }else if(url.includes('canceled')){
+            setLoading(false)
+            hideModal()
+            // showMessage({
+            //     message: "Refusé",
+            //     description: "Vous avez refusé ce paiement",
+            //     type: "danger",
+            // });
+        }else{
+    
+        }
+    }
 
     return(
-        <SafeAreaView className="flex-1 bg-slate-100">
+        <Provider className="flex-1 bg-slate-100">
             <ScrollView className="" showsVerticalScrollIndicator={false}>
                 <View className="flex flex-row justify-between relative">
                     <Image source={{uri: baseURL + item.cover_url}} className=" h-80 w-screen " />
@@ -137,10 +392,148 @@ export default function Details(props){
                     </View>
                 </View>
 
-                <TouchableOpacity onPress={() => {}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
-                    <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[18px] ">Réserver</Text>   
+                <TouchableOpacity onPress={() => {setModalVisible(true)}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
+                    {
+                        loading?
+                            <ActivityIndicator size="small" color="#fff" />
+                        :
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[18px] ">Réserver</Text>   
+                    }
                 </TouchableOpacity>
             </ScrollView>
-        </SafeAreaView>
+
+            <ModalPopup visible={modalVisible}>
+                <View className="">
+                    <View className="h-12 w-full m-1 p-2 flex-row items-center justify-between">
+                        <Text className="font-['PoppinsRegular'] text-[16px] my-1">Programer une visite</Text>
+
+                        <TouchableOpacity onPress={() =>{close()}}>
+                            <View className="h-9 w-9 bg-slate-300 rounded-full items-center justify-center">
+                                <Ionicons name="close" size={20} color="#000"/>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View className="flex flex-row justify-between">
+                        <View style={{flex: 1, padding: 5}}>
+                            <Text className="font-['KeepCalm'] text-[16px] my-1">Date</Text>
+                            <TouchableOpacity className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
+                                <TouchableOpacity
+                                    // onPress={showDatepicker}
+                                    className="flex flex-row justify-between items-center"
+                                >
+                                    <Fontisto name="date" size={25} color="#00ddb3"/>
+                                    {/* <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(date).format('Do MMM YYYY')}</Text> */}
+                                </TouchableOpacity>
+                                {/* {show && (
+                                    <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode={mode}
+                                    is24Hour={true}
+                                    display={Platform.OS === 'ios' ? 'default' : 'default'}
+                                    onChange={onChange}
+                                    // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
+                                    />
+                                )} */}
+                            </TouchableOpacity>
+                        </View>
+                        
+
+                        <View style={{flex: 1, padding: 5}}>
+                            <Text className="font-['KeepCalm'] text-[16px] my-1">Heure</Text>
+                            <TouchableOpacity className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
+                                <TouchableOpacity
+                                    // onPress={showTimepicker}
+                                    className="flex flex-row justify-between items-center"
+                                >
+                                    <Entypo name="clock" size={25} color="#00ddb3"/>
+                                    {/* <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(date).format('HH:mm')}</Text> */}
+                                </TouchableOpacity>
+                                {/* {show && (
+                                    <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode={mode}
+                                    is24Hour={true}
+                                    display={Platform.OS === 'ios' ? 'default' : 'default'}
+                                    onChange={onChange}
+                                    // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
+                                    />
+                                )} */}
+                                {/* <FontAwesome name="calendar" size={25} color="#71B486"/> */}
+                            </TouchableOpacity>
+                        </View>
+                        
+                    </View>
+
+                    <TouchableOpacity onPress={() => {}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
+                        {
+                            loading? 
+                            <ActivityIndicator size={20} color="#fff" />
+                            :
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[16px] ">Ajouter</Text>
+                        }
+                    </TouchableOpacity>
+                </View>
+            </ModalPopup>
+
+            <Portal>
+                <Modal visible={showWebview} onDismiss={hideModal} contentContainerStyle={styles.containerStyle}>
+                <TouchableOpacity onPress={() => {hideModal()}} className="bg-red w-12 h-12 justify-center rounded-full bg-white/50 m-4">
+                    <Icon type='ant-design' name='close' color={"red"}/>
+                </TouchableOpacity>
+                {showWebview && urlPayment && (
+                    <WebView
+                        style={styles.webview}
+                        originWhitelist={["*"]}
+                        source={{ uri: urlPayment }}
+                        onNavigationStateChange={onNavigationStateChange}
+                        onMessage={(event) => {
+                        switch (event.nativeEvent.type) {
+                            case "test":
+                                console.log("hello");
+                                break;
+                            default:
+                                console.log(event.nativeEvent.type);
+                            }
+                        }}
+                    />
+                    )}
+                </Modal>
+            </Portal>
+        </Provider>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    app: {
+        marginHorizontal: "auto",
+        maxWidth: 500,
+        paddingTop: 50
+    },
+    code: {
+        fontFamily: "PoppinsRegular"
+    },
+    webview: {
+        position: "fixed",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        height: "100%"
+    },
+    containerStyle: {
+        backgroundColor: 'white', 
+        padding: 20,
+        height: "100%",
+        width: "100%"
+    }
+});

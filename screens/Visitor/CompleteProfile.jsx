@@ -17,7 +17,7 @@ export default function CompleteProfile(){
 
     const myuser = useSelector((state) => state.userReducer)
 
-    console.log(myuser.token)
+    // console.log(myuser.token)
 
     const [adresse, setAdresse] = useState("");
     const [logo, setLogo] = useState(null);

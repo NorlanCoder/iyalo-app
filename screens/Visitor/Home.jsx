@@ -48,12 +48,13 @@ const Home = () => {
         })
         .then(response => response.json())
         .then(res => {
-        //   console.log('  ',res.data[0])
-          setCategorie(res.data)
-          setLoadCategorie(false)
+            //   console.log('  ',res.data[0])
+            setCategorie(res.data)
+            setLoadCategorie(false)
         })
         .catch( (e) => {
             console.log(e);
+            setLoadCategorie(false)
         })
     }
 
