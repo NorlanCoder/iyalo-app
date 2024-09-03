@@ -2,6 +2,8 @@ import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, Scr
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { AirbnbRating } from '@rneui/themed';
+import { Dialog } from 'react-native-paper';
 import { CATEGORY } from '../../utils/data/categoriedata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import PropertyHomeComponent from '../../components/Visitor/PropertyHomeComponent';
@@ -12,6 +14,11 @@ import { DATAMAP } from '../../store/reducers/actionName';
 const Home = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+
+    const [visible, setVisible] = useState(false);
+    const [itemId, setItemId] = useState(0);
+
+    const hideDialog = () => setVisible(false);
 
     const {width} = useWindowDimensions()
 
@@ -26,6 +33,9 @@ const Home = () => {
     const [adress, setAdress] = useState("");
     const [loadCategorie, setLoadCategorie] = useState(true);
     const [loadAlaUne, setLoadAlaUne] = useState(true);
+    const [note, setNote] = useState(0);
+    const [comment, setComment] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const getCategorie = async () => {
         await fetch(apiURL + 'list/category/', {
@@ -168,9 +178,51 @@ const Home = () => {
 
     const renderproperty = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => {navigation.navigate('Details', {item: item}, {setFavorite: setFavorite} )}}>
-            <PropertyHomeComponent item={item} setFavorite={setFavorite} name={item.nom} id={item.id_} />
+            <PropertyHomeComponent item={item} setFavorite={setFavorite} setVisible={setVisible} setItemId={setItemId} name={item.nom} id={item.id_} />
         </TouchableOpacity>
     );
+
+    const addNote = async () => {
+        if(note == ""){
+            return
+        }
+
+        if(comment == ""){
+            return
+        }
+
+        setLoading(true)
+
+        await fetch(apiURL + `note/${itemId}`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + myuser.token
+            },
+            body: JSON.stringify({
+                note: note,
+                comment: comment
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log(res)
+            if(res.status === 200){
+                setVisible(false)
+                setNote("")
+                setComment("")
+                setLoading(false)
+                alert('Success', 'Votre note a bien été ajoutée')
+                getAlaUne()
+                getFirstCat()
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+            setLoading(false)
+        })
+    }
 
     return (
         <SafeAreaView className="flex-1 bg-slate-100">
@@ -339,6 +391,49 @@ const Home = () => {
                 </View>
             </ScrollView>
             
+            <Dialog visible={visible} onDismiss={hideDialog}>
+                <Dialog.Title>Ajouter une note</Dialog.Title>
+                <Dialog.Content>
+                    <View className="my-3">
+                        <Text numberOfLines={1} className="text-[#000] font-['PoppinsRegular'] text-[14px] mb-1">Noter cette propiété</Text>
+
+                        <AirbnbRating 
+                            count={5}
+                            size={35} 
+                            defaultRating={note} 
+                            showRating={false}
+                            onFinishRating={value => setNote(value)}
+                        />
+                    </View>
+
+                    <View className="my-3">
+                        <Text numberOfLines={1} className="text-[#000] font-['MuktaMalar'] text-[14px] mb-1">Donnez un avis</Text>
+
+                        <View className="border-[1px] h-12 border-[#bdbdbe48] rounded-lg justify-center">
+                            <TextInput
+                                placeholder={"laisser un commentaire"}
+                                placeholderTextColor={'gray'}
+                                autoCapitalize="sentences"
+                                textContentType="name"
+                                keyboardType='default'
+                                value={comment}
+                                onChangeText={(value) => setComment(value)}
+                                className="bg-[#FDFDFD] h-full rounded-lg px-2 font-['PoppinsRegular']"
+                            />
+                        </View>
+                    </View>
+
+                    <TouchableOpacity onPress={() => {addNote()}} className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
+                        {
+                            loading?
+                            <ActivityIndicator size={"small"} color={"#000"}/>
+                            :
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Ajouter</Text>
+                        }
+                        {/* <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Valider</Text> */}
+                    </TouchableOpacity>
+                </Dialog.Content>
+            </Dialog>
         </SafeAreaView>
     )
 }

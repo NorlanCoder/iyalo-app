@@ -5,8 +5,9 @@ import React from 'react'
 import { getPreciseDistance } from 'geolib';
 import { useSelector } from 'react-redux';
 import { baseURL } from '../../api/api';
+import { AirbnbRating } from '@rneui/themed';
 
-const PropertyHomeComponent = ({item, setFavorite}) => {
+const PropertyHomeComponent = ({item, setFavorite, setVisible, setItemId}) => {
     const navigation = useNavigation()
     // const item = props.item
 
@@ -31,7 +32,7 @@ const PropertyHomeComponent = ({item, setFavorite}) => {
             <View className="mt-1 relative">
                 <Image source={{uri: baseURL + item.cover_url}} style={{width: '100%', height: width / 2.3}}  className="rounded-xl" />
                 <View className="absolute top-0 w-full flex flex-row justify-between items-center p-2">
-                    <TouchableOpacity className="bg-black/40 p-[8px] py-0 rounded-full flex flex-row items-center">
+                    <TouchableOpacity onPress={() => {setVisible(true), setItemId(item.id)}} className="bg-black/40 p-[8px] py-0 rounded-full flex flex-row items-center">
                         <Octicons name="star-fill" size={15} color="yellow" />
                         <Text className="pl-1 text-white font-bold text-lg" style={{fontFamily: 'PoppinsRegular'}}>{item.note.length}</Text>
                     </TouchableOpacity>

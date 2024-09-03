@@ -1,4 +1,4 @@
-import { AUTHENTICATED, USER, ISADMIN, SETTOKEN, LOGOUT } from './actionName';
+import { AUTHENTICATED, USER, ISADMIN, SETTOKEN, LOGOUT, NOTIFICATION } from './actionName';
 
 const userState = {
     user: {
@@ -30,7 +30,7 @@ const userState = {
         longitude: Number(0),
         latitude: Number(0),
     },
-    notification: [],
+    notifications: [],
     googleSignin: false
 }
 
@@ -55,6 +55,13 @@ export default function userReducer(state = userState, {type, payload}){
             nextState = {
                 ...state,
                 isAdmin: payload
+            }
+            return nextState || state;
+
+        case NOTIFICATION:
+            nextState = {
+                ...state,
+                notifications: payload
             }
             return nextState || state;
 
@@ -97,7 +104,7 @@ export default function userReducer(state = userState, {type, payload}){
                     longitude: Number(0),
                     latitude: Number(0),
                 },
-                notification: [],
+                notifications: [],
                 googleSignin: false
             }
             return nextState || state;

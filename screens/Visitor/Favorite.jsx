@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {  StyleSheet, Text, View, useWindowDimensions, StatusBar, TextInput, ScrollView, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList, RefreshControl, ActivityIndicator} from 'react-native'
+import {  StyleSheet, Text, View, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList, RefreshControl, ActivityIndicator} from 'react-native'
 import { Feather, MaterialIcons, Entypo, Octicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
