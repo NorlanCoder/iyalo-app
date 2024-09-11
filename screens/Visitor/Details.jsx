@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import {  StyleSheet, Text, View, Modal, Image, ScrollView, TouchableOpacity, Animated, ActivityIndicator, SafeAreaView, FlatList} from 'react-native'
 import { Feather, MaterialIcons, Entypo, Ionicons, FontAwesome, Fontisto, Octicons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
 import { WebView } from 'react-native-webview';
@@ -11,6 +12,21 @@ import { ModalPopup } from '../../components/Admin/ModalPopup';
 import moment from 'moment'
 import 'moment/locale/fr'
 moment.locale('fr')
+
+const generateTimeSlots = (start, end) => {
+    const timeSlots = [];
+    let current = parseInt(start.split(':')[0], 10); // Conversion de l'heure de début en entier
+    const endHour = parseInt(end.split(':')[0], 10); // Conversion de l'heure de fin en entier
+    
+    // Créer des plages horaires par tranches de 1 heure
+    while (current <= endHour) {
+        const hour = current < 10 ? `0${current}:00` : `${current}:00`;
+        timeSlots.push(hour);
+        current++;
+    }
+    
+    return timeSlots;
+};
 
 export default function Details(props){
     const navigation = useNavigation();
@@ -27,8 +43,10 @@ export default function Details(props){
     const [init, setInit] = useState({});
     const [showWebview, setShowWebview] = useState(false);
     const [visible, setVisible] = useState(false)
-    const [day, setDay] = useState("Lundi")
-    const [hour, setHour] = useState("12:00")
+    const [data, setData] = useState([])
+    const [selectedDay, setSelectedDay] = useState();
+    const [selectedHour, setSelectedHour] = useState();
+
     const hideModal = () => setShowWebview(false);const scaleValue = useRef(new Animated.Value(0)).current;
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -56,7 +74,8 @@ export default function Details(props){
     };
 
     const getCalendar = async () => {
-        await fetch(apiURL + "announcer/property/"+item.id+"/calendar", {
+        console.log(item.id)
+        await fetch(apiURL + "properties/"+item.id+"/calendar", {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -66,9 +85,8 @@ export default function Details(props){
         })
         .then(response => response.json())
         .then(res => {
-              console.log('  ',res)
-            // setCategorie(res.data)
-            // setLoadCategorie(false)
+            console.log('  ',res.data.data)
+            setData(res.data.data)
         })
         .catch( (e) => {
             console.log(e);
@@ -83,6 +101,12 @@ export default function Details(props){
     const close = () => {
         setModalVisible(!modalVisible)
     }
+
+    const selectedDayData = data.find(item => item.day === selectedDay);
+
+    const availableHours = selectedDayData
+    ? generateTimeSlots(selectedDayData.hour.start, selectedDayData.hour.end)
+    : [];
 
     const doTransaction = async () => {
         setLoading(true)
@@ -103,8 +127,8 @@ export default function Details(props){
                 custom_metadata: {
                     user_id: user.id,
                     property_id: item.id,
-                    day: day,
-                    hour: hour,
+                    day: selectedDay,
+                    hour: selectedDay,
                 },
                 customer : {
                     firstname : user.name,
@@ -149,8 +173,8 @@ export default function Details(props){
                 custom_metadata: {
                     user_id: user.id,
                     property_id: item.id,
-                    day: day,
-                    hour: hour,
+                    day: selectedDay,
+                    hour: selectedDay,
                 },
                 customer : {
                     firstname : user.name,
@@ -393,12 +417,7 @@ export default function Details(props){
                 </View>
 
                 <TouchableOpacity onPress={() => {setModalVisible(true)}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
-                    {
-                        loading?
-                            <ActivityIndicator size="small" color="#fff" />
-                        :
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[18px] ">Réserver</Text>   
-                    }
+                    <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[#FFFFFF] text-[18px] ">Réserver</Text>   
                 </TouchableOpacity>
             </ScrollView>
 
@@ -416,31 +435,35 @@ export default function Details(props){
 
                     <View className="flex flex-row justify-between">
                         <View style={{flex: 1, padding: 5}}>
-                            <Text className="font-['KeepCalm'] text-[16px] my-1">Date</Text>
-                            <TouchableOpacity className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
-                                <TouchableOpacity
-                                    // onPress={showDatepicker}
-                                    className="flex flex-row justify-between items-center"
-                                >
-                                    <Fontisto name="date" size={25} color="#00ddb3"/>
-                                    {/* <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(date).format('Do MMM YYYY')}</Text> */}
-                                </TouchableOpacity>
-                                {/* {show && (
-                                    <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={mode}
-                                    is24Hour={true}
-                                    display={Platform.OS === 'ios' ? 'default' : 'default'}
-                                    onChange={onChange}
-                                    // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
-                                    />
-                                )} */}
-                            </TouchableOpacity>
+                            <Text className="font-['KeepCalm'] text-[16px] my-1">Jour</Text>
+                            <Picker
+                                selectedValue={selectedDay}
+                                onValueChange={(itemValue) => setSelectedDay(itemValue)}
+                                style={{borderWidth: 4}}
+                            >
+                                <Picker.Item label="Choisissez un jour" value="" />
+                                {data.map(item => (
+                                    <Picker.Item key={item.id} label={item.day} value={item.day} />
+                                ))}
+                            </Picker>
                         </View>
+
+                        {selectedDayData && (
+                            <View style={{flex: 1, padding: 5}}>
+                                <Text className="font-['KeepCalm'] text-[16px] my-1">Heure</Text>
+                                <Picker
+                                    selectedValue={selectedHour}
+                                    onValueChange={(itemValue) => setSelectedHour(itemValue)}
+                                >
+                                    {availableHours.map((hour, index) => (
+                                    <Picker.Item key={index} label={hour} value={hour} />
+                                    ))}
+                                </Picker>
+                            </View>
+                        )}
                         
 
-                        <View style={{flex: 1, padding: 5}}>
+                        {/* <View style={{flex: 1, padding: 5}}>
                             <Text className="font-['KeepCalm'] text-[16px] my-1">Heure</Text>
                             <TouchableOpacity className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
                                 <TouchableOpacity
@@ -448,26 +471,15 @@ export default function Details(props){
                                     className="flex flex-row justify-between items-center"
                                 >
                                     <Entypo name="clock" size={25} color="#00ddb3"/>
-                                    {/* <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(date).format('HH:mm')}</Text> */}
+                                    <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(date).format('HH:mm')}</Text>
                                 </TouchableOpacity>
-                                {/* {show && (
-                                    <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={mode}
-                                    is24Hour={true}
-                                    display={Platform.OS === 'ios' ? 'default' : 'default'}
-                                    onChange={onChange}
-                                    // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
-                                    />
-                                )} */}
-                                {/* <FontAwesome name="calendar" size={25} color="#71B486"/> */}
+                                
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
                         
                     </View>
 
-                    <TouchableOpacity onPress={() => {}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
+                    <TouchableOpacity onPress={() => {doTransaction(), setModalVisible(false)}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
                         {
                             loading? 
                             <ActivityIndicator size={20} color="#fff" />
