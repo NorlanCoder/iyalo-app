@@ -6,7 +6,7 @@ import { Menu, MenuProvider, MenuOptions, MenuTrigger, } from "react-native-popu
 import { getPreciseDistance } from 'geolib';
 import { useSelector } from 'react-redux';
 import { baseURL } from '../../api/api';
-import { Edit, Delete, Activate, ListVisite, Add } from '../CustomContent';
+import { Edit, Delete, Activate, ListVisite, Add, ListDisponibilites } from '../CustomContent';
 import { ModalPopup } from '../Admin/ModalPopup';
 import { apiURL } from '../../api/api';
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -38,10 +38,12 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
     }
 
     const [visible, setVisible] = useState(false);
-    const [date, setDate] = useState(new Date());
-    const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
-    const [dateDebut, setDateDebut] = useState(new Date())  
+    // const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('time');
+    const [show1, setShow1] = useState(false);
+    const [show2, setShow2] = useState(false);
+    const [heureDebut, setHeureDebut] = useState(new Date())
+    const [heureFin, setHeureFin] = useState(new Date())
     const [loading, setLoading] = useState(false);
     const [itemId, setItemId] = useState(0);
     const [jours, setJours] = useState([]);
@@ -54,17 +56,13 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
         setDate(currentDate);
         setDateDebut(currentDate)
     }
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
+
+    const showTimepicker1 = () => {
+        setShow1(true)
     };
-    const showDatepicker = () => {
-        showMode('date');
-        setShow(true)
-    };
-    const showTimepicker = () => {
-        showMode('time');
-        setShow(true)
+
+    const showTimepicker2 = () => {
+        setShow2(true)
     };
 
     const close = () => {
@@ -79,9 +77,10 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
         );
     };
 
-    const addVisite = (id) => {
+    const addVisite = () => {
         setLoading(true)
-        fetch(apiURL+'announcer/property/'+itemId+'/add_calendar', {
+        console.log(jours)
+        fetch(apiURL+'announcer/property/'+item.id+'/add_calendar', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -89,8 +88,9 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
                 Authorization: 'Bearer ' + token
             },
             body: JSON.stringify({
-                day: `${moment(date).format("Do MMM YYYY")}`,
-                hour: `${moment(date).format("LT")}`,
+                day: jours,
+                hour_start: moment(heureDebut).format('HH:mm'),
+                hour_end: moment(heureFin).format('HH:mm'),
             })
         })
         .then(response => response.json())
@@ -100,7 +100,7 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
             if(res.status === 200){
                 setLoading(false);
                 close()
-                console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
+                // console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
                 // showMessage({
                 //     message: "Succès",
                 //     description: res.message,
@@ -109,7 +109,7 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
             }else{
                 setLoading(false);
                 close()
-                console.log('>>>>>>>>>2>>>>>>>>>>', res)
+                // console.log('>>>>>>>>>2>>>>>>>>>>', res)
                 // showMessage({
                 //     message: "Erreur",
                 //     description: res.message,
@@ -148,25 +148,28 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
                     <MenuTrigger
                         customStyles={{
                             triggerWrapper: {
-                                height: 33, width: 33, backgroundColor: "#00ddb3", padding: 1, justifyContent: "center", alignItems: "center", alignContent: "center", borderRadius: 10
+                                height: 33, width: 33, backgroundColor: "#6C5248", padding: 1, justifyContent: "center", alignItems: "center", alignContent: "center", borderRadius: 10
                             },
                         }}
                     >
-                        <Entypo name="dots-three-vertical" size={18} color="black" />
+                        <Entypo name="dots-three-vertical" size={18} color="white" />
                     </MenuTrigger>
                     
                     <MenuOptions
                         customStyles={{
                             optionsContainer: {
                                 borderRadius: 10,
+                                elevation: 10
                             },
                         }}
                     >
                         {/* <Divider />
                             <Explore text="Consulter la propriété" onPress={()=> navigation.push('DetailsProprietes',{data: item})} iconName="block" /> */}
-                        <Activate text="Activé/Désactivé" onPress={()=> {changeState(item.id)}} iconName="switch" val={val} />
+                        <Activate text="Activé/Désactivé" toggle={changeState} id={item.id} iconName="switch" val={val} />
                         <Divider />
                         <Add text="Disponibilité" onPress={()=> {setVisible(true), setItemId(item.id)}} iconName="plus"/>
+                        <Divider />
+                        <ListDisponibilites text="Liste disponibilités" onPress={()=> {navigation.push('DisponibiliteList',{id: item.id})}} iconName="list" />
                         <Divider />
                         <ListVisite text="Liste des visites" onPress={()=> {navigation.push('VisiteByProperty',{item: item})}} iconName="list" />
                         <Divider />
@@ -205,7 +208,7 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
                         </View>
                     </View>
                     <View>
-                        <Text className="text-primary text-[18px] font-bold" style={{fontFamily: 'KeepCalm'}}>{item.price} {item.device}</Text>
+                        <Text className="text-secondary text-[18px] font-bold" style={{fontFamily: 'KeepCalm'}}>{item.price} {item.device}</Text>
                     </View>
                 </View>
 
@@ -250,7 +253,7 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
             <ModalPopup visible={visible}>
                 <View className="">
                     <View className="h-12 w-full m-1 p-2 flex-row items-center justify-between">
-                        <Text className="font-['PoppinsRegular'] text-[16px] my-1">Disponibilité</Text>
+                        <Text className="font-['PoppinsRegular'] text-secondary text-[20px] font-bold my-1">Disponibilité</Text>
 
                         <TouchableOpacity onPress={() =>{close()}}>
                             <View className="h-9 w-9 bg-slate-300 rounded-full items-center justify-center">
@@ -261,11 +264,11 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
                     
                     <Text className="font-['KeepCalm'] text-[16px] my-1">Jour(s)</Text>
                     <View className="flex flex-row flex-wrap">
-                        {daysOfWeek.map(jour => (
+                        {daysOfWeek.map((jour, index) => (
                             <TouchableOpacity 
-                                key={jour} 
+                                key={index+1}
                                 onPress={() => addDay(jour)} 
-                                className={`${jours.includes(jour)? "flex bg-primary/80 m-1 justify-center items-center p-2 rounded-md" : "flex bg-slate-200 m-1 justify-center items-center p-2 rounded-md"}`}
+                                className={`${jours.includes(jour)? "flex bg-secondary m-1 justify-center items-center p-2 rounded-md" : "flex bg-slate-200 m-1 justify-center items-center p-2 rounded-md"}`}
                             >
                             <Text className={`${jours.includes(jour)? "font-['KeepCalm'] text-[16px] my-1 text-white": "font-['KeepCalm'] text-[16px] my-1 text-black"}`} >{jour}</Text>
                             </TouchableOpacity>
@@ -274,48 +277,49 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
 
                     <View className="flex flex-row justify-between">
                         <View style={{flex: 1, padding: 5}}>
-                            <Text className="font-['KeepCalm'] text-[16px] my-1">Date de début</Text>
-                            <TouchableOpacity onPress={showDatepicker} className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
-                                <TouchableOpacity
-                                    onPress={showDatepicker}
-                                    className="flex flex-row justify-between items-center"
-                                >
-                                    <Fontisto name="date" size={25} color="#00ddb3"/>
-                                    <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(date).format('Do MMM YYYY')}</Text>
-                                </TouchableOpacity>
-                                {show && (
+                            <Text className="font-['KeepCalm'] text-[16px] my-1">Heure de début</Text>
+                            <TouchableOpacity onPress={showTimepicker1} className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
+                                <View className="flex flex-row justify-between items-center" >
+                                    <Fontisto name="clock" size={25} color="#6C5248"/>
+                                    <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(heureDebut).format('HH:mm')}</Text>
+                                </View>
+                                {show1 && (
                                     <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={mode}
-                                    is24Hour={true}
-                                    display={Platform.OS === 'ios' ? 'default' : 'default'}
-                                    onChange={onChange}
-                                    // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
+                                        testID="dateTimePicker"
+                                        value={heureDebut}
+                                        mode={mode}
+                                        is24Hour={true}
+                                        display={Platform.OS === 'ios' ? 'default' : 'default'}
+                                        onChange={(e,selectedDate)=>{
+                                            // console.log(selectedDate)
+                                            setShow1(false);
+                                            setHeureDebut(selectedDate)
+                                        }}
+                                        // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
                                     />
                                 )}
                             </TouchableOpacity>
                         </View>
 
                         <View style={{flex: 1, padding: 5}}>
-                            <Text className="font-['KeepCalm'] text-[16px] my-1">Heure</Text>
-                            <TouchableOpacity onPress={showTimepicker} className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
-                                <TouchableOpacity
-                                    onPress={showTimepicker}
-                                    className="flex flex-row justify-between items-center"
-                                >
-                                    <Entypo name="clock" size={25} color="#00ddb3"/>
-                                    <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(date).format('HH:mm')}</Text>
-                                </TouchableOpacity>
-                                {show && (
+                            <Text className="font-['KeepCalm'] text-[16px] my-1">Heure de fin</Text>
+                            <TouchableOpacity onPress={showTimepicker2} className="flex flex-row items-center px-2 border border-gray-500 rounded-lg h-11">
+                                <View className="flex flex-row justify-between items-center">
+                                    <Entypo name="clock" size={25} color="#6C5248"/>
+                                    <Text adjustsFontSizeToFit numberOfLines={1} className="font-['KeepCalm'] text-[16px] mx-2">{moment(heureFin).format('HH:mm')}</Text>
+                                </View>
+                                {show2 && (
                                     <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={mode}
-                                    is24Hour={true}
-                                    display={Platform.OS === 'ios' ? 'default' : 'default'}
-                                    onChange={onChange}
-                                    // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
+                                        testID="dateTimePicker"
+                                        value={heureFin}
+                                        mode={mode}
+                                        is24Hour={true}
+                                        display={Platform.OS === 'ios' ? 'default' : 'default'}
+                                        onChange={(e,selectedDate)=>{
+                                            setShow2(false);
+                                            setHeureFin(selectedDate)
+                                        }}
+                                        // style={Platform.OS === 'ios' ? {justifyContent: 'center', alignItems: 'flex-start', width: 320, height: 260, display: 'flex', marginLeft: -370, marginTop: 70} : null}
                                     />
                                 )}
                             </TouchableOpacity>
@@ -323,7 +327,7 @@ const PropertyResultComponent = ({item, setFavorite, changeState}) => {
                         
                     </View>
 
-                    <TouchableOpacity onPress={() => {addVisite(itemId)}} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
+                    <TouchableOpacity onPress={() => {addVisite()}} className="h-12 w-52 bg-secondary m-4 self-center rounded-lg justify-center items-center">
                         {
                             loading? 
                             <ActivityIndicator size={20} color="#fff" />

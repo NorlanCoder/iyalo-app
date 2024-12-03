@@ -17,7 +17,7 @@ export default function CompleteProfile(){
 
     const myuser = useSelector((state) => state.userReducer)
 
-    console.log(myuser.token)
+    // console.log(myuser.token)
 
     const [adresse, setAdresse] = useState("");
     const [logo, setLogo] = useState(null);
@@ -94,52 +94,77 @@ export default function CompleteProfile(){
         }
         setMessage(null)
         setLoading(true);
-        
+
         const dataToSend = new FormData();
 
-        dataToSend.append('adress', adresse);
-        dataToSend.append('card', {
-            name: document.name,
-            uri: document.uri,
-            type: document.mimeType,
-        });
-        dataToSend.append('logo', {
-            name: logo.fileName,
-            uri: logo.uri,
-            type: 'image/jpeg',
-        });
+        if(document!== null && logo!==null && adresse!=="") {
+            // dataToSend.append('adress', adresse);
+            dataToSend.append('card', {
+                uri: document.uri,
+                name: document.name,
+                type: document.mimeType,
+            });
+            dataToSend.append('logo', {
+                uri: logo.uri,
+                name: logo.fileName,
+                type: 'image/jpeg',
+            });
+            dataToSend.append('adress',adresse)
 
-        console.log('data', dataToSend._parts);
+             // console.log('data', dataToSend);
 
-        setLoading(true);
-        await fetch(apiURL + 'became_announcer', {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'multipart/form-data',
-                Authorization: 'Bearer ' + myuser.token
-            },
-            body: JSON.stringify({
-                'adress': adresse,
-                'card': document.uri,
-                'logo': logo.uri
-            })
-        })
-        .then(response => response.json())
-        .then(res => {
-            console.log('response  ',res)
-            if(res.status === 200){
-                setLoading(false);
-                navigation.goBack();
-            }else{
+            setLoading(true);
+            
+            const response = await fetch(apiURL + 'became_announcer', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: 'Bearer ' + myuser.token
+                },
+                body: dataToSend
+            });
+
+            const responseText = await response.text();
+            console.log('Full response body:', responseText);
+
+            try {
+                const res = JSON.parse(responseText);
+                console.log('Parsed response:', res);
+                if (res.status === 200) {
+                    setLoading(false);
+                    navigation.goBack();
+                } else {
+                    console.log('Errors:', res.errors);
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.log('Error parsing JSON:', error);
                 setLoading(false);
             }
-        })
-        .catch( (e) => {
-            console.log(e);
-            setLoading(false);
-        })
+
+        }
+        
+        
+
+        
+
+       
+
+        // .then(response => response.json())
+        // .then(res => {
+        //     console.log('response  ',res)
+        //     if(res.status === 200){
+        //         setLoading(false);
+        //         navigation.goBack();
+        //     }else{
+        //         setLoading(false);
+        //     }
+        // })
+        // .catch( (e) => {
+        //     console.log(e);
+        //     setLoading(false);
+        // })
     }
 
     return(
@@ -159,38 +184,38 @@ export default function CompleteProfile(){
                 <View className="h-28 mx-4 my-4 justify-center">
                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Logo</Text>
 
-                    <TouchableOpacity onPress={() => {setVisible(true)}} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                    <TouchableOpacity onPress={() => {setVisible(true)}} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-secondary/10 border-secondary/30 justify-center items-center">
                         {
                             logo !== null?
                             <Image source={{uri: logo.uri}} resizeMode='cover' className="rounded-lg h-full w-full" />
                             :
-                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                            <Feather name='camera' size={40} color={"#6C5248"}/>
                         } 
                     </TouchableOpacity>
                 </View>
 
                 <View className="h-28 mx-4 mt-6 mb-4 justify-center">
-                    <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Document</Text>
+                    <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Document (IFU)</Text>
 
-                    <TouchableOpacity onPress={() => {pickDocument()}} style={{borderWidth: 0.7,}} className="h-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                    <TouchableOpacity onPress={() => {pickDocument()}} style={{borderWidth: 0.7,}} className="h-20 rounded-lg bg-secondary/10 border-secondary/30 justify-center items-center">
                         {
                             document !== null?
                             // <Image source={{uri: logo}} resizeMode='cover' className="rounded-lg h-full w-full" />
                             <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">{document.name}</Text>
                             :
-                            <Ionicons name='document' size={40} color={"#00ddb3"}/>
+                            <Ionicons name='document' size={40} color={"#6C5248"}/>
                         }
                     </TouchableOpacity>
                 </View>
 
                 {message && <Text className="text-[#E50506] font-['PoppinsRegular'] text-[14px] text-center mt-4">{message}</Text>}
 
-                <TouchableOpacity onPress={() => {complete()}} className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
+                <TouchableOpacity onPress={() => {complete()}} className="bg-secondary h-14 m-3 rounded-lg justify-center items-center">
                     {
                         loading?
-                        <ActivityIndicator size={"small"} color={"#000"}/>
+                        <ActivityIndicator size={"small"} color={"#FFF"}/>
                         :
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Valider</Text>
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className=" text-[16px] text-white">Valider</Text>
                     }
                 </TouchableOpacity>
             </ScrollView>

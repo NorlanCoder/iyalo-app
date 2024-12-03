@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Text, View, TextInput, ScrollView, Image, TouchableOpacity, SafeAreaView, ActivityIndicator} from 'react-native'
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker'
 import { Dialog, } from 'react-native-paper';
 import { Formik } from 'formik';
@@ -10,10 +10,11 @@ import * as Yup from 'yup';
 import {Picker} from '@react-native-picker/picker';
 import Header from '../../components/Header';
 import { apiURL } from '../../api/api';
+import { GENERAL } from '../../store/reducers/actionName';
 
 export default function AddProperties(){
     const navigation = useNavigation();
-
+    const dispatch = useDispatch()
     const location = useSelector((state) => state.appReducer.location)
     const token = useSelector((state) => state.userReducer.token)
 
@@ -29,6 +30,7 @@ export default function AddProperties(){
     const [imgCoverErr, setImgCoverErr] = useState('')
     const [imgErr, setImgErr] = useState("")
     const [catErr, setCatErr] = useState("")
+    const [villeErr, setVilleErr] = useState("")
     const [freqErr, setFreqErr] = useState("")
     const [loading, setLoading] = useState(false);
     const [selectValue, setSelectValue] = useState({
@@ -39,6 +41,10 @@ export default function AddProperties(){
         frequency: "",
         frequency_id: ""
     })
+
+    const [ville, setVille] = useState("abomey")
+    const [listVille, setListVille] = useState([])
+
     const [categorie, setCategorie] = useState([]);
     const [visible, setVisible] = useState(false);
 
@@ -57,6 +63,53 @@ export default function AddProperties(){
         .then(res => {
         //   console.log(res)
           setCategorie(res.data)
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
+
+    const getVille = async () => {
+        await fetch(apiURL + 'city', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+          setListVille(res.data)
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
+
+    const getBilanGlobal = async () => {
+        
+        await fetch(apiURL + 'announcer/withdraw/bilan', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log('=======================1', res)
+            if(res.status === 200){
+                dispatch({type: GENERAL, payload: {
+                    properties: res.properties,
+                    visits: res.visits,
+                    all_cash: res.all_cash,
+                    wallet: res.wallet
+                }});
+                
+            }else{
+                console.log('error', res)
+            }
         })
         .catch( (e) => {
             console.log(e);
@@ -86,6 +139,7 @@ export default function AddProperties(){
 
     useEffect(() => {
         getCategorie();
+        getVille()
     }, [])
 
     const onOpen = (img) => {
@@ -116,15 +170,9 @@ export default function AddProperties(){
             .string()
             .required('Ajouter un label')
             .min(3, ({min}) => `Le label doit contenir au moins ${min} caratères`),
-        city: Yup
-            .string()
-            .required("Ajouter une ville"),
         district: Yup
             .string()
             .required('Ajouter un quartier'),
-        country: Yup
-            .string()
-            .required('Ajouter un pays'),
         rooms: Yup
             .string()
             .required('Ajouter le nombre de chambre'),
@@ -231,6 +279,10 @@ export default function AddProperties(){
         }
     }
 
+    useEffect(()=> {
+        console.log(location)
+    },[])
+
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
             <Header title={"Ajouter une propriété"} />
@@ -238,7 +290,7 @@ export default function AddProperties(){
             <ScrollView contentContainerStyle={{paddingBottom: 90}} showsVerticalScrollIndicator={false} >
                 <Formik
                     validationSchema={formValidation}
-                    initialValues={{label: "", city: "", district: "", country: "", rooms: "", bathrooms: "", lounges: "", swingpools: "", prices: "", visitePrices: "", conditions: "", description: ""}}
+                    initialValues={{label: "", district: "", rooms: "", bathrooms: "", lounges: "", swingpools: "", prices: "", visitePrices: "", conditions: "", description: ""}}
                     onSubmit={values => {
 
                         if(catVal === "" ){
@@ -248,6 +300,14 @@ export default function AddProperties(){
                         }
 
                         setCatErr(null);
+
+                        if(ville === "" ){
+                            setVilleErr('Ajouter une ville')
+                            setLoading(false)
+                            return
+                        }
+
+                        setVilleErr(null);
 
                         if(!frequency.length ){
                             setFreqErr('Ajouter une fréquence')
@@ -337,7 +397,7 @@ export default function AddProperties(){
                             }))
                         }
 
-                        console.log(im3)
+                        // console.log(im3)
 
                         const dataToSend = new FormData();
 
@@ -345,8 +405,8 @@ export default function AddProperties(){
                         dataToSend.append('category_id', catVal);
                         dataToSend.append('price', values.prices);
                         dataToSend.append('frequency', frequency);
-                        dataToSend.append('city', values.city);
-                        dataToSend.append('country', values.country);
+                        dataToSend.append('city', ville);
+                        dataToSend.append('country', 'Bénin');
                         dataToSend.append('district', values.district);
                         dataToSend.append('long', location.longitude);
                         dataToSend.append('lat', location.latitude);
@@ -384,6 +444,7 @@ export default function AddProperties(){
                             if(res.status === 200){
                                 setLoading(false);
                                 console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
+                                getBilanGlobal()
                                 // showMessage({
                                 //     message: "Succès",
                                 //     description: res.message,
@@ -423,11 +484,10 @@ export default function AddProperties(){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Label</Text>
 
-                                <View style={{borderWidth: 0.7}} className={`h-12 rounded-lg bg-primary/10 border-secondary/30`}>
+                                <View style={{borderWidth: 0.7}} className={`h-12 rounded-lg border-secondary`}>
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="Label"
-                                        placeholderTextColor={'gray'}
                                         autoCapitalize='sentences'
                                         textContentType="username"
                                         keyboardType="default"
@@ -444,11 +504,10 @@ export default function AddProperties(){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Quartier</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="Quartier"
-                                        placeholderTextColor={'gray'}
                                         autoCapitalize="sentences"
                                         textContentType="addressCityAndState"
                                         keyboardType="default"
@@ -465,49 +524,32 @@ export default function AddProperties(){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Ville</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
-                                    <TextInput
-                                        className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
-                                        placeholder="Ville"
-                                        placeholderTextColor={'gray'}
-                                        autoCapitalize="sentences"
-                                        textContentType="addressCityAndState"
-                                        keyboardType="default"
-                                        onChangeText={handleChange('city')}
-                                        onBlur={handleBlur('city')}
-                                        value={values.city}
-                                    />
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
+                                    <Picker
+                                        selectedValue={ville}
+                                        style={{borderRadius: 5, width: '100%', alignSelf: 'center', justifyContent: 'center',}}
+                                        itemStyle={{height: 140, fontSize: 16, color: '#71B486', borderRadius: 5, }}
+                                        onValueChange={(itemValue, id) => {
+                                            console.log(itemValue, id)
+                                                setVille(itemValue);
+                                            }
+                                        }
+                                    >
+                                        {/* <Picker.Item key="0" label="----- Choisir une categorie -----" value="" id="0" itemStyle ={{fontFamily: 'PoppinsRegular'}} /> */}
+                                        {
+                                            listVille.map(item => <Picker.Item key={item.id} label={item.name} value={item.name} id={item.id} itemStyle ={{fontFamily: 'PoppinsRegular'}} />)   
+                                        }
+                                    </Picker>
                                 </View>
-                                {errors.city &&
-                                    <Text className="text-red-500 text-md" style={{ fontFamily: 'PoppinsRegular' }}>{errors.city}</Text>
-                                }
-                            </View>
-
-                            <View className="h-24 mx-4 my-1 justify-center">
-                                <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Pays</Text>
-
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
-                                    <TextInput
-                                        className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
-                                        placeholder="Pays"
-                                        placeholderTextColor={'gray'}
-                                        autoCapitalize="sentences"
-                                        textContentType="addressCityAndState"
-                                        keyboardType="default"
-                                        onChangeText={handleChange('country')}
-                                        onBlur={handleBlur('country')}
-                                        value={values.country}
-                                    />
-                                </View>
-                                {errors.country &&
-                                    <Text className="text-red-500 text-md" style={{ fontFamily: 'PoppinsRegular' }}>{errors.country}</Text>
+                                {villeErr &&
+                                    <Text className="text-red-500 text-md" style={{ fontFamily: 'PoppinsRegular' }}>{villeErr}</Text>
                                 }
                             </View>
 
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Catégorie</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                     <Picker
                                         selectedValue={selectValue.categorie}
                                         style={{borderRadius: 5, width: '100%', alignSelf: 'center', justifyContent: 'center',}}
@@ -537,11 +579,10 @@ export default function AddProperties(){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de chambre</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
-                                            placeholderTextColor={'gray'}
                                             textContentType="telephoneNumber"
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('rooms')}
@@ -557,11 +598,10 @@ export default function AddProperties(){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de douche</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
-                                            placeholderTextColor={'gray'}
                                             textContentType="telephoneNumber"
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('bathrooms')}
@@ -579,11 +619,10 @@ export default function AddProperties(){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de salon</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
-                                            placeholderTextColor={'gray'}
                                             textContentType="telephoneNumber"
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('lounges')}
@@ -599,11 +638,10 @@ export default function AddProperties(){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de piscine</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
-                                            placeholderTextColor={'gray'}
                                             textContentType="telephoneNumber"
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('swingpools')}
@@ -621,11 +659,10 @@ export default function AddProperties(){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Prix</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
-                                            placeholderTextColor={'gray'}
                                             textContentType="telephoneNumber"
                                             keyboardType="phone-pad"
                                             onChangeText={handleChange('prices')}
@@ -641,7 +678,7 @@ export default function AddProperties(){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Fréquence</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                         <Picker
                                             selectedValue={selectValue2.frequency}
                                             style={{borderRadius: 5, width: '100%', alignSelf: 'center', justifyContent: 'center',}}
@@ -671,11 +708,10 @@ export default function AddProperties(){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Prix de visite</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="0"
-                                        placeholderTextColor={'gray'}
                                         textContentType="telephoneNumber"
                                         keyboardType="phone-pad"
                                         onChangeText={handleChange('visitePrices')}
@@ -691,12 +727,11 @@ export default function AddProperties(){
                             {/* <View className="h-34 mx-4 my-1">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Equipements</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-16 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-16 rounded-lg border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         // value='Lorem Ipsum'
-                                        placeholder="équipements"
-                                        placeholderTextColor={'gray'}
+                                        placeholder="équipements
                                         autoCapitalize="sentences"
                                         textContentType="username"
                                         keyboardType="default"
@@ -715,11 +750,10 @@ export default function AddProperties(){
                             <View className="h-38 mx-4 my-1">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Condition</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-28 rounded-lg border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="conditions"
-                                        placeholderTextColor={'gray'}
                                         autoCapitalize="sentences"
                                         textContentType="username"
                                         keyboardType="default"
@@ -738,11 +772,10 @@ export default function AddProperties(){
                             <View className="h-38 mx-4 my-1">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Description</Text>
 
-                                <View style={{borderWidth: 0.7}} className="h-28 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7}} className="h-28 rounded-lg border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="description"
-                                        placeholderTextColor={'gray'}
                                         autoCapitalize="sentences"
                                         textContentType="username"
                                         keyboardType="default"
@@ -761,12 +794,12 @@ export default function AddProperties(){
                             <View className="h-28 mx-4 my-4 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Image de couverture</Text>
 
-                                <TouchableOpacity onPress={() => onOpen(0)} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                <TouchableOpacity onPress={() => onOpen(0)} style={{borderWidth: 0.7,}} className="h-28 rounded-lg border-secondary justify-center items-center">
                                     {
                                         image !== null?
                                         <Image source={{uri: image.uri}} resizeMode='cover' className="rounded-lg h-full w-full" />
                                         :
-                                        <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                        <Feather name='camera' size={40} color={"#6C5248"}/>
                                     } 
                                 </TouchableOpacity>
                                 {imgCoverErr &&
@@ -778,39 +811,39 @@ export default function AddProperties(){
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Image</Text>
 
                                 <View className="flex-row justify-between">
-                                    <TouchableOpacity onPress={() => onOpen(1)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(1)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg border-secondary justify-center items-center">
                                         {
                                             image0 !== null?
                                             <Image source={{uri: image0.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
                 
-                                    <TouchableOpacity onPress={() => onOpen(2)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(2)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg border-secondary justify-center items-center">
                                         {
                                             image1 !== null?
                                             <Image source={{uri: image1.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity onPress={() => onOpen(3)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(3)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg border-secondary justify-center items-center">
                                         {
                                             image2 !== null?
                                             <Image source={{uri: image2.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity onPress={() => onOpen(4)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(4)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg border-secondary justify-center items-center">
                                         {
                                             image3 !== null?
                                             <Image source={{uri: image3.uri}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
                                 </View>
@@ -819,7 +852,7 @@ export default function AddProperties(){
                                 }
                             </View>
 
-                            <TouchableOpacity onPress={handleSubmit} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
+                            <TouchableOpacity onPress={handleSubmit} className="h-12 w-52 bg-secondary m-4 self-center rounded-lg justify-center items-center">
                                 {
                                     loading? 
                                     <ActivityIndicator size={20} color="#fff" />

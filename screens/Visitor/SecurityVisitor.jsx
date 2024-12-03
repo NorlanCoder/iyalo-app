@@ -125,12 +125,12 @@ export default function SecurityVisitor(){
 
                 {message2 && <Text className="text-[#E50506] font-['PoppinsRegular'] text-[14px] text-center">{message2}</Text>}
 
-                <TouchableOpacity onPress={() => {updatePassword()}} className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
+                <TouchableOpacity onPress={() => {updatePassword()}} className="bg-secondary h-14 m-3 rounded-lg justify-center items-center">
                     {
                         loading2?
                         <ActivityIndicator size={"small"} color={"#000"}/>
                         :
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Modifier</Text>
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] text-white">Modifier</Text>
                     }
                 </TouchableOpacity>
             </ScrollView>

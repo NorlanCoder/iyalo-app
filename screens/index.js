@@ -8,8 +8,9 @@ import * as Notifications from 'expo-notifications';
 import messaging from '@react-native-firebase/messaging';
 import Navigation from '../navigation/nav';
 import { NavigationContainer } from '@react-navigation/native';
-import { LOCATION } from '../store/reducers/actionName';
+import { GENERAL, LOCATION, WITHDRAW } from '../store/reducers/actionName';
 import { apiURL } from '../api/api';
+import Toast from 'react-native-toast-message';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -18,6 +19,8 @@ Notifications.setNotificationHandler({
         shouldSetBadge: true,
     }),
 });
+
+// YbV^7TD5^UW973T
 
 export default function Index(){
 
@@ -34,14 +37,14 @@ export default function Index(){
 
     const getPosition = async () =>{
         let { status } = await Location.requestForegroundPermissionsAsync();
-        console.log(status)
+        // console.log(status)
         if (status !== 'granted') {
             console.log('Permission to access location was denied');
             return;
         };
         try{
             let location = await Location.getCurrentPositionAsync({});
-            console.log(location)
+            // console.log(location)
             dispatch({type: LOCATION, payload: {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
@@ -97,6 +100,65 @@ export default function Index(){
                     seconds: 1,
                 },
             });
+        })
+    }
+
+    const getBilanGlobal = async () => {
+        
+        await fetch(apiURL + 'announcer/withdraw/bilan', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${tokenAuth}`
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log('=======================1', res)
+            if(res.status === 200){
+                dispatch({type: GENERAL, payload: {
+                    properties: res.properties,
+                    visits: res.visits,
+                    all_cash: res.all_cash,
+                    wallet: res.wallet
+                }});
+                
+            }else{
+                console.log('error', res)
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
+
+    const getWithdrawHistory = async () => {
+        
+        await fetch(apiURL + 'announcer/withdraw', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${tokenAuth}`
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log('=======================1', res)
+            if(res.status === 200){
+                dispatch({type: WITHDRAW, payload: {
+                    wallet: res.wallet,
+                    data: res.data.data,
+                    next: res.data.next_page_url
+                }});
+                
+            }else{
+                console.log('error', res)
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
         })
     }
     
@@ -180,7 +242,9 @@ export default function Index(){
 
     useEffect(() => {
         if(isAuthenticated){
-            console.log("get token ")
+            getBilanGlobal()
+            getWithdrawHistory()
+            // console.log("get token ")
             registerForPushNotificationsAsync().then(token => token && setExpoPushToken(token));
         
             if (Platform.OS === 'android') {
@@ -205,6 +269,7 @@ export default function Index(){
 
     return(
         <NavigationContainer>
+            <Toast />
             <Navigation />
         </NavigationContainer>
     )

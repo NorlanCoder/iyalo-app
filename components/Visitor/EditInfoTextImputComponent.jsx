@@ -17,7 +17,7 @@ const EditInfoTextInputComponent = ({title, placeholder, value, onChangeText, ic
                     value={value}
                     onChangeText={onChangeText}
                     secureTextEntry={isSecure}
-                    className="bg-[#FDFDFD] h-full rounded-lg px-2 font-['PoppinsRegular'] flex-1"
+                    className="bg-[#FDFDFD] h-full rounded-lg px-2 font-['PoppinsRegular'] flex-1 justify-center"
                 />
 
                 <TouchableOpacity onPress={onPress}>

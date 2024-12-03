@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "127567421713",
-    "project_id": "iyalo-5d027",
-    "storage_bucket": "iyalo-5d027.appspot.com"
+    "project_number": "47271876980",
+    "project_id": "iyalo-new",
+    "storage_bucket": "iyalo-new.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:127567421713:android:5676d2ac09b892690facb0",
+        "mobilesdk_app_id": "1:47271876980:android:5b797a62c8c6c6f4c33421",
         "android_client_info": {
           "package_name": "com.norlan.iyalo"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyALdvmLQpFDpUCl41TROKDSr7MgRiS1jos"
+          "current_key": "AIzaSyALYNOoZUjNu3lA-EzmXpyyqvADtT1pxGw"
         }
       ],
       "services": {

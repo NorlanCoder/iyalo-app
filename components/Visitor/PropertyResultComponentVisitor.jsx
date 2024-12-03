@@ -6,7 +6,7 @@ import { Menu, MenuProvider, MenuOptions, MenuTrigger, } from "react-native-popu
 import { getPreciseDistance } from 'geolib';
 import { useSelector } from 'react-redux';
 import { baseURL } from '../../api/api';
-import { Edit, Delete, Activate, ListVisite, Add } from '../CustomContent';
+import { Edit, Delete, Activate, ListVisite, Add, ListDisponibilites } from '../CustomContent';
 import { ModalPopup } from '../Admin/ModalPopup';
 import { apiURL } from '../../api/api';
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -15,19 +15,136 @@ import 'moment/locale/fr'
 
 moment.locale('fr')
 
-const PropertyListByCatComponent = ({item, setFavorite, changeState}) => {
+const Divider = () => <View style={styles.divider} />;
+
+const daysOfWeek = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+const PropertyResultComponentVisitor = ({item, setFavorite, changeState}) => {
+    const navigation = useNavigation();
+
+    const token = useSelector((state) => state.userReducer.token)
+    const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
+
     const {width} = useWindowDimensions()
 
     const location = useSelector((state) => state.appReducer.location)
+
+    let val = false
+
+    if(item.status == 1){
+        val = true
+    }else{
+        val = false
+    }
+
+    const [visible, setVisible] = useState(false);
+    // const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('time');
+    const [show1, setShow1] = useState(false);
+    const [show2, setShow2] = useState(false);
+    const [heureDebut, setHeureDebut] = useState(new Date())
+    const [heureFin, setHeureFin] = useState(new Date())
+    const [loading, setLoading] = useState(false);
+    const [itemId, setItemId] = useState(0);
+    const [jours, setJours] = useState([]);
+
+    const onChange = (event, selectedDate) => {
+        // console.log(moment(selectedDate).format("Do MMM YYYY"), moment(selectedDate).format("LT"))
+        const currentDate = selectedDate || date;
+        // setShow(Platform.OS === 'ios' ? 'spinner' : 'default');
+        setShow(false);
+        setDate(currentDate);
+        setDateDebut(currentDate)
+    }
+
+    const showTimepicker1 = () => {
+        setShow1(true)
+    };
+
+    const showTimepicker2 = () => {
+        setShow2(true)
+    };
+
+    const close = () => {
+        setVisible(!visible)
+    }
+
+    const addDay = (jour) => {
+        setJours(prevJour => 
+            prevJour.includes(jour)
+            ? prevJour.filter(d => d !== jour)
+            : [...prevJour, jour]
+        );
+    };
+
+    const addVisite = () => {
+        setLoading(true)
+        console.log(jours)
+        fetch(apiURL+'announcer/property/'+item.id+'/add_calendar', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                day: jours,
+                hour_start: moment(heureDebut).format('HH:mm'),
+                hour_end: moment(heureFin).format('HH:mm'),
+            })
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log(token)
+            console.log('>>>>>>>>>>>>>>>>>>>', res)
+            if(res.status === 200){
+                setLoading(false);
+                close()
+                // console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
+                // showMessage({
+                //     message: "Succès",
+                //     description: res.message,
+                //     type: "success",
+                // });
+            }else{
+                setLoading(false);
+                close()
+                // console.log('>>>>>>>>>2>>>>>>>>>>', res)
+                // showMessage({
+                //     message: "Erreur",
+                //     description: res.message,
+                //     type: "danger",
+                // });
+            }
+
+            if(res.message === "Unauthenticated."){
+                // dispatch({ type: DECONNEXION, value: true});
+                // dispatch({ type: DECONNEXIONDATA, value: true});
+                // dispatch({type: SWITCHAUTHSCREEN, value: "Login"})
+            }
+        })
+        .catch(e => {
+            console.log(e)
+            setLoading(false);
+            close()
+            // console.log('>>>>>>>>>3>>>>>>>>>>', res.messag)
+            // showMessage({
+            //     message: "Erreur",
+            //     description: "Erreur de connexion",
+            //     type: "danger",
+            // });
+        })
+    }
 
     return (
         <View className="bg-white mb-2 p-2 rounded-xl shadow-sm" style={{width: width - 20 }}>
 
             <View className="flex flex-row justify-between items-center">
                 <View className="flex flex-row justify-start gap-x-2 items-center ">
-                    <Image source={item.user.image_url !== null? {uri: baseURL+item.user.image_url} : require('../../assets/png-clipart.png')} style={{width: 30, height: 30}}  className="rounded-full" />
+                    <Image source={require('../../assets/png-clipart.png')} style={{width: 30, height: 30}}  className="rounded-full" />
                     <Text style={{fontFamily: 'KeepCalm'}}>{item.user.name}</Text>
                 </View>
+
                 {/* <TouchableOpacity className="bg-primary p-2 rounded-xl">
                     <Entypo name="dots-three-vertical" size={18} color="black" />
                 </TouchableOpacity> */}
@@ -36,13 +153,13 @@ const PropertyListByCatComponent = ({item, setFavorite, changeState}) => {
             <View className="mt-1 relative">
                 <Image source={{uri: baseURL + item.cover_url}} style={{width: '100%', height: width / 2.3}}  className="rounded-xl" />
                 <View className="absolute top-0 w-full flex flex-row justify-between items-center p-2">
-                    <TouchableOpacity className="bg-black/40 p-[8px] py-0 rounded-full flex flex-row items-center">
+                    {/* <TouchableOpacity onPress={()=> {navigation.push('RatingByProperty',{item: item})}} className="bg-black/40 p-[8px] py-0 rounded-full flex flex-row items-center">
                         <Octicons name="star-fill" size={15} color="yellow" />
                         <Text className="pl-1 text-white font-bold text-lg" style={{fontFamily: 'PoppinsRegular'}}>{item.note.length}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {setFavorite(item.id)}} className="bg-black/40 p-[6px] rounded-full">
+                    </TouchableOpacity> */}
+                    {/* <TouchableOpacity onPress={() =>{setFavorite(item.id)}} className="bg-black/40 p-[6px] rounded-full">
                         <Octicons name="heart" size={18} color="white" />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
 
@@ -56,7 +173,7 @@ const PropertyListByCatComponent = ({item, setFavorite, changeState}) => {
                         </View>
                     </View>
                     <View>
-                        <Text className="text-primary text-[18px] font-bold" style={{fontFamily: 'KeepCalm'}}>{item.price} {item.device}</Text>
+                        <Text className="text-secondary text-[18px] font-bold" style={{fontFamily: 'KeepCalm'}}>{item.price} {item.device}</Text>
                     </View>
                 </View>
 
@@ -95,13 +212,14 @@ const PropertyListByCatComponent = ({item, setFavorite, changeState}) => {
                             }
                         </Text>
                     </View> 
-                </View>    
+                </View> 
             </View>
+
         </View>
     )
 }
 
-export default PropertyListByCatComponent;
+export default PropertyResultComponentVisitor;
 
 const styles = StyleSheet.create({
     container: {

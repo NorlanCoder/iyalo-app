@@ -10,6 +10,7 @@ import { Home, Favoris, Search, Profile, Notification, Transaction, HomeAdmin, A
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { firstTime } from '../store/reducers/appReducer';
+import DisponibiliteList from '../screens/Admin/DisponibiliteList';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -41,7 +42,7 @@ const Tabs = () => {
                     // tabBarBadge: true,
                     
                     tabBarIcon: ({ color }) => (
-                        <AntDesign name='home' color={color} size={25} />
+                        <Feather name='home' color={color} size={25} />
                     )
                 }} 
             />
@@ -50,7 +51,7 @@ const Tabs = () => {
                 component={Favoris} 
                 options={{
                     tabBarIcon: ({ color }) => (
-                        <MaterialIcons name='favorite-outline' color={color} size={25} />
+                        <Feather name='heart' color={color} size={25} />
                     )
                 }} 
             />
@@ -59,7 +60,7 @@ const Tabs = () => {
                 component={Explore} 
                 options={{
                     tabBarIcon: ({ color }) => (
-                        <FontAwesome5 name="map-marked-alt" size={25} color={color} />
+                        <Feather name="map-pin" size={25} color={color} />
                     )
                 }} 
             />
@@ -68,7 +69,7 @@ const Tabs = () => {
                 component={Transaction}
                 options={{
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="home-map-marker" size={24} color={color}/>
+                        <Feather name="file-text" size={24} color={color}/>
                     )
                 }} 
             />
@@ -111,7 +112,7 @@ const AdminTab = () => {
                 options={{
                     tabBarBadge: true,
                     tabBarIcon: ({ color }) => (
-                        <AntDesign name='home' color={color} size={25} />
+                        <Feather name='home' color={color} size={25} />
                     )
                 }} 
             />
@@ -187,6 +188,15 @@ export default function Navigation(){
                         <Stack.Screen name='RatingByProperty' component={RatingByProperty} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name='SecurityAdmin' component={SecurityAdmin} options={{headerShown: false, animation: 'slide_from_right',}} />
                         <Stack.Screen name='EditInfosAdmin' component={EditInfosAdmin} options={{headerShown: false, animation: 'slide_from_right',}} />
+                        <Stack.Screen
+                            name="DisponibiliteList"
+                            component={DisponibiliteList}
+                            options={{
+                                headerShown: false,
+                                headerTintColor: "transparent",
+                                animation: 'slide_from_right',
+                            }}
+                        />
                         <Stack.Screen name="Login" 
                             component={Login} 
                             options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
@@ -199,6 +209,12 @@ export default function Navigation(){
                         <Stack.Screen 
                             name="Forgot" 
                             component={Forgot} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
+
+                        <Stack.Screen 
+                            name="NewPassword" 
+                            component={NewPassword} 
                             options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
                         />
                     </Stack.Navigator>
@@ -299,6 +315,12 @@ export default function Navigation(){
                             component={Forgot} 
                             options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
                         />
+
+                        <Stack.Screen 
+                            name="NewPassword" 
+                            component={NewPassword} 
+                            options={{headerShown: false, headerTintColor: "transparent", animation: 'slide_from_right'}} 
+                        />
                         <Stack.Screen
                             name="PropertyListCat"
                             component={PropertyListCat}
@@ -308,6 +330,7 @@ export default function Navigation(){
                                 animation: 'slide_from_right',
                             }}
                         />
+                        
                     </Stack.Navigator>
                 }
             </View>

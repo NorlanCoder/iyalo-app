@@ -172,7 +172,7 @@ export default function UpdatePropertie(props){
         });
         setVisible(false);
 
-        console.log(result.assets)
+        // console.log(result.assets)
 
         if(result.canceled){
 
@@ -323,6 +323,7 @@ export default function UpdatePropertie(props){
                     validationSchema={formValidation}
                     initialValues={{label: item.label, city: item.city, district: item.district, country: item.country, rooms: item.room, bathrooms: item.bathroom, lounges: item.lounge, swingpools: item.swingpool, prices: item.price, visitePrices: item.visite_price, conditions: item.conditions, description: item.description}}
                     onSubmit={values => {
+                        // console.log(values)
                         if(catVal === "" ){
                             setCatErr('Ajouter une catégorie')
                             setLoading(false)
@@ -339,7 +340,7 @@ export default function UpdatePropertie(props){
 
                         setFreqErr(null)
 
-                        console.log('vdvdfbdf', image)
+                        // console.log('vdvdfbdf', image)
 
                         if(image.uri === ""){
                             setImgCoverErr('Ajouter une image pour le cover')
@@ -377,7 +378,7 @@ export default function UpdatePropertie(props){
 
                         setLoading(true);
 
-                        console.log(values)
+                        // console.log(values)
 
                         const imagesToSend = [];
 
@@ -391,50 +392,42 @@ export default function UpdatePropertie(props){
                             }else{
                                 imagesToSend.push(image0.uri)
                             }
-                        }else {
-
                         }
 
                         if(image1.uri !== ""){
                             if(image1.uri.includes('file')){
-                                imagesToSend.push(imagesToSend.push({
+                                imagesToSend.push({
                                     name: image1.name,
                                     uri: image1.uri,
                                     type: 'image/jpeg',
-                                }))
+                                })
                             }else{
                                 imagesToSend.push(image1.uri)
                             }
-                        }else {
-
                         }
 
                         if(image2.uri !== ""){
                             if(image2.uri.includes('file')){
-                                imagesToSend.push(imagesToSend.push({
+                                imagesToSend.push({
                                     name: image2.name,
                                     uri: image2.uri,
                                     type: 'image/jpeg',
-                                }))
+                                })
                             }else{
                                 imagesToSend.push(image2.uri)
                             }
-                        }else {
-
                         }
 
                         if(image3.uri !== ""){
                             if(image3.uri.includes('file')){
-                                imagesToSend.push(imagesToSend.push({
+                                imagesToSend.push({
                                     name: image3.name,
                                     uri: image3.uri,
                                     type: 'image/jpeg',
-                                }))
+                                })
                             }else{
                                 imagesToSend.push(image3.uri)
                             }
-                        }else {
-
                         }
 
                         const dataToSend = new FormData();
@@ -473,7 +466,7 @@ export default function UpdatePropertie(props){
                         })
 
                         fetch(apiURL+'announcer/property/'+item.id+'/update', {
-                            method: 'PUT',
+                            method: 'POST',
                             headers: {
                                 Accept: 'application/json',
                                 'Content-Type': 'multipart/form-data',
@@ -485,7 +478,7 @@ export default function UpdatePropertie(props){
                         .then(response => response.json())
                         .then(res => {
                             // console.log(token)
-                            console.log('>>>>>>>>>>>>>>>>>>>', res)
+                            // console.log('>>>>>>>>>>>>>>>>>>>', res)
                             if(res.status === 200){
                                 setLoading(false);
                                 console.log('>>>>>>>>>1>>>>>>>>>>', res.message)
@@ -528,7 +521,7 @@ export default function UpdatePropertie(props){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Label</Text>
 
-                                <View style={{borderWidth: 0.7}} className={`h-12 rounded-lg bg-primary/10 border-secondary/30`}>
+                                <View style={{borderWidth: 0.7}} className={`h-12 rounded-lg  border-secondary`}>
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="Label"
@@ -549,7 +542,7 @@ export default function UpdatePropertie(props){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Quartier</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="Quartier"
@@ -570,7 +563,7 @@ export default function UpdatePropertie(props){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Ville</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="Ville"
@@ -591,7 +584,7 @@ export default function UpdatePropertie(props){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Pays</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="Pays"
@@ -612,7 +605,7 @@ export default function UpdatePropertie(props){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Catégorie</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                     <Picker
                                         selectedValue={selectValue.categorie}
                                         style={{borderRadius: 5, width: '100%', alignSelf: 'center', justifyContent: 'center',}}
@@ -642,7 +635,7 @@ export default function UpdatePropertie(props){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de chambre</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
@@ -662,7 +655,7 @@ export default function UpdatePropertie(props){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de douche</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
@@ -684,7 +677,7 @@ export default function UpdatePropertie(props){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de salon</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
@@ -704,7 +697,7 @@ export default function UpdatePropertie(props){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Nombre de piscine</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
@@ -726,7 +719,7 @@ export default function UpdatePropertie(props){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Prix</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                         <TextInput
                                             className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                             placeholder="0"
@@ -746,7 +739,7 @@ export default function UpdatePropertie(props){
                                 <View style={{flex: 0.5}} className="h-24 mx-4 my-1 justify-center">
                                     <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Fréquence</Text>
 
-                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                    <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                         <Picker
                                             selectedValue={selectValue2.frequency}
                                             style={{borderRadius: 5, width: '100%', alignSelf: 'center', justifyContent: 'center',}}
@@ -776,7 +769,7 @@ export default function UpdatePropertie(props){
                             <View className="h-24 mx-4 my-1 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Prix de visite</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-12 rounded-lg  border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="0"
@@ -796,7 +789,7 @@ export default function UpdatePropertie(props){
                             {/* <View className="h-34 mx-4 my-1">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Equipements</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-16 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-16 rounded-lg  border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         // value='Lorem Ipsum'
@@ -820,7 +813,7 @@ export default function UpdatePropertie(props){
                             <View className="h-38 mx-4 my-1">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Condition</Text>
 
-                                <View style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7,}} className="h-28 rounded-lg  border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="conditions"
@@ -843,7 +836,7 @@ export default function UpdatePropertie(props){
                             <View className="h-38 mx-4 my-1">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Description</Text>
 
-                                <View style={{borderWidth: 0.7}} className="h-28 rounded-lg bg-primary/10 border-secondary/30">
+                                <View style={{borderWidth: 0.7}} className="h-28 rounded-lg  border-secondary">
                                     <TextInput
                                         className="h-full w-full rounded-lg p-2 font-['PoppinsRegular']"
                                         placeholder="description"
@@ -866,12 +859,12 @@ export default function UpdatePropertie(props){
                             <View className="h-28 mx-4 my-4 justify-center">
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Image de couverture</Text>
 
-                                <TouchableOpacity onPress={() => onOpen(0)} style={{borderWidth: 0.7,}} className="h-28 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                <TouchableOpacity onPress={() => onOpen(0)} style={{borderWidth: 0.7,}} className="h-28 rounded-lg  border-secondary justify-center items-center">
                                     {
                                         image.uri !== ""?
                                         <Image source={imgChange? {uri: image.uri} : {uri: baseURL+`${image.uri}`}} resizeMode='cover' className="rounded-lg h-full w-full" />
                                         :
-                                        <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                        <Feather name='camera' size={40} color={"#6C5248"}/>
                                     } 
                                 </TouchableOpacity>
                                 {imgCoverErr &&
@@ -883,39 +876,39 @@ export default function UpdatePropertie(props){
                                 <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] py-2">Image</Text>
 
                                 <View className="flex-row justify-between">
-                                    <TouchableOpacity onPress={() => onOpen(1)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(1)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg  border-secondary justify-center items-center">
                                         {
                                             image0.uri !== ""?
                                             <Image source={imgChange0? {uri: image0.uri} : {uri: baseURL+`${image0.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
                 
-                                    <TouchableOpacity onPress={() => onOpen(2)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(2)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg  border-secondary justify-center items-center">
                                         {
                                             image1.uri !== ""?
                                             <Image source={imgChange1? {uri: image1.uri} : {uri: baseURL+`${image1.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity onPress={() => onOpen(3)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(3)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg  border-secondary justify-center items-center">
                                         {
                                             image2.uri !== ""?
                                             <Image source={imgChange2? {uri: image2.uri} : {uri: baseURL+`${image2.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity onPress={() => onOpen(4)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg bg-primary/10 border-secondary/30 justify-center items-center">
+                                    <TouchableOpacity onPress={() => onOpen(4)} style={{borderWidth: 0.7,}} className="h-20 w-20 rounded-lg  border-secondary justify-center items-center">
                                         {
                                             image3.uri !== ""?
                                             <Image source={imgChange3? {uri: image3.uri} : {uri: baseURL+`${image3.uri}`}} resizeMode='cover' className="h-20 w-20 rounded-lg" />
                                             :
-                                            <Feather name='camera' size={40} color={"#00ddb3"}/>
+                                            <Feather name='camera' size={40} color={"#6C5248"}/>
                                         } 
                                     </TouchableOpacity>
                                 </View>
@@ -924,7 +917,7 @@ export default function UpdatePropertie(props){
                                 }
                             </View>
 
-                            <TouchableOpacity onPress={handleSubmit} className="h-12 w-52 bg-primary m-4 self-center rounded-lg justify-center items-center">
+                            <TouchableOpacity onPress={handleSubmit} className="h-12 w-52 bg-secondary m-4 self-center rounded-lg justify-center items-center">
                                 {
                                     loading? 
                                     <ActivityIndicator size={20} color="#fff" />

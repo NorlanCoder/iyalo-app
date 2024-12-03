@@ -5,7 +5,8 @@ import { Dialog, } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker'
 import { useSelector, useDispatch } from 'react-redux';
 import RequestAuth from '../Auth/RequestAuth';
-import { apiURL } from '../../api/api';
+import { apiURL, baseURL } from '../../api/api';
+import Toast from 'react-native-toast-message';
 
 export default function Profile(props){
     const token = useSelector((state) => state.userReducer.token)
@@ -19,54 +20,7 @@ export default function Profile(props){
 
     const hideDialog = () => setVisible(false);
 
-    // const pickImage = async () => {
-    //     let result = await ImagePicker.launchImageLibraryAsync({
-    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //         allowsEditing: true,
-    //         aspect: [4, 4],
-    //         quality: 0.2,
-    //         // base64: true
-    //     });
-    //     setVisible(false);
-
-    //     console.log(result.assets[0])
-
-    //     if(result.canceled){
-
-    //     }else{
-    //         setLoading(true)
-
-    //         const dataToSend = new FormData();
-
-    //         dataToSend.append('image', {
-    //             name: result.assets[0].fileName,
-    //             uri: result.assets[0].uri,
-    //             type: 'image/jpeg',
-    //         });
-
-    //         console.log('form data', dataToSend)
-
-    //         fetch(apiURL + 'update_image', {
-    //             method: 'PUT',
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Content-Type': 'multipart/form-data',
-    //                 // 'Content-Type': 'application/json',
-    //                 Authorization: 'Bearer ' + token
-    //             },
-    //             body: dataToSend
-    //         })
-    //         .then(response => response.json())
-    //         .then(res => {
-    //             console.log(res)
-    //             if(res.status === 200){
-    //                 setLoading(false)
-    //             }else{
-    //                 setLoading(false)
-    //             }
-    //         })
-    //     }
-    // };
+    // console.log(myuser.user.image_url)
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -75,6 +29,7 @@ export default function Profile(props){
             aspect: [4, 4],
             quality: 0.2,
         });
+
         setVisible(false);
     
         if (result.canceled) {
@@ -83,93 +38,46 @@ export default function Profile(props){
     
         if (result.assets && result.assets.length > 0) {
             setLoading(true);
-    
-            const dataToSend = new FormData();
-            dataToSend.append('image', {
-                name: result.assets[0].fileName,
-                uri: result.assets[0].uri,
-                type: 'image/jpeg',
-            });
-    
-            console.log('form data', dataToSend);
-    
-            fetch(apiURL + 'update_image', {
-                method: 'PUT',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: 'Bearer ' + token,
-                },
-                body: dataToSend,
-            })
-            .then(response => {
-                console.log('response ',response.json())
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('response ',response.json())
-                return response.json();
-                
-            })
-            .then(res => {
-                console.log(res);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                setLoading(false);
-            });
+            await updateImageNow(result.assets[0])       
         }
     };
 
-    // const takeImage = async () => {
-    //     let result = await ImagePicker.launchCameraAsync({
-    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //         allowsEditing: true,
-    //         aspect: [4, 4],
-    //         quality: 0.2,
-    //         // base64: true
-    //     });
-    //     setVisible(false);
+    const updateImageNow = async(data) => {
 
-    //     console.log(result.assets)
+        const dataToSend = new FormData();
 
-    //     if(result.canceled){
+        dataToSend.append('image', {
+            uri: data.uri,
+            type: 'image/jpeg',
+            name: data.uri,
+        });
 
-    //     }else{
-    //         setLoading(true)
+        // console.log(dataToSend._parts[0])
 
-    //         const dataToSend = new FormData();
-
-    //         dataToSend.append('image', {
-    //             name: result.assets[0].fileName,
-    //             uri: result.assets[0].uri,
-    //             type: 'image/jpeg',
-    //         });
-
-    //         console.log('form data', dataToSend)
-
-    //         fetch(apiURL+'update_image', {
-    //             method: 'PUT',
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Content-Type': 'multipart/form-data',
-    //                 // 'Content-Type': 'application/json',
-    //                 Authorization: 'Bearer ' + token
-    //             },
-    //             body: dataToSend
-    //         })
-    //         .then(response => response.json())
-    //         .then(res => {
-    //             console.log(res)
-    //             if(res.status === 200){
-    //                 setLoading(false)
-    //             }else{
-    //                 setLoading(false)
-    //             }
-    //         })
-    //     }
-    // };
+        fetch(`${apiURL}update_image`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                ContentType: 'multipart/form-data',
+                Authorization: 'Bearer ' + token,
+            },
+            body: dataToSend,
+        })
+        .then(response => response.json())
+        .then(res => {
+            Toast.show({
+                type: 'info',
+                text1: 'Image de profile',
+                text2: 'Image changé avec succès'
+            })
+            dispatch({type: 'PROFILE', payload: res.data});
+            setLoading(false);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            setLoading(false);
+        });
+    }
 
     const takeImage = async () => {
         let result = await ImagePicker.launchCameraAsync({
@@ -186,44 +94,11 @@ export default function Profile(props){
     
         if (result.assets && result.assets.length > 0) {
             setLoading(true);
-    
-            const dataToSend = new FormData();
-            dataToSend.append('image', {
-                name: result.assets[0].fileName,
-                uri: result.assets[0].uri,
-                type: 'image/jpeg',
-            });
-    
-            console.log('form data', dataToSend);
-    
-            fetch(apiURL + 'update_image', {
-                method: 'PUT',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: 'Bearer ' + token,
-                },
-                body: dataToSend,
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(res => {
-                console.log(res);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                setLoading(false);
-            });
+            await updateImageNow(result.assets[0])  
         }
     };
 
     const getlogoutFavorite = async () => {
-
         await fetch(apiURL + 'logout', {
             method: 'DELETE',
             headers: {
@@ -245,10 +120,11 @@ export default function Profile(props){
         <SafeAreaView className="flex-1 bg-slate-100">
             {
                 isAuthenticated ?
-                <ScrollView className="px-4" showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50, justifyContent: 'center'}}>
+                <ScrollView className="px-4 flex-1" showsVerticalScrollIndicator={true} contentContainerStyle={{ flex: 1, paddingBottom: 100, justifyContent: 'center'}}>
                     <View className="w-full h-56 justify-center items-center mt-2" >
                         <View style={{borderWidth: 0.7, borderColor: "#6E6F84"}} className="h-28 w-28 rounded-full justify-center items-center">
-                            <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />
+                            {myuser.user.image_url ? <Image source={{uri:baseURL+myuser.user.image_url}} className="h-24 w-24 rounded-full" /> : <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />}
+                            
 
                             <TouchableOpacity onPress={() => {setVisible(true)}} className="h-8 w-8 bg-primary/40 rounded-full absolute bottom-0 right-0 items-center justify-center">
                                 {
@@ -325,7 +201,7 @@ export default function Profile(props){
                     </View>
 
                     <View className="bg-white rounded-md my-2">
-                        <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                        {/* <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                             <View className="flex-row justify-center items-center">
                                 <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                     <Foundation name="info" size={20} color="#000000"/>
@@ -337,7 +213,7 @@ export default function Profile(props){
                                 </View>
                                 
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <TouchableOpacity onPress={() =>{getlogoutFavorite()}} className="flex-row justify-between mx-3 my-3 w-full">
                             <View className="flex-row justify-center items-center">

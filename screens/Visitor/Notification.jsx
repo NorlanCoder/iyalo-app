@@ -76,8 +76,8 @@ export default function Notification(){
     }
 
     return(
-        <SafeAreaView className="flex-1 bg-slate-100">
-            <View className="flex flex-row justify-between items-center mt-8 px-3">
+        <SafeAreaView className="flex-1 bg-slate-100 px-3">
+            <View className="flex flex-row justify-between items-center mt-8">
                 <View className="flex-row justify-center items-center">
                     <TouchableOpacity onPress={() =>{navigation.goBack()}} className="h-full w-full bg-gray-300 rounded-xl items-center justify-center mr-3" style={{ height: 40, width: 40,}}>
                         <MaterialIcons name="keyboard-arrow-left" size={20} color="#000"/>
@@ -96,9 +96,7 @@ export default function Notification(){
                 isAuthenticated ?
 
                     loading ?
-                    <View className="py-3 w-full h-full flex items-center justify-center">
-                        <ActivityIndicator size={50} color="#6C5248" />
-                    </View>
+                    <DisplayLoading/>
                     :
                     <FlatList
                         data={notifications}

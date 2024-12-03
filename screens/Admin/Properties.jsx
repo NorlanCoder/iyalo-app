@@ -122,7 +122,7 @@ export default function Properties(){
         })
         .then(response => response.json())
         .then(res => {
-            console.log('========================1', res)
+            // console.log('========================1', res)
             if(res.status === 200){
                 getProperties();
             }else{
@@ -166,6 +166,14 @@ export default function Properties(){
                             if(nextPage !== null){
                                 getAllNextProperties()
                             }
+                        }}
+                        ListEmptyComponent={()=> {
+                            return (
+                                <View className="flex-1 h-[85vh] justify-center items-center">
+                                    <Feather name="file-text" size={150} color={"#6C5248"} />
+                                    <Text style={{fontFamily: 'KeepCalm'}}>Aucune propriété trouvée</Text>
+                                </View>
+                            )
                         }}
                     />
                 }

@@ -1,25 +1,25 @@
-import { AUTHENTICATED, USER, ISADMIN, SETTOKEN, LOGOUT, NOTIFICATION } from './actionName';
+import { AUTHENTICATED, USER, ISADMIN, SETTOKEN, LOGOUT, NOTIFICATION, PROFILE } from './actionName';
 
 const userState = {
     user: {
-        "id": 0,
-        "name": "",
-        "email": "",
-        "phone": 0,
-        "image_url": "",
-        "birthday": "",
-        "token_notify": "",
-        "solde": 0,
-        "email_verified_at": null,
-        "password": null,
-        "status": null,
-        "role": null,
-        "adress": null,
-        "card_image": null,
-        "logo": null,
-        "remember_token": null,
-        "created_at": null,
-        "updated_at": null
+        id: 0,
+        name: "",
+        email: "",
+        phone: 0,
+        image_url: "",
+        birthday: "",
+        token_notify: "",
+        solde: 0,
+        email_verified_at: null,
+        password: null,
+        status: null,
+        role: null,
+        adress: null,
+        card_image: null,
+        logo: null,
+        remember_token: null,
+        created_at: null,
+        updated_at: null
     },
     isAuthenticated: false,
     isLoading: false,
@@ -50,6 +50,13 @@ export default function userReducer(state = userState, {type, payload}){
                 user: payload
             }
             return nextState || state;
+        
+        case PROFILE:
+                nextState = {
+                    ...state,
+                    user: payload
+                }
+                return nextState || state;
 
         case ISADMIN:
             nextState = {
@@ -76,24 +83,24 @@ export default function userReducer(state = userState, {type, payload}){
             nextState = {
                 ...state,
                 user: {
-                    "id": 0,
-                    "name": "",
-                    "email": "",
-                    "phone": 0,
-                    "image_url": "",
-                    "birthday": "",
-                    "token_notify": "",
-                    "solde": 0,
-                    "email_verified_at": null,
-                    "password": null,
-                    "status": null,
-                    "role": null,
-                    "adress": null,
-                    "card_image": null,
-                    "logo": null,
-                    "remember_token": null,
-                    "created_at": null,
-                    "updated_at": null
+                    id: 0,
+                    name: "",
+                    email: "",
+                    phone: 0,
+                    image_url: "",
+                    birthday: "",
+                    token_notify: "",
+                    solde: 0,
+                    email_verified_at: null,
+                    password: null,
+                    status: null,
+                    role: null,
+                    adress: null,
+                    card_image: null,
+                    logo: null,
+                    remember_token: null,
+                    created_at: null,
+                    updated_at: null
                 },
                 isAuthenticated: false,
                 isLoading: false,

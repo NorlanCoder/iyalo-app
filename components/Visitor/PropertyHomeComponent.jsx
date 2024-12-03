@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, useWindowDimensions, Image, Pressable } from 'react-native'
-import { Octicons , Entypo, MaterialCommunityIcons, MaterialIcons, Feather } from '@expo/vector-icons';
+import { Octicons , Entypo, MaterialCommunityIcons, MaterialIcons, Feather, Fontisto, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react'
 import { getPreciseDistance } from 'geolib';
@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { baseURL } from '../../api/api';
 import { AirbnbRating } from '@rneui/themed';
 
-const PropertyHomeComponent = ({item, setFavorite, setVisible, setItemId}) => {
+const PropertyHomeComponent = ({item, setFavorite, setVisible, setItemId, listfav}) => {
     const navigation = useNavigation()
     // const item = props.item
 
@@ -24,9 +24,9 @@ const PropertyHomeComponent = ({item, setFavorite, setVisible, setItemId}) => {
                     <Image source={item.user.image_url !== null? {uri: baseURL+item.user.image_url} : require('../../assets/png-clipart.png')} style={{width: 30, height: 30}}  className="rounded-full" />
                     <Text style={{fontFamily: 'KeepCalm'}}>{item.user.name}</Text>
                 </View>
-                <TouchableOpacity className="bg-primary p-2 rounded-xl">
+                {/* <TouchableOpacity className="bg-primary p-2 rounded-xl">
                     <Entypo name="dots-three-vertical" size={18} color="black" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             <View className="mt-1 relative">
@@ -37,7 +37,12 @@ const PropertyHomeComponent = ({item, setFavorite, setVisible, setItemId}) => {
                         <Text className="pl-1 text-white font-bold text-lg" style={{fontFamily: 'PoppinsRegular'}}>{item.note.length}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {isAuthenticated? setFavorite(item.id) : navigation.navigate('Login')}} className="bg-black/40 p-[6px] rounded-full">
-                        <Octicons name="heart" size={18} color="white" />
+                        {
+                            listfav.find(fav => fav.id===item.id)?
+                            <Ionicons name="heart" size={18} color="#f87171" />
+                            :
+                            <Octicons name="heart" size={18} color="white" />
+                        }       
                     </TouchableOpacity>
                 </View>
             </View>
@@ -48,11 +53,11 @@ const PropertyHomeComponent = ({item, setFavorite, setVisible, setItemId}) => {
                         <Text style={{fontFamily: 'KeepCalm'}} className="">{item.label}</Text>
                         <View className="flex flex-row items-center gap-x-1">
                             <Octicons name="location" size={16} color="black" />
-                            <Text style={{fontFamily: 'PoppinsRegular'}} className="">{item.city} - {item.district}</Text>
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[12px]">{item.city} - {item.district}</Text>
                         </View>
                     </View>
                     <View>
-                        <Text className="text-primary text-[18px] font-bold" style={{fontFamily: 'KeepCalm'}}>{item.price} {item.device}</Text>
+                        <Text className="text-secondary text-[17px] font-bold" style={{fontFamily: 'KeepCalm'}}>{item.price} {item.device}</Text>
                     </View>
                 </View>
 

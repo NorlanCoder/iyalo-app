@@ -11,7 +11,7 @@ import { DisplayLoading } from '../../components/DisplayLoading';
 moment.locale('fr')
 
 export default function VisiteByProperty(props){
-    console.log(props.route.params.item.id)
+    // console.log(props.route.params.item.id)
 
     const token = useSelector((state) => state.userReducer.token)
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
@@ -97,7 +97,7 @@ export default function VisiteByProperty(props){
 
     const markVisite = async (id) => {
         setLoading(true)
-        await fetch(apiURL + 'announcer/property/'+id+'/action_visit', {
+        await fetch(apiURL + 'announcer/property/'+id+'/confirm_owner', {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
@@ -107,7 +107,7 @@ export default function VisiteByProperty(props){
         })
         .then(response => response.json())
         .then(res => {
-            console.log('Visite marquée=========================1', res)
+            // console.log('Visite marquée=========================1', res)
             if(res.status === 200){
                 setLoading(false);
                 getVisites();
@@ -117,22 +117,30 @@ export default function VisiteByProperty(props){
         })
     }
 
-    const renderItem = ({item}) => {
+    const renderItem = ({item, index}) => {
 
         return(
             <View className={`bg-white mx-3 my-2 rounded-xl p-3 shadow-lg shadow-gray-500`}>
                 <View className="flex gap-2">
+
+                    <View className="flex flex-row justify-between items-center">
+                        <View className="flex-row items-center gap-x-1">
+                            <Feather name='file-text' size={22} />
+                            <Text style={{fontFamily: 'KeepCalm'}}>#VIS-{item.id}-{index+1}</Text>
+                        </View>
+
+                        <TouchableOpacity onPress={() => {markVisite(item.id)}} className={`rounded-xl ${item.visited? "bg-green-500/10" : (item.confirm_client || item.confirm_owner) ? "bg-yellow-500/10" :"bg-red-500/10"} justify-center items-center h-9 w-9`}>
+                            <MaterialCommunityIcons name="checkbox-marked-outline" size={18} color={item.visited? "green" : (item.confirm_client || item.confirm_owner) ? 'orange' : "red"}/>
+                        </TouchableOpacity>
+                    </View>
+
                     <View className="flex flex-row justify-between items-center">
                         <Text style={{fontFamily: 'KeepCalm'}}>Type: {item.type}</Text>
-
-                        <TouchableOpacity onPress={() => {markVisite(item.id)}} className={`rounded-xl ${item.visited? "bg-green-500/10" : "bg-red-500/10"} justify-center items-center h-9 w-9`}>
-                            <MaterialCommunityIcons name="checkbox-marked-outline" size={20} color={item.visited? "green" : "red"}/>
-                        </TouchableOpacity>
                     </View>
                     
 
-                    <Text style={{fontFamily: 'KeepCalm'}}>Date visite: {moment(item.date_visite).format('LL')}</Text>
-                    <Text style={{fontFamily: 'KeepCalm'}}>Statut: {item.visited? "Déjà visité" : "En attente de visite"}</Text>
+                    <Text style={{fontFamily: 'KeepCalm'}} className="text-secondary">Date visite: <Text style={{fontFamily: 'Poppins'}} className="text-black">{moment(item.date_visite).format('LL')}</Text></Text>
+                    <Text style={{fontFamily: 'KeepCalm'}} className="text-secondary">Statut: <Text style={{fontFamily: 'Poppins'}} className={`${item.visited? "text-green-500" : (item.confirm_client || item.confirm_owner) ? "text-yellow-500" :"text-red-500"} `}>{item.visited ? "Déjà visité" : ""} {item.confirm_client || item.confirm_owner ? '' : 'En attente'}</Text></Text>
 
                     {/* <View className="px-3 rounded-xl bg-red-400/50 justify-center items-center">
                         <Text style={{fontFamily: 'KeepCalm'}}>{item.visited? "Déjà visité" : "En attente de visite"}</Text>
@@ -162,6 +170,14 @@ export default function VisiteByProperty(props){
                         if(nextPage !== null){
                             getAllNextVisite()
                         }
+                    }}
+                    ListEmptyComponent={()=> {
+                        return (
+                            <View className="flex-1 h-[85vh] justify-center items-center">
+                                <Feather name="file-text" size={150} color={"#6C5248"} />
+                                <Text style={{fontFamily: 'KeepCalm'}}>Aucune visite trouvée</Text>
+                            </View>
+                        )
                     }}
                 />
             }

@@ -4,21 +4,22 @@ import MapView, {PROVIDER_GOOGLE, Marker, Callout} from "react-native-maps";
 import { useSelector } from 'react-redux';
 import RequestAuth from '../Auth/RequestAuth';
 import { apiURL, baseURL } from "../../api/api";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Explore(){
 
     const location = useSelector((state) => state.appReducer.location)
-
+    const navigation = useNavigation()
     const _map = useRef(null);
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
     const dataMap = useSelector((state) => state.appReducer.dataMap)
     const [data, setData] = useState([])
 
-    console.log('jdsovidjsoi iodjfvmifd ',dataMap)
+    // console.log('jdsovidjsoi iodjfvmifd ',dataMap)
 
     const getProperty = async () => {
         console.log('exécute')
-        await fetch(apiURL + 'list/last/properties', {
+        await fetch(apiURL + 'map_properties', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -60,30 +61,32 @@ export default function Explore(){
                     >
                         {
                             dataMap.map((marker, index) => (
-                                <Marker key={index} coordinate={{latitude: Number(marker.lat), longitude: Number(marker.long)}}>
-                                    <View className="items-center justify-center h-12 w-12 rounded-full bg-slate-300" >
-                                        <Image
-                                            source={marker.cover_url?  {uri: baseURL+marker.cover_url} : require('../../assets/png-clipart.png')}
-                                            className="h-10 w-10 rounded-full"
-                                            resizeMode="cover"
-                                        />
-                                    </View>
-
-                                    <Callout
-                                        alphaHitTest
-                                        // onPress={()=> [open(), loadDetailGoodToo(marker.id), setIsLoading(true)]}
-                                        // style={styles.bubble}
-                                        className="bg-white w-44 h-full"
-                                    >
-                                        <View style={{ backgroundColor: '#fff', height: 75}}>
-                                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular', }}>{marker.label}</Text>
-                                            <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular', }}>{marker.description}</Text>
-                                            {/* <View style={{alignSelf: 'flex-end'}}> */}
-                                                {/* <Text style={{fontFamily: 'PoppinsRegular',  fontStyle: "italic", position: 'absolute', bottom: 2, right: 10}}>voir détails...</Text> */}
-                                            {/* </View>  */}
+                                <TouchableOpacity onPress={()=>console.log('ddhdh')} key={index}>
+                                    <Marker onPress={()=>navigation.navigate('Details',{item: marker})} key={index} coordinate={{latitude: Number(marker.lat), longitude: Number(marker.long)}}>
+                                        <View className="items-center justify-center h-12 w-12 rounded-full bg-slate-300" >
+                                            <Image
+                                                source={marker.cover_url?  {uri: baseURL+marker.cover_url} : require('../../assets/png-clipart.png')}
+                                                className="h-10 w-10 rounded-full"
+                                                resizeMode="cover"
+                                            />
                                         </View>
-                                    </Callout>
-                                </Marker>
+
+                                        <Callout
+                                            alphaHitTest
+                                            // onPress={()=> [open(), loadDetailGoodToo(marker.id), setIsLoading(true)]}
+                                            // style={styles.bubble}
+                                            className="bg-white w-44 h-full"
+                                        >
+                                            <View style={{ backgroundColor: '#fff', height: 75}}>
+                                                <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular', }}>{marker.label}</Text>
+                                                <Text numberOfLines={1} style={{fontFamily: 'PoppinsRegular', }}>{marker.description}</Text>
+                                                {/* <View style={{alignSelf: 'flex-end'}}> */}
+                                                    {/* <Text style={{fontFamily: 'PoppinsRegular',  fontStyle: "italic", position: 'absolute', bottom: 2, right: 10}}>voir détails...</Text> */}
+                                                {/* </View>  */}
+                                            </View>
+                                        </Callout>
+                                    </Marker>
+                                </TouchableOpacity>
                             ))
                         }
                     </MapView>

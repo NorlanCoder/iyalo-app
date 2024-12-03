@@ -92,7 +92,7 @@ const Register = () => {
                 // dispatch({type: 'SETTOKEN', payload: res.data.token});
                 // if(res.data.user.role=="announcer") dispatch({type: ISADMIN, payload: true});
                 // navigation.navigate('Tab', { screen: 'Home' })
-                navigation.goBack();
+                navigation.navigate('Login');
 
                 setLoading(false);
             }

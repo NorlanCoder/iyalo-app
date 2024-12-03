@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, useWindowDimensions, TouchableOpacity, FlatList, Pressable, RefreshControl, } from 'react-native';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { CATEGORY } from '../../utils/data/categoriedata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
 import PropertyResultComponent from '../../components/Visitor/PropertyResultComponent';
@@ -177,6 +177,12 @@ const PropertyListCat = (props) => {
                         horizontal={false}
                         renderItem={renderproperty}
                         keyExtractor={(item, index) => item.id}
+                        ListEmptyComponent={
+                            <View className="w-[100vw] h-[80vh] flex justify-center items-center" style={{ justifyContent: 'center', alignItems: 'center'}}>
+                                <FontAwesome6 name="house-crack" size={100} color="#6C5248" />
+                                <Text style={{fontFamily: 'KeepCalm'}} className="mt-5">Aucune propriété disponible</Text>
+                            </View>
+                        }
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={{paddingBottom: 100, justifyContent: 'center'}}
                     />

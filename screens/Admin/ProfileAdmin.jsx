@@ -31,6 +31,7 @@ export default function ProfileAdmin(){
         })
         .then(response => response.json())
         .then(res => {
+            console.log(res)
             dispatch({type: 'LOGOUT', payload: null});
         })
         .catch( (e) => {
@@ -54,33 +55,27 @@ export default function ProfileAdmin(){
         if (result.assets && result.assets.length > 0) {
             setLoading(true);
     
+            // const imageSend = []
+            
             const dataToSend = new FormData();
             dataToSend.append('image', {
-                name: result.assets[0].fileName,
+                name: result.assets[0].uri,
                 uri: result.assets[0].uri,
                 type: 'image/jpeg',
             });
     
-            console.log('form data', dataToSend);
+            // console.log('form data', result.assets[0]);
     
             fetch(apiURL + 'update_image', {
                 method: 'PUT',
                 headers: {
-                    Accept: 'application/json',
+                    // Accept: 'application/json',
                     'Content-Type': 'multipart/form-data',
                     Authorization: 'Bearer ' + token,
                 },
                 body: dataToSend,
             })
-            // .then(response => {
-            //     console.log('response ',response.json())
-            //     if (!response.ok) {
-            //         throw new Error('Network response was not ok');
-            //     }
-            //     console.log('response ',response.json())
-            //     return response.json();
-                
-            // })
+            .then(response => response.json())
             .then(res => {
                 console.log("resultat ",res);
                 setLoading(false);
@@ -145,10 +140,15 @@ export default function ProfileAdmin(){
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100 px-4">
+            {/* {console.log(myuser)} */}
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1, paddingBottom: 50, justifyContent: 'center'}}>
                 <View className="w-full h-56 justify-center items-center mt-10" >
                     <View style={{borderWidth: 0.7, borderColor: "#6E6F84"}} className="h-28 w-28 rounded-full justify-center items-center">
-                        <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />
+                        {
+                            myuser.image_url ? <Image source={{uri: myuser.image_url}} className="h-24 w-24 rounded-full" />
+                            : <Image source={require('../../assets/png-clipart.png')} className="h-24 w-24 rounded-full" />
+                        }
+                        
 
                         <TouchableOpacity onPress={() => {setVisible(true)}} className="h-8 w-8 bg-primary/40 rounded-full absolute bottom-0 right-0 items-center justify-center">
                             {
@@ -195,7 +195,7 @@ export default function ProfileAdmin(){
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                    {/* <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
                             <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <Fontisto name="bell" size={20} color="#000000"/>
@@ -207,11 +207,11 @@ export default function ProfileAdmin(){
                             </View>
                             
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
                 <View className="bg-white rounded-md my-2">
-                    <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
+                    {/* <TouchableOpacity onPress={() =>{}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">
                             <View className="h-10 w-10 bg-slate-300 rounded-full items-center justify-center mr-3">
                                 <Foundation name="info" size={20} color="#000000"/>
@@ -223,7 +223,7 @@ export default function ProfileAdmin(){
                             </View>
                             
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <TouchableOpacity onPress={() =>{getlogoutFavorite()}} className="flex-row justify-between mx-3 my-3 w-full">
                         <View className="flex-row justify-center items-center">

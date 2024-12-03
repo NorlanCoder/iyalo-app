@@ -1,9 +1,15 @@
-import {  StyleSheet, Text, View, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList, Dimensions} from 'react-native'
+import {  StyleSheet, Text, View, ScrollView, TouchableOpacity, Pressable, SafeAreaView, FlatList, Dimensions, RefreshControl} from 'react-native'
 import { Feather, MaterialIcons, FontAwesome, FontAwesome5, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import TextInputWithdrawComponent from '../../components/Admin/TextInputWithdrawComponent';
 import { Dialog } from 'react-native-paper';
 import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { DisplayLoading } from '../../components/DisplayLoading';
+import { WITHDRAW } from '../../store/reducers/actionName';
+import { apiURL } from '../../api/api';
+import moment from 'moment';
+import Toast from 'react-native-toast-message';
 
 const {width, height} = Dimensions.get('window');
 
@@ -11,25 +17,187 @@ const data = []
 
 const HomeAdmin = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
+    const token = useSelector((state) => state.userReducer.token)
+    const global = useSelector((state) => state.appReducer.bilan)
+    const withdraw = useSelector((state) => state.appReducer.withdraw)
 
     const [selected, setSelected] = useState("proprietes")
     const [visible, setVisible] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [montant, setMontant] = useState(0);
+    const [phone, setPhone] = useState('');
+    const [error, setError] = useState('');
+
+    const onRefresh = () => {
+        try{
+            setRefreshing(true);
+            getWithdrawHistory();
+        }catch(error){
+            setRefreshing(false);
+        }finally{
+            setRefreshing(false);
+        }
+    }
+
+    const getWithdrawHistory = async () => {
+        
+        await fetch(apiURL + 'announcer/withdraw', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            console.log('=======================1', res)
+            if(res.status === 200){
+                dispatch({type: WITHDRAW, payload: {
+                    wallet: res.wallet,
+                    data: res.data.data,
+                    next: res.data.next_page_url
+                }});
+                
+            }else{
+                console.log('error', res)
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
+
+    const makeWithdraw = async () => {
+        setLoading(false)
+        await fetch(apiURL + 'announcer/withdraw/create', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({amount: montant, phone: phone})
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log('=======================1', res)
+            if(res.status === 200){
+                getWithdrawHistory()
+                setVisible(false)
+                setLoading(false)
+            }else{
+                console.log('error', res)
+                setLoading(false)
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
+
+    const sendWithdraw = () => {
+        if(montant<=0) {
+            setError('')
+            setError('Le montant ne peut être nul ou négatif')
+            return;
+        }
+        else {
+            if(montant>withdraw.wallet) {
+                setError('')
+                setError('Le montant ne peut être supérieur à votre solde')
+                return;
+            }
+            else if(email=='') {
+                setError('Numéro de téléphone obligatoire')
+                return;
+            }
+            else {
+                makeWithdraw()
+            }
+        }
+    }
+
+    const getNextWithdrawHistory = async () => {
+        
+        await fetch(withdraw.next, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            // console.log('=======================1', res)
+            if(res.status === 200){
+                dispatch({type: WITHDRAW, payload: {
+                    wallet: res.wallet,
+                    data: res.data.data,
+                    next: res.data.next_page_url
+                }});
+                
+            }else{
+                console.log('error', res)
+            }
+        })
+        .catch( (e) => {
+            console.log(e);
+        })
+    }
+
+    // const getBilanGlobal = async () => {
+        
+    //     await fetch(apiURL + 'announcer/withdraw/bilan', {
+    //         method: 'GET',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json',
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     })
+    //     .then(response => response.json())
+    //     .then(res => {
+    //         console.log('=======================1', res)
+    //         if(res.status === 200){
+    //             setProperty(res.properties)
+    //             setVisit(res.visits)
+    //             setAllCash(res.all_cash)
+    //             setWallet(res.wallet)
+                
+    //         }else{
+    //             console.log('error', res)
+    //         }
+    //     })
+    //     .catch( (e) => {
+    //         console.log(e);
+    //     })
+    // }
+
+    useEffect(()=>{
+        Toast.show({
+            type: 'info',
+            text1: 'Image de profile',
+            text2: 'Image changé avec succès'
+        })
+    },[])
+
 
     const hideDialog = () => setVisible(false);
 
     return(
         <SafeAreaView className="flex-1 bg-slate-100">
-            <View className="h-16 w-full items-center justify-between p-2 flex flex-row mt-10">
-                <TouchableOpacity onPress={() => {setSelected('proprietes')}} style={{elevation: 4, borderWidth: 0.7, backgroundColor: selected === "proprietes" ? "#00ddb3": "#FFFFFF", borderColor: selected === "proprietes" ? "#00ddb3": "#00ddb3",}} className="h-10 w-28 items-center justify-center rounded-lg">
-                    <Text style={{fontFamily: 'PoppinsRegular', color: selected === "proprietes" ? "#000000": "#6C5248"}} className="text-[16px] ">Propriétés</Text>
+            {/* {console.log(global)} */}
+            <View className="h-16 w-full items-center justify-center gap-x-3 p-2 flex flex-row mt-10">
+                <TouchableOpacity onPress={() => {setSelected('proprietes')}} style={{elevation: 4, borderWidth: 2, backgroundColor: selected === "proprietes" ? "#6C5248": "#FFFFFF", borderColor: "#6C5248"}} className="h-10 w-28 items-center justify-center rounded-lg">
+                    <Text style={{fontFamily: 'PoppinsRegular', color: selected === "proprietes" ? "#FFF": "#6C5248"}} className="text-[16px] ">Propriétés</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {setSelected('visites')}} style={{elevation: 4, borderWidth: 0.7, backgroundColor: selected === "visites" ? "#00ddb3": "#FFFFFF", borderColor: selected === "visites" ? "#00ddb3": "#00ddb3",}} className="h-10 w-28 items-center justify-center rounded-lg">
-                    <Text style={{fontFamily: 'PoppinsRegular', color: selected === "visites" ? "#000000": "#6C5248"}} className="text-[16px] ">Visites</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => {setSelected('portefeuille')}} style={{elevation: 4, borderWidth: 0.7, backgroundColor: selected === "portefeuille" ? "#00ddb3": "#FFFFFF", borderColor: selected === "portefeuille" ? "#00ddb3": "#00ddb3",}} className="h-10 w-28 items-center justify-center rounded-lg">
-                    <Text style={{fontFamily: 'PoppinsRegular', color: selected === "portefeuille" ? "#000000": "#6C5248"}} className="text-[16px] ">Portefeuille</Text>
+                <TouchableOpacity onPress={() => {setSelected('portefeuille')}} style={{elevation: 4, borderWidth: 2, backgroundColor: selected === "portefeuille" ? "#6C5248": "#FFFFFF", borderColor:  "#6C5248"}} className="h-10 w-28 items-center justify-center rounded-lg">
+                    <Text style={{fontFamily: 'PoppinsRegular', color: selected === "portefeuille" ? "#FFF": "#6C5248"}} className="text-[16px] ">Portefeuille</Text>
                 </TouchableOpacity>
             </View>
 
@@ -41,7 +209,7 @@ const HomeAdmin = () => {
 
                         <TouchableOpacity onPress={() => {navigation.navigate('Properties')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
-                                <FontAwesome name='building' color={"#00ddb3"} size={20}/>
+                                <FontAwesome name='building' color={"#6C5248"} size={20}/>
                             </View>
 
                             <View style={{flex: 0.85}} className="h-24 w-16 justify-center">
@@ -49,65 +217,52 @@ const HomeAdmin = () => {
                             </View>
 
                             <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
-                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{100}</Text>
+                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-secondary font-bold">{global.properties}</Text>
                             </View>
                         </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => {}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
-                            <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
-                                <FontAwesome name='building' color={"#00ddb3"} size={20}/>
-                            </View>
-
-                            <View style={{flex: 0.85}} className="h-24 w-16 justify-center">
-                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Liste des disponibilités</Text>
-                            </View>
-
-                            <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
-                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{}</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        {/* <TouchableOpacity onPress={() => {navigation.navigate('Annonces')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
-                            <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
-                                <Entypo name='megaphone' color={"#00ddb3"} size={20}/>
-                            </View>
-
-                            <View style={{flex: 0.85}} className="h-24 w-16 justify-center">
-                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Nombre total {"\n"} d'annonces ajoutées</Text>
-                            </View>
-
-                            <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
-                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{20}</Text>
-                            </View>
-                        </TouchableOpacity> */}
 
                         <TouchableOpacity onPress={() => {navigation.navigate('Visites')}} style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
-                                <FontAwesome5 name='building' color={"#00ddb3"} size={20} />
+                                <FontAwesome name='building' color={"#6C5248"} size={20}/>
                             </View>
 
                             <View style={{flex: 0.85}} className="h-24 w-16 justify-center">
-                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Nombre de {"\n"}visites terminées</Text>
+                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Historique de visites</Text>
                             </View>
 
                             <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
-                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{10}</Text>
+                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-secondary font-bold">{global.visits}</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
+                            <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
+                                <MaterialCommunityIcons name='clipboard-text-play-outline' color={"#6C5248"} size={20}/>
+                            </View>
+
+                            <View style={{flex: 0.6}} className="h-24 w-16 justify-center">
+                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Chiffres d'affaires</Text>
+                            </View>
+
+                            <View style={{flex: 0.4}} className="h-24 w-16 justify-center items-center">
+                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[18px] text-secondary font-bold">{global.all_cash} fcfa</Text>
                             </View>
                         </TouchableOpacity>
 
                         <View style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
-                                <MaterialCommunityIcons name='clipboard-text-play-outline' color={"#00ddb3"} size={20}/>
+                                <MaterialCommunityIcons name='clipboard-text-play-outline' color={"#6C5248"} size={20}/>
                             </View>
 
-                            <View style={{flex: 0.85}} className="h-24 w-16 justify-center">
-                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Nombre de {"\n"}visites en cours </Text>
+                            <View style={{flex: 0.6}} className="h-24 w-16 justify-center">
+                                <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "600"}} className="text-[16px] ">Solde actuel</Text>
                             </View>
 
-                            <View style={{flex: 0.2}} className="h-24 w-16 justify-center items-center">
-                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[22px] text-2xl text-primary font-bold">{20}</Text>
+                            <View style={{flex: 0.4}} className="h-24 w-16 justify-center items-center">
+                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[18px] text-secondary font-bold">{global.wallet} fcfa</Text>
                             </View>
                         </View>
+
 
                         {/* <View style={{elevation: 5}} className="bg-white h-24 m-3 rounded-md flex flex-row items-center">
                             <View style={{flex: 0.15}} className="h-24 w-16 justify-center items-center">
@@ -124,73 +279,70 @@ const HomeAdmin = () => {
                         </View> */}
                     </ScrollView>
                 </View>
-                :selected === "visites"?
-                <View className="flex-1">
-                    <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "700"}} className="text-center text-[18px] p-5">Garantissez une gestion efficace de {"\n"} vos immobilier.</Text>
-
-                    <View style={{width: width*0.95, height: "100%", borderRadius: 15, alignSelf: 'center', marginBottom: 15, padding: 5}}>
-                        <View style={styles.wrapper}>
-                            <View style={styles.table}>
-                                <View style={styles.table_head}>
-                                    <View style={{ width: '10%'}}>
-                                        <Text style={styles.table_head_captions}>N°</Text>
-                                    </View>
-                                    <View style={{ width: '20%'}}>
-                                        <Text style={styles.table_head_captions}>Type</Text>
-                                    </View>
-                                    <View style={{ width: '25%'}}>
-                                        <Text style={styles.table_head_captions}>Locataire</Text>
-                                    </View>
-                                    <View style={{ width: '25%'}}>
-                                        <Text style={styles.table_head_captions}>Date</Text>
-                                    </View>
-                                    <View style={{ width: '25%'}}>
-                                        <Text style={styles.table_head_captions}>Statut</Text>
-                                    </View>
-                                </View>
-
-                                {
-                                    data.map((item, index) => {
-                                        return(
-                                            <View key={index} style={styles.table_body_single_row}>
-                                                <View style={{ width: '10%', height: 25, justifyContent: 'center'}}>
-                                                    <Text style={[styles.table_data, {color: "#AD5526", fontSize: 16}]}>{item.id} </Text>
-                                                </View>
-                                                <View style={{ width: '20%', backgroundColor: '#EFEFEF', height: 25, justifyContent: 'center'}}>
-                                                    <Text style={styles.table_data}>Villa</Text>
-                                                </View>
-                                                <View style={{ width: '25%', height: 25, justifyContent: 'center'}}>
-                                                    <Text numberOfLines={2} style={styles.table_data}> {item.user.nom} {item.user.prenom} </Text>
-                                                </View>
-                                                <View style={{ width: '25%', backgroundColor: '#EFEFEF', height: 25, justifyContent: 'center'}}>
-                                                    <Text style={styles.table_data}>{moment(item.created_at).format('LL')}</Text>
-                                                </View>
-                                                <View style={{ width: '25%', height: 25, justifyContent: 'center'}}>
-                                                    <Text style={styles.table_data}>{item.visited ? "Déjà visité" : "En attente"} </Text>
-                                                </View>
-                                            </View>
-                                        )
-                                    })
-                                }
-                            </View>
-                        </View>
-                    </View>
-                </View>
                 :selected === "portefeuille" ?
-                <View className="flex-1">
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        <View className="bg-primary/60 h-48 m-3 rounded-3xl items-center">
-                            <View className="m-5 px-3">
+                <View className="flex-1 px-3">
+                    <View showsVerticalScrollIndicator={false}>
+                        <View className="bg-primary/60 h-48 my-3 rounded-3xl flex-col items-center justify-center ">
+                            <View className="m-5 mb-0 px-3 flex-col items-center justify-center">
                                 <Text className="text-center text-[16px] font-['PoppinsRegular'] text-secondary ">Balance du portefeuille</Text>
-                                <Text className="text-center text-[34px] font-['PoppinsRegular'] font-bold">50 000 <Text className="text-center text-[18px] font-['PoppinsRegular'] font-bold">XOF</Text></Text>
+                                <Text className="text-center text-[34px] font-['PoppinsRegular'] font-bold">{withdraw.wallet} <Text className="text-center text-[18px] font-['PoppinsRegular'] font-bold">fcfa</Text></Text>
                             </View>
 
-                            <TouchableOpacity onPress={() => {setVisible(true)}} style={{elevation: 4, borderWidth: 0.7, backgroundColor:"#FFFFFF", borderColor: "#00ddb3",}} className="h-11 px-5 items-center justify-center rounded-lg m-4">
-                                <Text style={{fontFamily: 'PoppinsRegular', color: "#6C5248"}} className="text-[20px] ">Retirer</Text>
+                            <TouchableOpacity onPress={() => {setVisible(true)}} style={{elevation: 4, borderWidth: 0.7, backgroundColor:"#FFFFFF", borderColor: "#00ddb3",}} className="h-11 px-5 items-center justify-center rounded-lg m-4 mt-3">
+                                <Text style={{fontFamily: 'PoppinsRegular', color: "#6C5248"}} className="text-[18px] ">Retirer</Text>
                             </TouchableOpacity>
                         </View>
 
                         <View className="mx-3">
+                            <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "700"}} className="text-[18px] py-5">Historique</Text>
+                        </View>
+
+                        {
+                            loading?
+                            <DisplayLoading/>
+                            :
+                            <FlatList
+                                data={withdraw.data}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                                renderItem={(item) => (
+
+                                    <View className="bg-white h-16 rounded-xl flex-row justify-between my-2" key={item.index}>
+                                        <View style={{flex: 0.2}} className="h-full w-full justify-center items-center">
+                                            <MaterialCommunityIcons name='chart-line-variant' color={"red"} size={30}/>
+                                        </View>
+
+                                        <View style={{flex: 0.5}} className=" h-full w-full justify-center">
+                                            <Text style={{fontFamily: 'PoppinsRegular', color: "#000"}} className="text-[16px]">Sortie</Text>
+                                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] text-gray-400">{moment(item.item.created_at).format('LL')}</Text>
+                                        </View>
+
+                                        <View style={{flex: 0.3}} className="h-full w-full flex flex-col justify-center items-end p-2">
+                                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] text-secondary font-bold ">-{item.item.amount} XOF</Text>
+                                            <Text style={{fontFamily: 'PoppinsRegular'}} className={`text-[16px] ${item.item.is_refund ? 'text-green-600' : 'text-orange-400'}`}>{item.item.is_refund ? 'Effectué' : 'En cours'}</Text>
+                                        </View>
+                                    </View>
+                                    
+                                )}
+                                keyExtractor={(item, index) => item.id}
+                                showsVerticalScrollIndicator={false}
+                                onEndReachedThreshold = {0.5}
+                                onEndReached={() => {
+                                    if(withdraw.next !== ''){
+                                        getNextWithdrawHistory()
+                                    }
+                                }}
+                                ListEmptyComponent={()=> {
+                                    return (
+                                        <View className="flex-1 h-[45vh] justify-center items-center">
+                                            <Feather name="file-text" size={50} color={"#6C5248"} />
+                                            <Text style={{fontFamily: 'KeepCalm'}}>Aucune historique dsponible</Text>
+                                        </View>
+                                    )
+                                }}
+                            />
+                        }
+
+                        {/* <View className="mx-3">
                             <Text style={{fontFamily: 'PoppinsRegular', fontWeight: "700"}} className="text-[18px] py-5">Historique</Text>
 
                             <View className="bg-white h-16 rounded-xl flex-row justify-between my-2">
@@ -237,20 +389,25 @@ const HomeAdmin = () => {
                                     <Text style={{fontFamily: 'PoppinsRegular', color: "#000"}} className="text-[16px] py-1">+16 000 XOF</Text>
                                 </View>
                             </View>
-                        </View>
-                    </ScrollView>
+                        </View> */}
+                    </View>
                 </View>
                 :null
             }
 
-            <Dialog visible={visible} onDismiss={hideDialog}>
-                <Dialog.Title>Effectuer un retrait</Dialog.Title>
+            <Dialog visible={visible} onDismiss={hideDialog} style={{backgroundColor: '#FFF', borderRadius: 10}}>
+                <Dialog.Title style={{textAlign: 'center'}}>Effectuer un retrait</Dialog.Title>
                 <Dialog.Content>
-                    <TextInputWithdrawComponent title={"Montant"} placeholder={"montant"} devise={"XOF"} />
-                    <TextInputWithdrawComponent title={"Numéro"} placeholder={"numéro"}/>
+                    <Text className="text-red-500 italic">{error}</Text>
+                    <TextInputWithdrawComponent title={"Montant"} data={montant} setData={setMontant} placeholder={"Montant à retirer"} devise={"XOF"} />
+                    <TextInputWithdrawComponent title={"Numéro"} data={phone} setData={setPhone} placeholder={"+229 01 xx xx xx xx"} />
 
-                    <TouchableOpacity onPress={() => {setVisible(false)}} className="bg-primary h-14 m-3 rounded-lg justify-center items-center">
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Valider</Text>
+                    <TouchableOpacity onPress={() => { sendWithdraw() }} className="bg-secondary h-12 m-3 mt-4 rounded-lg justify-center items-center">
+                        { loading ?
+                            <ActivityIndicator size={30} color="#fff" />
+                            :
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className=" text-[16px] text-white">Valider</Text>
+                        }
                     </TouchableOpacity>
                 </Dialog.Content>
             </Dialog>

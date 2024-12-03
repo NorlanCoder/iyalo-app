@@ -17,9 +17,19 @@ export default function Header(props){
                 <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">{props.title}</Text>
             </View>
 
-            <View className="">
-                {props.right}
-            </View>
+
+            {
+                props.right ? 
+                props.refresh ?  <Feather name='refresh-ccw' size={20} onPress={()=>props.getVisite()}/>
+                :
+                <View className="">
+                    {props.right}
+                </View>
+                : null
+            }
+            
+
+
         </Animated.View>
     )
 }

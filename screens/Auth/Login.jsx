@@ -8,6 +8,7 @@ import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
 import { apiURL } from '../../api/api';
 import { useDispatch } from 'react-redux';
+import * as Yup from 'yup';
 
 const Login = () => {
     const navigation = useNavigation();
@@ -16,16 +17,16 @@ const Login = () => {
     const [passwordSecured, setPasswordSecured] = useState(true)
     const [loading, setLoading] = useState(false);
 
-    // const loginValidationSchema = Yup.object().shape({
-    //     email: Yup
-    //       .string()
-    //       .email("Veuillez entrer un mail valide")
-    //       .required('Email est obligatoire'),
-    //     password: Yup
-    //       .string()
-    //       .min(8, ({ min }) => `Le mot de passe doit contenir ${min} caractère`)
-    //       .required('Mot de passe obligatoire'),
-    // })
+    const loginValidationSchema = Yup.object().shape({
+        email: Yup
+          .string()
+          .email("Veuillez entrer un mail valide")
+          .required('Email est obligatoire'),
+        password: Yup
+          .string()
+          .min(8, ({ min }) => `Le mot de passe doit contenir ${min} caractère`)
+          .required('Mot de passe obligatoire'),
+    })
 
     const seConnecter = async (payload) => {
         await fetch(apiURL + 'login', {
@@ -42,7 +43,7 @@ const Login = () => {
             if(res.message) {
                 console.log(res.message)
                 setLoading(false)
-            } else if(res[0].token) {
+            } else if(res[0] && res[0].token) {
                 dispatch({type: 'USER', payload: res[0].user});
                 dispatch({type: 'SETTOKEN', payload: res[0].token});
                 dispatch({type: 'AUTHENTICATED', payload: true});
@@ -52,6 +53,9 @@ const Login = () => {
                 // console.log(res.data.token)
                 if(res[0].user.role=="announcer") navigation.navigate('AdminTab', { screen: 'Home' })
                 else navigation.navigate('Tab', { screen: 'Home' })
+            } else {
+                setLoading(false)
+
             }
             
         })
@@ -82,7 +86,7 @@ const Login = () => {
                 </View>
 
                 <Formik
-                    // validationSchema={loginValidationSchema}
+                    validationSchema={loginValidationSchema}
                     validateOnChange={false}
                     initialValues={{ email: '', password:'' }}
                     onSubmit={values => {
@@ -93,6 +97,14 @@ const Login = () => {
                     {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
                         <View className="mb-10">
                         
+                            {errors.email && (
+                                <Text
+                                    className="text-red-500 text-md "
+                                    style={{ fontFamily: 'PoppinsRegular' }}
+                                >
+                                    {errors.email}
+                                </Text>
+                            )}
                             <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-5">
                                 <Ionicons name="mail" size={24} color="black" />
                                 <TextInput
@@ -106,8 +118,17 @@ const Login = () => {
                                     className="w-full px-3 py-3 text-lg"
                                     style={{fontFamily: 'PoppinsRegular'}}
                                 />
+                                
                             </View>
-
+                        
+                            {errors.password && (
+                                <Text
+                                    className="text-red-500 text-md "
+                                    style={{ fontFamily: 'PoppinsRegular' }}
+                                >
+                                    {errors.password}
+                                </Text>
+                            )}
                             <View className="flex flex-row items-center px-2 border border-black rounded-xl mb-5">
                                 <Ionicons name="lock-closed-outline" size={24} color="black" />
                                 <TextInput

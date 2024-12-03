@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ONBOARDING, LOCATION, AUTHENTICATED, DATAMAP } from './actionName';
+import { ONBOARDING, LOCATION, AUTHENTICATED, DATAMAP, GENERAL, WITHDRAW, FAVORIS } from './actionName';
 
 const initialState = {
     visit: false,
@@ -8,7 +8,19 @@ const initialState = {
         "longitude": 0,
         "latitude": 0,
     },
+    bilan: {
+        properties: 0,
+        visits: 0,
+        all_cash: 0,
+        wallet: 0
+    },
+    withdraw: {
+        wallet: 0,
+        data: [],
+        next: '',
+    },
     dataMap: [],
+    favoris: []
 }
 
 export default function appReducer(state = initialState, {type, payload}){
@@ -28,10 +40,31 @@ export default function appReducer(state = initialState, {type, payload}){
             }
             return nextState || state;
 
+        case FAVORIS:
+            nextState = {
+                ...state,
+                favoris: payload
+            }
+            return nextState || state;
+
         case LOCATION:
             nextState = {
                 ...state,
                 location: payload
+            }
+            return nextState || state; 
+
+        case GENERAL:
+            nextState = {
+                ...state,
+                bilan: payload
+            }
+            return nextState || state; 
+
+        case WITHDRAW:
+            nextState = {
+                ...state,
+                withdraw: payload
             }
             return nextState || state; 
               

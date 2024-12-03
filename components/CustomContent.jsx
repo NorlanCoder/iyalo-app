@@ -13,6 +13,7 @@ export const Explore = ({ text, onPress, iconName }) => (
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                padding: 10
             },
         }}
     >
@@ -29,6 +30,7 @@ export const Edit = ({ text, onPress, iconName }) => (
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                padding: 10
             },
         }}
     >
@@ -45,6 +47,7 @@ export const Add = ({ text, onPress, iconName }) => (
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                padding: 10
             },
         }}
     >
@@ -61,6 +64,24 @@ export const ListVisite = ({ text, onPress, iconName }) => (
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                padding: 10
+            },
+        }}
+    >
+        <Text style={{fontFamily: 'KeepCalm'}}>{text}</Text>
+        <Entypo name={iconName} size={24} color="black" />
+    </MenuOption>
+);
+
+export const ListDisponibilites = ({ text, onPress, iconName }) => (
+    <MenuOption
+        onSelect={onPress}
+        customStyles={{
+            optionWrapper: {
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 10
             },
         }}
     >
@@ -77,6 +98,7 @@ export const Delete = ({ text, onPress, iconName }) => (
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                padding: 10
             },
         }}
     >
@@ -85,20 +107,21 @@ export const Delete = ({ text, onPress, iconName }) => (
     </MenuOption>
 );
 
-export const Activate = ({ text, onPress, iconName, val }) => (
+export const Activate = ({ text, toggle, iconName, val, id }) => (
     <MenuOption
-        onSelect={onPress}
+        onSelect={()=>toggle(id)}
         customStyles={{
             optionWrapper: {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                padding: 10
             },
         }}
     >
         <Text style={{fontFamily: 'KeepCalm'}}>{text}</Text>
         {/* <Entypo name={iconName} size={24} color="green" /> */}
-        <Switch color="green" value={val} style={{height: 20,}} />
+        <Switch color="green" onChange={()=>toggle(id)} value={val} style={{height: 20,}} />
         
     </MenuOption>
 );

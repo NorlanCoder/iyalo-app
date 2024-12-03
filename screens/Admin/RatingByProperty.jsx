@@ -98,11 +98,11 @@ export default function RatingByProperty(props){
     const renderItem = ({item}) => {
 
         return(
-            <View className="flex mx-3 my-1 p-2 rounded-xl border border-gray-500/30">
+            <View className="flex mx-3 my-1 p-4 rounded-xl border border-secondary-500/30">
                 <View className="flex flex-row justify-between items-center">
                     <AirbnbRating isDisabled={true} size={15} defaultRating={item.note} showRating={false} />
 
-                    <Text numberOfLines={1} className=" text-gray-500 italic mt-2 font-['KeepCalm'] ">{moment(item.created_at).fromNow()}</Text>
+                    <Text numberOfLines={1} className=" text-gray-500 italic font-['KeepCalm'] ">{moment(item.created_at).fromNow()}</Text>
                 </View>
 
                 <Text numberOfLines={2} className="text-gray-500 mt-2 font-['KeepCalm']">{item.comment}</Text>
@@ -126,6 +126,14 @@ export default function RatingByProperty(props){
                     if(nextPage !== null){
                         getAllNextRating()
                     }
+                }}
+                ListEmptyComponent={()=> {
+                    return (
+                        <View className="flex-1 h-[85vh] justify-center items-center">
+                            <Feather name="file-text" size={150} color={"#6C5248"} />
+                            <Text style={{fontFamily: 'KeepCalm'}}>Aucune note trouvée</Text>
+                        </View>
+                    )
                 }}
             />
         </SafeAreaView>

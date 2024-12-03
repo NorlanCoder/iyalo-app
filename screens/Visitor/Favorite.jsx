@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {  StyleSheet, Text, View, Image, TouchableOpacity, Pressable, SafeAreaView, FlatList, RefreshControl, ActivityIndicator} from 'react-native'
-import { Feather, MaterialIcons, Entypo, Octicons } from '@expo/vector-icons';
+import { Feather, MaterialIcons, Entypo, Octicons, Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,13 +8,15 @@ import { CATEGORY } from '../../utils/data/categoriedata';
 import { ROOM } from '../../utils/data/roomdata';
 import { BATH } from '../../utils/data/bathdata';
 import CategoryComponent from '../../components/Visitor/CategoryComponent';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import RequestAuth from '../Auth/RequestAuth';
 import { apiURL, baseURL } from '../../api/api';
+import { FAVORIS } from '../../store/reducers/actionName';
 
 
 export default function Favoris(){
     const navigation = useNavigation();
+    const dispatch = useDispatch()
     const rendercategory = ({ item }) => (
         <TouchableOpacity key={item.id} onPress={() => {}}>
             <CategoryComponent name={item.nom} id={item.id_} />
@@ -24,6 +26,7 @@ export default function Favoris(){
     const isAuthenticated = useSelector((state) => state.userReducer.isAuthenticated)
     const user = useSelector((state) => state.userReducer.user)
     const myuser = useSelector((state) => state.userReducer)
+    const favorite = useSelector((state) => state.appReducer.favoris)
 
 
     const [fav, setFav] = useState([])
@@ -78,7 +81,11 @@ export default function Favoris(){
         })
         .then(response => response.json())
         .then(res => {
-            console.log('liste favoris', res)
+            if(res.status===200) {
+                var justId = []
+                res.data.map(item => {justId.push(item.id)})
+                dispatch({type: FAVORIS, payload: res.data})
+            }
             setFav(res.data)
             setLoading(false)
         })
@@ -94,31 +101,32 @@ export default function Favoris(){
 
 
     const renderItem = ({item}) => {
-        console.log(item)
+        // console.log(item)
         return(
-            <TouchableOpacity onPress={() => {navigation.navigate('Details', {item: item})}} className="bg-white h-32 m-3 rounded-xl flex-row">
+            <TouchableOpacity onPress={() => {navigation.navigate('Details', {item: item})}} className="bg-white h-32 m-3 mb-0 rounded-xl flex-row">
                 <View  className="justify-center items-center p-2">
                     <Image className="h-28 w-28 rounded-xl" source={{uri: baseURL + item.cover_url}}/>
                 </View>
 
-                <View className="p-2 gap-2 justify-center w-[65%]">
+                <View className="p-2  justify-center w-[65%]">
                     
                     <View className="">
                         <View className="flex flex-row items-center justify-between">
-                            <View className="flex flex-row items-center">
-                                <Feather name='map-pin' color={"gray"} size={20}/>
-                                <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] text-gray-500 "> {item.district}</Text>
-                            </View>
-                            <TouchableOpacity onPress={() => {setFavorite(item.id)}} className="bg-black/40 p-[6px] rounded-full">
-                                <Octicons name="heart" size={18} color="white" />
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[16px] ">{item.label}</Text>
+                            
+                            <TouchableOpacity onPress={() => {setFavorite(item.id)}} className="bg-black/10 p-[6px] rounded-full">
+                                <Ionicons name="heart" size={20} color="#f87171" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[16px] ">{item.label}</Text>
+                        <View className="flex flex-row items-center">
+                            <Feather name='map-pin' color={"gray"} size={20}/>
+                            <Text style={{fontFamily: 'PoppinsRegular'}} className="text-[16px] text-gray-500 "> {item.district}</Text>
+                        </View>
                     </View>
                     
 
                     <View>
-                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] text-primary/70 ">XOF {item.price} <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[14px] text-gray-400"> / {item.frequency === "monthly"? "Mois": item.frequency === "daily"? "Jour": "Année"}</Text></Text>
+                        <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[16px] text-secondary">XOF {item.price}<Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[14px] text-gray-400"> / {item.frequency === "monthly"? "Mois": item.frequency === "daily"? "Jour": "Année"}</Text></Text>
                         {/* <Text style={{fontFamily: 'PoppinsRegular'}} className="font-bold text-[18px] ">Meublé</Text> */}
                     </View>
                     
@@ -150,17 +158,18 @@ export default function Favoris(){
                 isAuthenticated ?
 
                     loading ?
-                    <View className="py-3 w-full h-full flex items-center justify-center">
+                    <View className="py-3 flex-1 flex items-center justify-center">
                         <ActivityIndicator size={50} color="#6C5248" />
                     </View>
                     :
                     <FlatList
-                        data={fav}
+                        data={favorite}
                         renderItem={renderItem}
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                         ListEmptyComponent={
                             <View className="w-[100vw] h-[80vh] flex justify-center items-center" style={{ justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{fontFamily: 'KeepCalm'}} className>Aucun Favoris</Text>
+                                <FontAwesome6 name="heart-crack" size={100} color={"#6C5248"} />
+                                <Text style={{fontFamily: 'KeepCalm'}} className='mt-3'>Aucun Favoris</Text>
                             </View>
                         }
                         keyExtractor={(item, index) => item.id}
